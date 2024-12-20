@@ -1,0 +1,87 @@
+.btn-shadow {
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12); }
+
+h2 {
+  width: 100%;
+  text-align: center; }
+
+.select2-container--default .select2-selection--single {
+  border: none; }
+
+.select2.select2-container {
+  display: block;
+  width: 100%;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; }
+
+.booking-form table td, .booking-form table th {
+  border-top: none; }
+
+.room-status-badge {
+  line-height: 0.4rem;
+  vertical-align: top; }
+
+.room-status-active {
+  color: green; }
+  .room-status-active a {
+    color: green; }
+
+.room-status-maintenance {
+  color: red; }
+  .room-status-maintenance a {
+    color: red; }
+
+.dropdown-toggle-split.fa::after {
+  border: none; }
+
+.dropdown-item.disabled, .dropdown-item:disabled {
+  color: #6d1d1d; }
+
+.bootstrap-table-overflow-ellipsis {
+  width: 20%;
+  text-overflow: ellipsis; }
+
+.bookingFor span label {
+  padding: 0.3rem; }
+
+span.badge.booking-group {
+  font-size: 0.7rem;
+  background-color: #bd4c4c; }
+
+span.badge.booking-general {
+  font-size: 0.7rem;
+  background-color: #b7b768; }
+
+span.badge.booking-student {
+  font-size: 0.7rem;
+  background-color: #4e4e9c; }
+
+span.badge.booking-employee {
+  font-size: 0.7rem;
+  background-color: #428c42; }
+
+.form-control.nationality {
+  padding-left: 2px; }
+
+.guest-details-row td {
+  padding-left: 2px; }
+
+.guest-details-table th {
+  padding-left: 2px; }
+
+label.btn.bookingForList.active {
+  background-color: #ffc107 !important; }
+
+.bookingSearchDetails {
+  font-size: 0.8rem; }
+  .bookingSearchDetails td {
+    padding: 0.25rem; }
+
+/*# sourceMappingURL=gh.css.map */

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<!-- saved from url=(0062)https://erp.iitkgp.ac.in/ERPAdmin/edocFileCatSubCatMstCRUD.htm -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+        
+        <title>Welcome to ERP</title>
+        <link rel="stylesheet" href="./ecat_files/bootstrap.css">
+        <link rel="stylesheet" href="./ecat_files/datepicker.css">
+        <link rel="stylesheet" href="./ecat_files/bootstrap-table.css">
+        <link rel="stylesheet" href="./ecat_files/bootstrap-select.css">
+
+        <script src="./ecat_files/jquery-1.11.1.min.js.download"></script>
+        <script src="./ecat_files/bootstrap.js.download"></script>
+        <script src="./ecat_files/bootstrap-table.js.download"></script>
+        <script src="./ecat_files/bootstrap-datepicker.js.download"></script> 
+        <script src="./ecat_files/bootstrap-select.js.download"></script>
+        <script src="./ecat_files/somesh-bootstrap-select-loader.js.download"></script>
+        <!--<script src="bootstrap/js/general-page-designer.js"></script>-->
+        <script src="./ecat_files/jquery.base64.js.download"></script>
+        <script src="./ecat_files/tableExport.js.download"></script>
+        <script src="./ecat_files/bootstrap-table-export.js.download"></script>
+
+        <script>
+
+            $(function () {
+                $("#addNew").click(function () {
+                    if($('#user_role option:selected').val() === ""){
+                        alert("Please select 'Department/Center/School/Section/Unit'");
+                    }else{
+                        $('#data_form')[0].reset();
+                        reset();
+                        $("#selecteddept").val($("#user_role").val());                
+                        $('#cat_n_id').hide();
+                        $('#cat_n').selectpicker('show');
+                        $("#actionval").val('INSERT');
+                        $("#add_new_modal").modal('show');
+                        $(".title_heading").html('Add New EDOC File Category Sub Category Master');
+                    }
+                    
+                });
+            });
+
+
+            function ButtonActionFormatter(value, row, index) {
+                return ['<span class="edit_details ml10 badge alert-info btn fdet" title="EDIT DATA" class="btn btn-info btn-lg"><i class="glyphicon glyphicon-pencil"></i> Edit </span>  '];
+//                +
+//                            '<span class="delete_details ml10 badge alert-danger btn fdet" title="DELETE DATA" class="btn btn-danger btn-lg"><i class="glyphicon glyphicon-trash"></i> Delete </span>'];
+            }
+            window.ButtonActionEvent = {
+                'click .edit_details': function (e, value, row, index) {
+//                    alert(JSON.stringify(row));
+
+                    categorySelect();
+                    reset();
+                    $('#add_new_modal').modal('show');
+                    $("#actionval").val('UPDATE');
+                    $("#selecteddept").val($("#user_role").val());                
+                    $('#cat_e').val(row.cat);
+                    $('#sub_cat_e').val(row.sub_cat);
+                    $('#Status_n').val(row.status).change();
+                    $('#new_cat').hide();
+                    $('#sub_cat_n').val(row.sub_cat).change();
+                    $('#cat_n').selectpicker('hide');
+                    $('#cat_n_id').val(row.cat);
+                    $('#cat_n_id').show();
+                    $(".title_heading").html('Edit Selected EDOC File Category Sub Category Master');
+
+                }
+            };
+            function reset() {
+                $('#cat_n').val("");
+                $('#cat_n').selectpicker('refresh');
+                $('#sub_cat_n').val("");
+                $('#sub_cat_n').selectpicker('refresh');
+            }
+
+            $(function () {
+                $("#saveBtn").click(function () {
+                    var cat = $('#cat').val();
+                    var sub_cat = $('#sub_cat').val();
+                    var introduced_by_dept = $('#introduced_by_dept').val();
+                    var status = $('#status').val();
+
+                    var vstat = true;
+
+                    if (cat_n === "") {
+                        vstat = false;
+                        alert("Please provide the Category");
+                    } else if (sub_cat_n === "") {
+                        vstat = false;
+                        alert("Please provide the Sub Category");
+                    }
+
+                    if (vstat) {
+                        var confrm = confirm('Are you sure? You want to save this information');
+                        if (confrm) {
+                            var data = $('#data_form').serialize();
+                            $.ajax({
+                                url: "saveEdocFileCatSubCatMst.htm",
+                                type: "POST",
+                                cache: false,
+                                dataType: "json",
+                                data: data,
+                                success: function (json) {
+//                                    alert(json.msg);
+                                    alert(json.status);
+                                    $('#add_new_modal').modal('hide');
+                                    $('#dpcode_table_show').bootstrapTable('refresh');
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+
+
+
+//            function load_sub_category() {
+//                $('#sub_cat_n').empty().trigger('change');
+////                var cat_n = $("#new_cat").val(); 
+//                var cat = $("#cat_n").val();
+//                alert(cat);
+//                loadlist('#sub_cat_n',/* x is the id of 'select' object*/
+//                       'getSubCategory.htm?cat=' +cat, /*the url of the server-side script for json*/
+//                            ''/*The value to be selected by default*/
+//                            );
+//                $('#sub_cat_n').selectpicker('refresh');
+//            }
+//            
+            $(document).ready(function ()
+            {
+                $("#new_cat").hide();
+                $("#new_subcat").hide();
+                //Category
+                $('#cat_n').change(function (e) {
+                    var categoryName = $('#cat_n').find(":selected").text();
+                    if (categoryName === "Create New Category") {
+                        $("#new_cat").show();
+                    } else {
+                        $("#new_cat").hide();
+                    }
+                    $('#cat_n').selectpicker('refresh');
+                });
+
+                //Category
+                $('#sub_cat_n').change(function (e) {
+                    var sub_categoryName = $('#sub_cat_n').find(":selected").text();
+                    if (sub_categoryName === "Create New Sub Category") {
+                        $("#new_subcat").show();
+                    } else {
+                        $("#new_subcat").hide();
+                    }
+                });
+            });
+
+            function getSelectRole(obj) {
+                $('#dpcode_table_show').bootstrapTable('refresh', {url: 'getEdocFileCatSubCatMst.htm?unit=' + obj});
+            }
+
+            $(function () {
+                loadlist('#user_role', /* x is the id of 'select' object*/
+                        'getDeptListAsFileManager.htm', /*the url of the server-side script for json*/
+                        ''/*The value to be selected by default*/
+                        )
+            });
+
+            function categorySelect() {
+                $("#cat_n").find('option').remove();
+                var roleSel = $('#user_role option:selected').val();
+                loadlist('#cat_n', /* x is the id of 'select' object*/
+                        'getCategory.htm?role='+roleSel, /*the url of the server-side script for json*/
+                        ''/*The value to be selected by default*/
+                        );
+                         $('#cat_n').selectpicker('refresh');
+            }
+
+
+
+        </script> 
+    </head>
+    <body>
+        <div class="container-fluid" style="padding-top: 10px;">
+            <div class="modal-body" style="margin: 15px;">
+                <h2 class="text-primary"> EDOC File Category Sub Category Master Management </h2>
+                <hr style="background-color: green; height: 1px; border: 0;">
+                <div>
+                    <!--            <div class="panel panel-default">-->
+                    <!--                <div class="panel-heading" style="font-weight: bolder;font-size: large">
+                                        <center><h3>Salary Scale Management</h3></center>
+                                    </div>-->
+                    <div class="panel panel-body">
+                        <div class="col-lg-12">
+                            <label for="user_role" class="control-label col-xs-3">Department/Center/School/Section/Unit :</label>
+                            <div class="col-xs-3">
+                                <select name="user_role" id="user_role" data-live-search="true" class="selectpicker form-control" onchange="getSelectRole(this.value);" style="display: none;">
+                                <option value="">Please Select ...</option></select><div class="btn-group bootstrap-select form-control"><button type="button" class="btn dropdown-toggle selectpicker btn-default" data-toggle="dropdown" data-id="user_role" title="Please Select ..."><span class="filter-option pull-left">Please Select ...</span>&nbsp;<span class="caret"></span></button><div class="dropdown-menu open"><div class="bs-searchbox"><input type="text" class="input-block-level form-control" autocomplete="off"></div><ul class="dropdown-menu inner selectpicker" role="menu"><li data-original-index="0" class="selected"><a tabindex="0" class="" data-normalized-text="&lt;span class=&quot;text&quot;&gt;Please Select ...&lt;/span&gt;"><span class="text">Please Select ...</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li></ul></div></div>
+                            </div>
+                            <div class="col-xs-3">
+                                <button class="btn btn-success " id="addNew" onclick="categorySelect()"><i class="glyphicon glyphicon-plus"></i> Add New </button>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <div class="bootstrap-table"><div class="fixed-table-toolbar"><div class="columns columns-right btn-group pull-right"><button class="btn btn-default" type="button" name="refresh" title="Refresh"><i class="glyphicon glyphicon-refresh icon-refresh"></i></button><div class="keep-open btn-group" title="Columns"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-th icon-th"></i> <span class="caret"></span></button><ul class="dropdown-menu" role="menu"><li><label><input type="checkbox" data-field="cat" value="0" checked="checked"> Category</label></li><li><label><input type="checkbox" data-field="sub_cat" value="1" checked="checked"> Sub Category</label></li><li><label><input type="checkbox" data-field="introduced_by_dept" value="2" checked="checked"> Introduced By Dept</label></li><li><label><input type="checkbox" data-field="status" value="3" checked="checked"> Status</label></li><li><label><input type="checkbox" data-field="" value="4" checked="checked"> Action</label></li></ul></div><div class="export btn-group"><button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button"><i class="glyphicon glyphicon-export icon-share"></i> <span class="caret"></span></button><ul class="dropdown-menu" role="menu"><li data-type="json"><a href="javascript:void(0)">JSON</a></li><li data-type="xml"><a href="javascript:void(0)">XML</a></li><li data-type="csv"><a href="javascript:void(0)">CSV</a></li><li data-type="txt"><a href="javascript:void(0)">TXT</a></li><li data-type="sql"><a href="javascript:void(0)">SQL</a></li><li data-type="excel"><a href="javascript:void(0)">Ms-Excel</a></li></ul></div></div><div class="pull-left search"><input class="form-control" type="text" placeholder="Search"></div></div><div class="fixed-table-container" style="height: 346px; padding-bottom: 41px;"><div class="fixed-table-header" style="margin-right: 0px;"><table class="table table-responsive table-hover table-condensed" style="width: 863px;"><thead class="bg-info"><tr><th style="text-align: center; " data-field="cat"><div class="th-inner ">Category</div><div class="fht-cell"></div></th><th style="text-align: center; " data-field="sub_cat"><div class="th-inner ">Sub Category</div><div class="fht-cell"></div></th><th style="text-align: center; " data-field="introduced_by_dept"><div class="th-inner ">Introduced By Dept</div><div class="fht-cell"></div></th><th style="text-align: center; " data-field="status"><div class="th-inner ">Status</div><div class="fht-cell"></div></th><th style="text-align: center; " data-field=""><div class="th-inner ">Action</div><div class="fht-cell"></div></th></tr></thead></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 42px;">Loading, please wait...</div><table id="dpcode_table_show" class="table table-responsive table-hover table-condensed" data-toggle="table" data-method="post" data-pagination="false" data-height="400" data-search="true" data-search-align="left" data-show-export="true" data-show-columns="true" data-show-refresh="true" style="margin-top: -41px;">
+                                    <thead class="bg-info"><tr><th style="text-align: center; " data-field="cat"><div class="th-inner ">Category</div><div class="fht-cell"></div></th><th style="text-align: center; " data-field="sub_cat"><div class="th-inner ">Sub Category</div><div class="fht-cell"></div></th><th style="text-align: center; " data-field="introduced_by_dept"><div class="th-inner ">Introduced By Dept</div><div class="fht-cell"></div></th><th style="text-align: center; " data-field="status"><div class="th-inner ">Status</div><div class="fht-cell"></div></th><th style="text-align: center; " data-field=""><div class="th-inner ">Action</div><div class="fht-cell"></div></th></tr></thead>
+                                <tbody><tr class="no-records-found"><td colspan="5">No matching records found</td></tr></tbody></table></div><div class="fixed-table-footer" style="display: none;"><table><tbody><tr></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div> 
+                    <!--            </div>-->
+                    <div class="modal fade" id="add_new_modal">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header bg-info">
+                                    <h4 class="modal-title header-text title_heading">Add New</h4>
+                                    <button type="button" class="close" data-dismiss="modal">×</button>
+                                </div>
+                                <div class="modal-body col-lg-12">
+                                    <form id="data_form" action="https://erp.iitkgp.ac.in/ERPAdmin/saveEdocFileCatSubCatMst.htm" method="post">
+                                        <input type="hidden" class="form-control" name="actionval" id="actionval">
+                                        <input type="hidden" class="form-control" name="selecteddept" id="selecteddept" value="">
+                                        <div class="col-lg-6 form-group">
+                                            <label for="cat_n"> Category:</label>
+                                            <!--                                            <input type="text" class="form-control" name="cat_n" id="cat_n"/>-->
+                                            <!--                                            <select name="cat_n" id="cat_n"  data-live-search="true" onchange="load_sub_category()" class="selectpicker form-control" ></select>-->
+                                            <select name="cat_n" id="cat_n" data-live-search="true" class="selectpicker form-control" style="display: none;"></select><div class="btn-group bootstrap-select form-control"><button type="button" class="btn dropdown-toggle selectpicker btn-default" data-toggle="dropdown" data-id="cat_n" title="Nothing selected"><span class="filter-option pull-left">Nothing selected</span>&nbsp;<span class="caret"></span></button><div class="dropdown-menu open"><div class="bs-searchbox"><input type="text" class="input-block-level form-control" autocomplete="off"></div><ul class="dropdown-menu inner selectpicker" role="menu"></ul></div></div>
+                                            <input type="text" name="new_cat" id="new_cat" class="form-control" placeholder="Add new category" value="" style="display: none;">
+                                            <input type="hidden" class="form-control" name="cat_e" id="cat_e">
+                                            <input type="text" class="form-control" name="cat_n_id" id="cat_n_id">
+                                        </div>
+                                        <div class="col-lg-6 form-group">
+                                            <label for="sub_cat_n"> Sub Category:</label>
+                                            <input type="text" class="form-control" name="sub_cat_n" id="sub_cat_n">
+                                            <input type="hidden" class="form-control" name="sub_cat_e" id="sub_cat_e">
+                                        </div>
+                                        <div class="col-lg-6 form-group">
+                                            <label for="Status_n"> Status:</label>
+                                            <select name="Status_n" id="Status_n" data-live-search="true" class="selectpicker form-control" style="display: none;">
+                                                <option value="Y">Active</option>
+                                                <option value="N">In-Active</option>
+                                            </select><div class="btn-group bootstrap-select form-control"><button type="button" class="btn dropdown-toggle selectpicker btn-default" data-toggle="dropdown" data-id="Status_n" title="Active"><span class="filter-option pull-left">Active</span>&nbsp;<span class="caret"></span></button><div class="dropdown-menu open"><div class="bs-searchbox"><input type="text" class="input-block-level form-control" autocomplete="off"></div><ul class="dropdown-menu inner selectpicker" role="menu"><li data-original-index="0" class="selected"><a tabindex="0" class="" data-normalized-text="&lt;span class=&quot;text&quot;&gt;Active&lt;/span&gt;"><span class="text">Active</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li><li data-original-index="1"><a tabindex="0" class="" data-normalized-text="&lt;span class=&quot;text&quot;&gt;In-Active&lt;/span&gt;"><span class="text">In-Active</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li></ul></div></div>
+                                            <!--<input type="text" class="form-control" name="Status_n" id="Status_n"/>-->
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-success saveBtn" id="saveBtn"> Save Data </button>                            
+                                </div>
+                            </div>
+                        </div> 
+                    </div> 
+                </div>
+                
+
+                
+</div></div></body></html>

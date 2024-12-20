@@ -1,0 +1,275 @@
+
+<!-- saved from url=(0062)https://erp.iitkgp.ac.in/Acad/timetable_track.jsp?action=first -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script language="JavaScript" type="text/javascript" src="./timetab_files/common.js.download"></script>
+
+
+
+<script>
+    function getDept()
+    {
+
+        document.frm.method="POST"    ;
+        document.frm.action="timetable_track.jsp?action=second&dept="+document.getElementById('dept').value;
+        document.frm.submit();
+    }
+
+    function openWin()
+    {
+        // window.open("view/slot_info.jsp","mywindow","menubar=1,resizable=1,width=1000,height=1000");
+        window.open("view/slot_info.jsp");
+    }
+
+
+
+    function changeSemester(val){
+        var curSes =document.getElementById('for_session').value;
+        var curSem =document.getElementById('for_semester').value;
+        if(val=='N'){
+            if(curSem=='SPRING'){
+                document.getElementById('for_semester').value='AUTUMN';
+                var year=curSes.split('-');
+                var nextSem=year[1]+'-'+(parseInt(year[1])+1);
+                document.getElementById('for_session').value=nextSem;
+            }else{
+                document.getElementById('for_semester').value='SPRING';
+            }
+        }else if(val=='P'){
+            if(curSem=='AUTUMN'){
+                document.getElementById('for_semester').value='SPRING';
+                var year=curSes.split('-');
+                var prevSem=(parseInt(year[0])-1)+'-'+year[0];
+                document.getElementById('for_session').value=prevSem;
+            }else{
+                document.getElementById('for_semester').value='AUTUMN';
+            }
+        }
+        //recall();
+        //   submitForm();
+    }
+ function printInfo(elementid,styleSheetHref){
+        var prtContent="<html><head>";
+        if(typeof styleSheetHref != 'undefined'){
+            prtContent+="<link rel='StyleSheet' href='"+styleSheetHref+"' />";
+        }
+        prtContent+="</head><body>";
+        prtContent+=document.getElementById(elementid).innerHTML;
+        prtContent+="</body>";
+        //alert(prtContent);
+        var WinPrint =window.open('','','left=0,top=0,width=1,height=1,toolbar=0,scrollbars=0,status=0');
+        WinPrint.document.write(prtContent);
+        WinPrint.document.close();
+        WinPrint.focus();
+        WinPrint.print();
+        WinPrint.close();
+    }
+</script>
+
+
+    
+
+        <link rel="StyleSheet" href="./timetab_files/style1.css">
+        
+        <title>JSP Page</title>
+    </head>
+    <body onload="save()"><table align="center"><tbody><tr><td><form name="frm" action="https://erp.iitkgp.ac.in/Acad/timetable_track.jsp?action=second" method="post">
+                        <table align="center" border="0" cellpadding="0" cellspacing="0" width="80%"><tbody><tr><td>
+
+                                    <center><font color="#000099"><b>Please Select The Department For The Timetable <br>
+                                            </b></font></center>
+
+                                    <table align="center" border="0">
+                                        <tbody><tr>
+                                            <td align="left" style="color:maroon">
+                                                <label onclick="changeSemester(&#39;P&#39;)" style="cursor:pointer"><b>&lt;&lt;</b></label>
+                                                <input type="text" name="for_session" id="for_session" value="2024-2025" size="10px" onkeyup="checkSession(this)" class="ReadOnlyBGColor" readonly="">
+                                                <input type="text" name="for_semester" id="for_semester" value="AUTUMN" size="8px" onkeyup="checkSession(this)" class="ReadOnlyBGColor" readonly="">
+                                                <label onclick="changeSemester(&#39;N&#39;)" style="cursor:pointer"><b>&gt;&gt;</b></label>
+                                            </td>
+                                        </tr>
+                                    </tbody></table><table>
+                                        <tbody><tr>
+                                            <td>Department</td><td>
+                                                <select id="dept" name="dept" onchange="getDept()">
+                                                    <option id="0" value="0">--Select--</option>   
+
+                                                    <option id="AE" value="AE">Aerospace Engineering</option>
+                                                    
+
+                                                    <option id="AG" value="AG">Agricultural and Food Engineering</option>
+                                                    
+
+                                                    <option id="AI" value="AI">Centre of Excellence in Artificial Intelligence (AI)</option>
+                                                    
+
+                                                    <option id="AR" value="AR">Architecture and Regional Planning</option>
+                                                    
+
+                                                    <option id="AT" value="AT">Advanced Technology Development Centre</option>
+                                                    
+
+                                                    <option id="BE" value="BE">P.K. Sinha Centre for Bioenergy and Renewables</option>
+                                                    
+
+                                                    <option id="BM" value="BM">Vinod Gupta School of Management</option>
+                                                    
+
+                                                    <option id="BS" value="BS">Bio Science</option>
+                                                    
+
+                                                    <option id="BT" value="BT">Bioscience and Biotechnology</option>
+                                                    
+
+                                                    <option id="CD" value="CD">Centre for Computational and Data Sciences</option>
+                                                    
+
+                                                    <option id="CE" value="CE">Civil Engineering</option>
+                                                    
+
+                                                    <option id="CH" value="CH">Chemical Engineering</option>
+                                                    
+
+                                                    <option id="CL" value="CL">Centre for Ocean, River, Atmosphere and Land Sciences (CORAL)</option>
+                                                    
+
+                                                    <option id="CP" value="CP">Centre of Excellence in Public Policy, Law and Governance</option>
+                                                    
+
+                                                    <option id="CR" value="CR">Cryogenic  Engineering</option>
+                                                    
+
+                                                    <option id="CS" value="CS">Computer Science and Engineering</option>
+                                                    
+
+                                                    <option id="CY" value="CY">Chemistry</option>
+                                                    
+
+                                                    <option id="DE" value="DE">Deysarkar Centre of Excellence in Petroleum Engineering</option>
+                                                    
+
+                                                    <option id="DH" value="DH">Centre of Excellence in Advanced Manufacturing Technology</option>
+                                                    
+
+                                                    <option id="DR" value="DR">DRDO Industry Academia - Centre of Excellence (DIA-CoE)</option>
+                                                    
+
+                                                    <option id="EC" value="EC">Electronics and Electrical Communication Engg.</option>
+                                                    
+
+                                                    <option id="EE" value="EE">Electrical Engineering</option>
+                                                    
+
+                                                    <option id="EF" value="EF">Environmental Science and Engineering</option>
+                                                    
+
+                                                    <option id="ES" value="ES">Energy Science and Engineering</option>
+                                                    
+
+                                                    <option id="ET" value="ET">Centre For Educational Technology</option>
+                                                    
+
+                                                    <option id="EX" value="EX">Centre of Excellence in Advanced Transportation</option>
+                                                    
+
+                                                    <option id="FA" value="FA">M. N. Faruqi Centre for Innovation</option>
+                                                    
+
+                                                    <option id="FH" value="FH">Centre of Excellence in Affordable Healthcare</option>
+                                                    
+
+                                                    <option id="FN" value="FN">Centre of Excellence in Precision Agriculture &amp; Food Nutrition</option>
+                                                    
+
+                                                    <option id="GG" value="GG">Geology and Geophysics</option>
+                                                    
+
+                                                    <option id="GS" value="GS">G.S Sanyal School of Telecommunication</option>
+                                                    
+
+                                                    <option id="HS" value="HS">Humanities and Social Sciences</option>
+                                                    
+
+                                                    <option id="ID" value="ID">Ranbir and Chitra Gupta School of Infrastructure Design and Mngt.</option>
+                                                    
+
+                                                    <option id="IM" value="IM">Industrial and Systems Engineering</option>
+                                                    
+
+                                                    <option id="IP" value="IP">Rajiv Gandhi School of Intellectual Property Law</option>
+                                                    
+
+                                                    <option id="IT" value="IT">School of Information Technology</option>
+                                                    
+
+                                                    <option id="KS" value="KS">Centre of Excellence for Indian Knowledge Systems</option>
+                                                    
+
+                                                    <option id="MA" value="MA">Mathematics</option>
+                                                    
+
+                                                    <option id="ME" value="ME">Mechanical Engineering</option>
+                                                    
+
+                                                    <option id="MI" value="MI">Mining Engineering</option>
+                                                    
+
+                                                    <option id="MM" value="MM">School of Medical Science and Technology</option>
+                                                    
+
+                                                    <option id="MS" value="MS">Materials Science Centre</option>
+                                                    
+
+                                                    <option id="MT" value="MT">Metallurgical and Materials Engineering</option>
+                                                    
+
+                                                    <option id="NA" value="NA">Ocean Engg and Naval Architecture</option>
+                                                    
+
+                                                    <option id="NT" value="NT">Nano Science and Technology</option>
+                                                    
+
+                                                    <option id="PH" value="PH">Physics</option>
+                                                    
+
+                                                    <option id="RD" value="RD">Centre for Rural Development and Innovative Sustainable Technology</option>
+                                                    
+
+                                                    <option id="RE" value="RE">Subir Chowdhury School of Quality and Reliability</option>
+                                                    
+
+                                                    <option id="RJ" value="RJ">Rajendra Mishra School of Engg Entrepreneurship</option>
+                                                    
+
+                                                    <option id="RT" value="RT">Rubber Technology</option>
+                                                    
+
+                                                    <option id="RX" value="RX">Rekhi Centre of Excellence for the Science of Happiness</option>
+                                                    
+
+                                                    <option id="SD" value="SD">Education</option>
+                                                    
+
+                                                    <option id="SE" value="SE">Centre of Excellence on Safety Engineering &amp; Analytics (COE-SEA)</option>
+                                                    
+
+                                                    <option id="SH" value="SH">Dr B C Roy Multi Speciality Medical Research Centre</option>
+                                                    
+
+                                                    <option id="SL" value="SL">Steel Technology Centre</option>
+                                                    
+
+                                                    <option id="TS" value="TS">Centre For Theoretical Studies</option>
+                                                    
+
+                                                    <option id="TV" value="TV">Centre for Teaching Learning and Virtual Skilling</option>
+                                                    
+
+                                                    <option id="UP" value="UP">Centre of Excellence in Urban Planning and Design</option>
+                                                    
+
+                                                    <option id="WM" value="WM">School of Water Resources</option>
+                                                    </select></td></tr></tbody></table>
+                                                    
+                        </td></tr></tbody></table></form></td></tr></tbody></table>
+    
+
+</body></html>

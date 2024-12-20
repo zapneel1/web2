@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<!-- saved from url=(0059)https://erp.iitkgp.ac.in/TrainingPlacementSSO/TPStudent.jsp -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <title>CAREER DEVELOPMENT CENTRE (IIT-KGP)</title>
+        <script src="./TPStudent_files/jquery-1.9.1.js.download" type="text/javascript"></script>
+        <script>
+            function placementFeedbackpre(a)
+            {  
+                var page = "http://www.cdc.iitkgp.ac.in/pages/survey/preplacementsurvey.php?auth="+a;
+                window.open(page, '_blank');
+                
+            }
+            function vw1resume1()
+            {
+                width = 545;
+                height = 433;
+                url = "cvGenerate.jsp?resume_no=1";
+                var leftPosition, topPosition;
+                leftPosition = (window.screen.width / 2) - ((width / 2) + 10);
+                topPosition = (window.screen.height / 2) - ((height / 2) + 50);
+                window.open(url, "Window2", "status=no,height=" + height + ",width=" + width + ",resizable=yes,left=" + leftPosition + ",top=" + topPosition + ",screenX=" + leftPosition + ",screenY=" + topPosition + ",toolbar=no,menubar=no,scrollbars=no,location=no,directories=no");
+            }
+            function vw1resume2()
+            {
+                width = 545;
+                height = 433;
+                url = "cvGenerate.jsp?resume_no=2";
+                var leftPosition, topPosition;
+                leftPosition = (window.screen.width / 2) - ((width / 2) + 10);
+                topPosition = (window.screen.height / 2) - ((height / 2) + 50);
+                window.open(url, "Window2", "status=no,height=" + height + ",width=" + width + ",resizable=yes,left=" + leftPosition + ",top=" + topPosition + ",screenX=" + leftPosition + ",screenY=" + topPosition + ",toolbar=no,menubar=no,scrollbars=no,location=no,directories=no");
+            }
+            function vw1resume3()
+            {
+                width = 545;
+                height = 433;
+                url = "cvGenerate.jsp?resume_no=3";
+                var leftPosition, topPosition;
+                leftPosition = (window.screen.width / 2) - ((width / 2) + 10);
+                topPosition = (window.screen.height / 2) - ((height / 2) + 50);
+                window.open(url, "Window2", "status=no,height=" + height + ",width=" + width + ",resizable=yes,left=" + leftPosition + ",top=" + topPosition + ",screenX=" + leftPosition + ",screenY=" + topPosition + ",toolbar=no,menubar=no,scrollbars=no,location=no,directories=no");
+            }
+            function TPComDescription(year,com_id)
+                {  
+                    var page = "https://erp.iitkgp.ac.in/TrainingPlacementSSO/AdmFilePDF.htm?type=COM&year="+year+"&com_id="+com_id;
+                    var $dialog = $('<div></div>')
+                                   .html('<iframe style="border: 0px; " src="' + page + '" width="100%" height="100%"></iframe>')
+                                   .dialog({
+                                       autoOpen: false,
+                                       position: "left top",
+                                       modal: true,
+                                       height: 500,
+                                       width: 1200,
+                                       title: "Placement/Internship Form Description File"
+                                   });
+                    $dialog.dialog('open');
+                }
+                function TPJNFDescription(year,com_id,jnf_id)
+                {  
+                    var page = "https://erp.iitkgp.ac.in/TrainingPlacementSSO/AdmFilePDF.htm?type=JNF&year="+year+"&jnf_id="+jnf_id+"&com_id="+com_id;
+                    var $dialog = $('<div></div>')
+                                   .html('<iframe style="border: 0px; " src="' + page + '" width="100%" height="100%"></iframe>')
+                                   .dialog({
+                                       autoOpen: false,
+                                       position: "left top",
+                                       modal: true,
+                                       height: 500,
+                                       width: 1200,
+                                       title: "Placement/Internship Form Description File"
+                                   });
+                    $dialog.dialog('open');
+                }
+                function TPPPTDescription(year,com_id)
+                {  
+                    var page = "https://erp.iitkgp.ac.in/TrainingPlacementSSO/AdmFilePDF.htm?type=PPT&year="+year+"&com_id="+com_id;
+                    var $dialog = $('<div></div>')
+                                   .html('<iframe style="border: 0px; " src="' + page + '" width="100%" height="100%"></iframe>')
+                                   .dialog({
+                                       autoOpen: false,
+                                       position: "left top",
+                                       modal: true,
+                                       height: 500,
+                                       width: 1200,
+                                       title: "Placement/Internship Form Description File"
+                                   });
+                    $dialog.dialog('open');
+                }
+            function guidelines()
+            {   
+                var page = "https://erp.iitkgp.ac.in/TrainingPlacementSSO/AdmFilePDF.htm?type=GUID";
+                var $dialog = $('<div></div>')
+                               .html('<iframe style="border: 0px; " src="' + page + '" width="100%" height="100%"></iframe>')
+                               .dialog({
+                                   autoOpen: false,
+                                   position: "left top",
+                                   modal: true,
+                                   height: 500,
+                                   width: 1200,
+                                   title: "Placement/Internship Form Description File"
+                               });
+                $dialog.dialog('open');
+            }
+            function StudentPlacementStatus(yop,rollno)
+            {                
+               var page = "StudentPlacementStatus.jsp?yop="+yop+"&rollno="+rollno;
+                var $dialog = $('<div></div>')
+                               .html('<iframe style="border: 0px; " src="' + page + '" width="100%" height="100%"></iframe>')
+                               .dialog({
+                                   autoOpen: false,
+                                   position: "left top",
+                                   modal: true,
+                                   height: 500,
+                                   width: 1200,
+                                   title: rollno
+                               });
+                $dialog.dialog('open');
+            }
+            function uploadfile(rollno,year)
+            {
+                window.location.href="TPFile.jsp?rollno="+rollno+"&year="+year;
+            }
+            function resume(rollno,type,jnf_type)
+            {
+                window.location.href="StudentForm.jsp?rollno="+rollno+"&stu_type="+type+"&jnf_type="+jnf_type;
+            }
+            function vwresume(rollno)
+            {
+                window.location.href="StudentResume.jsp?rollno="+rollno;
+            }
+//            function download1(filepath)
+//            {
+//                window.location.href='DownloadDoc.jsp?filepath='+filepath;
+//            }
+            function TPComView(yop,com_id)
+            {                
+               var page = "TPComView.jsp?yop="+yop+"&com_id="+com_id+"&user_type=SU";
+                var $dialog = $('<div></div>')
+                               .html('<iframe style="border: 0px; " src="' + page + '" width="100%" height="100%"></iframe>')
+                               .dialog({
+                                   autoOpen: false,
+                                   position: "left top",
+                                   modal: true,
+                                   height: 500,
+                                   width: 1200,
+                                   title: "COMPANY DETAILS"
+                               });
+                $dialog.dialog('open');
+            }
+            function showSchedule()
+            {                
+                window.location.href="https://erp.iitkgp.ac.in/TrainingPlacement/ShowPhoto.jsp";
+            }
+            function ranking()
+            {                
+                window.location.href="Ranking.jsp";
+            }
+            function TPJNFView(jnf_id,com_id,yop)
+            {                
+               var page = "TPJNFView.jsp?jnf_id="+jnf_id+"&com_id="+com_id+"&yop="+yop+"&user_type=SU&rollno=22ME10087";
+                var $dialog = $('<div></div>')
+                               .html('<iframe style="border: 0px; " src="' + page + '" width="100%" height="100%"></iframe>')
+                               .dialog({
+                                   autoOpen: false,
+                                   position: "left top",
+                                   modal: true,
+                                   height: 500,
+                                   width: 1200,
+                                   title: "IIT (KGP)"
+                               });
+                $dialog.dialog('open');
+            }
+            function acceptppo(com)
+            { 
+                if(confirm("Are you sure? You can not undo it."))
+                {
+                    window.location.href="TPStudent.jsp?mode=acceptppo&com="+encodeURIComponent(com);
+                }
+            }
+            function inputCodeTest(val)
+            { 
+                if(val==='Y' || val==='N')
+                {
+                    if(confirm("Are you sure?"))
+                    {
+                        window.location.href="TPStudent.jsp?mode=inputCodeTest&code_op="+val;
+                    }
+                }
+            }
+            function justRegister()
+            { 
+                if(confirm("Are you sure?"))
+                {
+                    window.location.href="TPStudent.jsp?mode=justRegister";
+                }
+            }
+            function rerigister()
+            { 
+//                if(confirm("Are you sure?"))
+//                {
+                    //window.location.href="TPStudent.jsp?mode=rerigister&feedback_rereg="+document.getElementById('feedback_rereg').value;
+                    //window.location.href="TPStudent.jsp?mode=rerigister"
+                    window.location.href="reRegFrm.jsp"
+                    
+//                }
+            }
+            function rejectppo()
+            {                
+               if(confirm("Are you sure? You can not undo it."))
+                {
+                    window.location.href="TPStudent.jsp?mode=rejectppo";
+                }
+            }
+            function casteVote(a)
+            {  
+                if(confirm("Are you sure? You choose "+a))
+                {
+                    window.location.href="TPStudent.jsp?mode=casteVote&vote_type="+a;
+                }
+                
+            }
+        </script>
+    </head>
+    <body>
+        <div><a style="color:blue; font-weight: bold;" href="https://erp.iitkgp.ac.in/TrainingPlacementSSO/Notice.jsp">Notice</a></div>
+        <br>
+        
+                <div>
+                    This year onward, CDC plans to survey general feedback from the students regarding their career aspirations. This questionnaire is designed to collect information from each student for understanding their short and long long-term goals. It will take about 5-10 minutes to fill the form.
+                    <br>Please do not consult anybody or don't get influenced by others as you are defining your career aspirations/future.
+                    Click <a href="https://erp.iitkgp.ac.in/TrainingPlacementSSO/feedback.jsp" style="color : blue; font-weight: bold;">here</a> to go to the form.
+                </div>
+        
+        
+    
+
+
+
+</body></html>

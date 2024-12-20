@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<!-- saved from url=(0062)https://erp.iitkgp.ac.in/Academic/studAppForDifferentCerti.htm -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        
+        <title>Welcome To ERP</title>
+        <link rel="stylesheet" href="./interim_files/bootstrap.css">
+        <link rel="stylesheet" href="./interim_files/bootstrap-dialog.css">
+        <link rel="stylesheet" href="./interim_files/datepicker.css">
+        <link rel="stylesheet" href="./interim_files/bootstrap-select.css">
+        <link rel="stylesheet" href="./interim_files/bootstrap-table.css">
+        <link rel="stylesheet" href="./interim_files/font-awesome.min.css">
+        <script src="./interim_files/jquery-1.11.1.min.js.download"></script>
+        <script src="./interim_files/bootstrap.js.download"></script>
+        <script src="./interim_files/bootstrap-dialog.js.download"></script>
+        <script src="./interim_files/bootstrap-datepicker.js.download"></script>
+        <script src="./interim_files/bootstrap-select.js.download"></script>
+        <script src="./interim_files/bootstrap-table.js.download"></script>
+        <script src="./interim_files/bootbox.min.js.download"></script>
+        <script src="./interim_files/jspdf.min.js.download"></script>
+        <script src="./interim_files/custom-methods.js.download"></script>
+        <script src="./interim_files/jspdf.debug.js.download"></script>
+        <script type="text/javascript" src="./interim_files/tableExport.js.download"></script>
+        <script type="text/javascript" src="./interim_files/bootstrap-table-export.js.download"></script>
+        <script type="text/javascript" src="./interim_files/jquery.base64.js.download"></script>
+        <style>
+            .iframe-placeholder
+            {
+                background: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100% 100%"><text fill="%23FF0000" x="50%" y="50%" font-family="\'Lucida Grande\', sans-serif" font-size="24" text-anchor="middle">Please Wait......</text></svg>') 0px 0px no-repeat;
+                    }
+                </style>
+                <script>
+                    $(function () {
+                        generateCommonforBind("certificate_type", "getCertificateType.htm", "");
+                        $('#certificate_type').val("");
+                        $('#certificate_type').selectpicker('refresh');
+                        var checkEligibility = 'true';
+                        //                checkEligibility = "false";
+                        if (checkEligibility === "true") {
+                            $('#eligible').removeClass("hidden");
+                            $('#ineligibleMessageDiv').addClass("hidden");
+                            $('#submitBtn').removeClass("hidden");
+                            //                    alertBox("Message", "You are eligible for this facility.");
+                        } else {
+                            $('#eligible').addClass("hidden");
+                            $('#ineligibleMessageDiv').removeClass("hidden");
+                            $('#submitBtn').addClass("hidden");
+                            alertBox("Alert", "You are not eligible for this facility.");
+
+
+                        }
+
+                    });
+                    function alertBox(title, msg)
+                    {
+                        BootstrapDialog.show({
+                            size: BootstrapDialog.SIZE_LARGE,
+                            title: title,
+                            message: msg,
+                            onhidden: function () {
+                                //window.scrollTo(0, 0);
+                                //$("#empno").val("");
+                                //$("#getdetailsbtn").trigger("click");
+                                //$(focusid).focus();
+                            }
+                        });
+                    }
+
+                    function generateCommonforBind(id, url, fieldvalue)
+                    {
+                        $.ajax({
+                            url: url,
+                            type: "POST",
+                            cache: false,
+                            dataType: "json",
+                            async: false,
+                            success: function (json) {
+                                var len = json.length;
+                                if (len > 0)
+                                {
+                                    $("#" + id).empty();
+                                    $("#" + id).append($('<option></option>').val("").html("-SELECT-"));
+                                    for (var i = 0; i < json.length; i++) {
+                                        var columns = json[i];
+                                        var value1 = "";
+                                        var value2 = "";
+                                        var count = 0;
+                                        for (var key in columns) {
+                                            if (count === 0)
+                                            {
+                                                value1 = json[i][key];
+                                            }
+                                            if (count === 1)
+                                            {
+                                                value2 = json[i][key];
+                                                // var r=value1+' [ '+value2+' ]';
+//                                                var r = '[ ' + value1 + ' ] ' + value2;
+                                                 var r = value2;
+                                            }
+                                            count++;
+                                        }
+                                        if (value1.toString().trim() === fieldvalue)
+                                        {
+                                            $("#" + id).append($('<option selected></option>').val(value1).html(r));
+                                        } else
+                                        {
+                                            $("#" + id).append($('<option></option>').val(value1).html(r));
+                                        }
+                                    }
+                                    $('#' + id).selectpicker('refresh');
+                                }
+                            }
+                        });
+                    }
+
+                    function getCertificateApplyDetailsOnChange() {
+                        var certi_id = $("#certificate_type").val();
+                        $("#remarks").val(null);
+                        if (certi_id === "1") {
+                            $('#inputFieldForDuplicateIdCrad').addClass("hidden");
+                            $('#UploadFileDiv').addClass("hidden");
+                            $('#uptoSemRequiredInterimGradeCard').addClass("hidden");
+                        }
+                        if (certi_id === "2") {
+                            $('#uptoSemRequiredInterimGradeCard').addClass("hidden");
+                            $('#inputFieldForDuplicateIdCrad').removeClass("hidden");
+                            generateCommonforBind("reason_for_duplicate_id_card", "reasonForDuplicateIdCardList.htm", "");
+                            $('#reason_for_duplicate_id_card').val("");
+                            $('#reason_for_duplicate_id_card').selectpicker('refresh');
+                            //                    alert(" open");
+                        }
+                        if (certi_id === "3") {
+                            $('#uptoSemRequiredInterimGradeCard').removeClass("hidden");
+                            generateCommonforBind("upto_sem_no", "requiredUptoSemForInterimGradeCardList.htm", "");
+                            $('#upto_sem_no').val("");
+                            $('#upto_sem_no').selectpicker('refresh');
+                            $('#inputFieldForDuplicateIdCrad').addClass("hidden");
+                            $('#UploadFileDiv').addClass("hidden");
+                        }
+                        if (certi_id === "4") {
+                            $('#uptoSemRequiredInterimGradeCard').addClass("hidden");
+                            $('#inputFieldForDuplicateIdCrad').addClass("hidden");
+                            $('#UploadFileDiv').addClass("hidden");
+                        }
+                        if (certi_id === "5") {
+                            $('#uptoSemRequiredInterimGradeCard').addClass("hidden");
+                            $('#inputFieldForDuplicateIdCrad').addClass("hidden");
+                            $('#UploadFileDiv').addClass("hidden");
+                        }
+                        if (certi_id === "") {
+                            alertBox("Alert..", "You must select certificate type to apply.");
+                            $('#tableDiv1').addClass("hidden");
+                            $('#tableDiv2').addClass("hidden");
+                            $('#tableDiv3').addClass("hidden");
+                        } else {
+                            //                alert("certi_id::" + certi_id);
+                            $.ajax({
+                                url: "displayStudApplicationRecordOnCertiId.htm?certi_id=" + certi_id,
+                                type: "POST",
+                                cache: false,
+                                dataType: "json",
+                                success: function (json) {
+                                    //                        alert(json[0].app_id);
+                                    if (certi_id === "1" || certi_id === "4" || certi_id == "5") {
+                                        $('#stud_applied_table_show_non_duplicate_certi').bootstrapTable('load', json);
+                                        $('#stud_applied_table_show_non_duplicate_certi').bootstrapTable('refresh');
+                                        $('#tableDiv1').removeClass('hidden');
+                                        $('#tableDiv2').addClass('hidden');
+                                        $('#tableDiv3').addClass('hidden');
+                                    }
+                                    if (certi_id === "2") {
+                                        $('#tableDiv1').addClass('hidden');
+                                        $('#tableDiv2').removeClass('hidden');
+                                        $('#tableDiv3').addClass('hidden');
+                                        $('#stud_applied_table_show_duplicate_certi').bootstrapTable('load', json);
+                                        $('#stud_applied_table_show_duplicate_certi').bootstrapTable('refresh');
+
+                                    }
+                                    if (certi_id === "3") {
+                                        $('#tableDiv1').addClass('hidden');
+                                        $('#tableDiv2').addClass('hidden');
+                                        $('#tableDiv3').removeClass('hidden');
+                                        $('#stud_applied_table_show_for_grade_card').bootstrapTable('load', json);
+                                        $('#stud_applied_table_show_for_grade_card').bootstrapTable('refresh');
+                                    }
+                                }
+                            });
+
+                        }
+                    }
+
+                    function onChangeReasonField() {
+                        var reason_for_duplicate_id_card = $('#reason_for_duplicate_id_card').val();
+                        if (reason_for_duplicate_id_card === "Lost") {
+                            //               $('#inputFieldForDuplicateIdCrad').removeClass("hidden"); 
+                            $('#UploadFileDiv').removeClass('hidden');
+                        } else if (reason_for_duplicate_id_card === "Damaged") {
+                            $('#UploadFileDiv').addClass('hidden');
+                            //            $('#inputFieldForDuplicateIdCrad').removeClass("hidden");
+                        } else {
+                            $('#UploadFileDiv').addClass('hidden');
+                            //                    $('#inputFieldForDuplicateIdCrad').addClass("hidden");
+                        }
+                    }
+
+                    function submitStudApplication() {
+                        if ($('#certificate_type').val() == 'undefine' || $('#certificate_type').val() == null || $('#certificate_type').val() == '' || $('#certificate_type').val() == 'SELECT') {
+                            alert('Please select Application Type');
+                            return false;
+                        }
+
+                        if ($('#certificate_type').val() == '2') {
+                            if ($('#reason_for_duplicate_id_card').val() == 'undefine' || $('#reason_for_duplicate_id_card').val() == null || $('#reason_for_duplicate_id_card').val() == '' || $('#reason_for_duplicate_id_card').val() == 'SELECT') {
+                                alert('Please select Reason For');
+                                return false;
+                            }
+                        }
+                        if ($('#certificate_type').val() == '3') {
+                            if ($('#upto_sem_no').val() == 'undefine' || $('#upto_sem_no').val() == null || $('#upto_sem_no').val() == '' || $('#upto_sem_no').val() == 'SELECT') {
+                                alert('Please first select Upto Semester No. before proceeding.');
+                                return false;
+                            }
+                        }
+                        if ($('#remarks').val() == '' || $('#certificate_type').val() == null) {
+                            alert('Please give the remarks');
+                            return false;
+                        }
+                        if (!confirm('If you apply for any certificate or duplicate ID Card, a fee demand will be generated for payment for issuing the certificate or duplicate ID Card. You can not be revert back. Are you sure to apply?')) {
+                            return false;
+                        }
+                        submitForm("#stud_details_entry_form_for_certificates");
+                        //                var data = new FormData();
+                        //                var certi_id = $("#certificate_type").val();
+                        //                data.append('certi_id', certi_id);
+                        //                var reason_for_duplicate_id_card = $("#reason_for_duplicate_id_card").val();
+                        //                data.append('reason_for_duplicate_id_card', reason_for_duplicate_id_card);
+                        //                var upload_fir = $("#upload_fir").val();
+                        //                data.append('upload_fir', upload_fir);
+                        //                var upto_sem_no = $("#upto_sem_no").val();
+                        //                data.append('upto_sem_no', upto_sem_no);
+                        //                var remarks = $("#remarks").val();
+                        //                data.append('remarks', remarks);
+                        //                if (certi_id === "") {
+                        ////                    alertBox("Alert..", "You must select certificate type to apply.");
+                        //                    alert("You must select certificate type to apply.");
+                        //                } else {
+                        //                    var conf = confirm("Are You Really Want To Apply ?");
+                        //                    if (conf)
+                        //                    {
+                        //                        $.ajax({
+                        //                            url: "insertStudDetailForCertificates.htm",
+                        //                            type: 'POST',
+                        //                            data: data,
+                        //                            async: false,
+                        //                            cache: false,
+                        //                            enctype: 'multipart/form-data',
+                        //                            contentType: false,
+                        //                            processData: false,
+                        //                            dataType: "json",
+                        //                            success: function (json) {
+                        //                                alertBox("Information...", json.msg);
+                        //                                getCertificateApplyDetailsOnChange();
+                        //                            }
+                        //                        });
+                        //                    }
+                        //                }
+                    }
+
+                    function submitForm(formid) {
+                        var target_url = $(formid).attr("action");
+                        var mime = "";
+                        var found = "N";
+                        $(formid + ' input[type=file]').each(
+                                function (index) {
+                                    found = "Y";
+                                }
+                        );
+                        if (found === "Y") {
+                            var formData = new FormData($(formid)[0]);
+                            var x = $.ajax({
+                                type: "post",
+                                url: target_url,
+                                async: false,
+                                data: formData,
+                                cache: false,
+                                mimeType: mime,
+                                contentType: false,
+                                dataType: "json",
+                                processData: false,
+                                beforeSend: function () {
+                                },
+                                success: function (json) {
+                                    alertBox("Information...", json.msg);
+                                    getCertificateApplyDetailsOnChange();
+                                },
+                                error: function (xhr, status, error) {
+                                    if (status === "error") {
+                                        alertBox("UNWANTED ERROR!", "Error Message:" + error);
+                                    }
+                                }
+                            });
+                        } else {
+                            formData = $(formid).serialize();
+                            var x = $.ajax({
+                                type: "post",
+                                url: target_url,
+                                async: false,
+                                data: $(formid).serialize(),
+                                cache: false,
+                                dataType: "json",
+                                beforeSend: function () {
+
+                                },
+                                success: function (json) {
+                                    alertBox("Information...", json.msg);
+                                    getCertificateApplyDetailsOnChange();
+                                },
+                                error: function (xhr, status, error) {
+                                    if (status === "error") {
+                                        alertBox("UNWANTED ERROR!", "Error Message:" + error);
+                                    }
+                                }
+                            });
+                        }
+
+                    }
+                    function ButtonActionFormatter1(value, row, index) {
+                        var status = row.status.toString();
+                        if (status === "Certificate Generated") {
+                            return ['<span class="view_bonofide_file ml10 badge alert-success btn fdet" title="View File" class="btn btn-success btn-lg"><i class="glyphicon glyphicon-print"></i> View Certificate </span>'];
+
+                        } else if (status === "Demand Generated") {
+                            return ['<span><b><font color="red">Please Pay Fee for processing the application.</font></b></span>'];
+                        } else if (status === "Payment Done") {
+                            return ['<span><b><font color="red">Academic Section will generate the certificate.</font></b></span>'];
+                        }
+
+                    }
+                    function ButtonActionFormatter2(value, row, index) {
+                        var reason = row.reason.toString();
+                        var status = row.status.toString();
+                        if (reason === "Lost") {
+                            return ['<span class="view_uploaded_file ml10 badge alert-danger btn fdet" title="View File" class="btn btn-info btn-lg"><i class="glyphicon glyphicon-print"></i> View Uploaded Fir </span>'];
+                        } else if (reason === "Damaged" && status === "Demand Generated") {
+
+                            return ['<span><b><font color="red">Please Pay Fee for processing the application.</font></b></span>'];
+                        } else if (reason === "Damaged" && status === "Certificate Generated") {
+
+                            return ['<span><b><font color="green">Visit academic section to receive Id Card on scheduled date & time.</font></b></span>'];
+                        } else
+                        {
+                            return ['<span><b><font color="red">Application is in process. Please wait.....</font></b></span>'];
+                        }
+                    }
+                    function ButtonActionFormatter3(value, row, index) {
+                        var status = row.status.toString();
+                        if (status == "Certificate Generated") {
+                            return ['<span class="view_grade_card_file ml10 badge alert-success btn fdet" title="View File" class="btn btn-success btn-lg"><i class="glyphicon glyphicon-print"></i> View Certificate </span>'];
+
+                        } else if (status === "Demand Generated") {
+                            return ['<span><b><font color="red">Please Pay Fee for processing the application.</font></b></span>'];
+                        } else if (status === "Payment Done") {
+                            return ['<span><b><font color="red">Academic Section will generate the certificate.</font></b></span>'];
+                        }
+                    }
+                    window.ButtonActionEvent1 = {
+                        'click .view_bonofide_file': function (e, value, row, index) {
+                            //                    alert("Calling for view_uploaded_file");
+                            //                    var app_id = row.app_id.toString();
+                            //                    var app_sl_no = row.app_sl_no.toString();
+                            //                    alert("row.certi_file_path.toString()==" + row.certi_file_path.toString());
+                            var path = row.certi_file_path.toString();
+
+                            window.open('commonFileDownloader.jsp?fileFullPath=' + path + '&reqType=open');
+//                            $('#pdfview').modal('show');
+//                            
+//                            $('#pdfviewLabel').html('<font color="red">Digitally Signed Certificate</font>');
+//                            $('#ifrm').attr('src', '');
+//                            $("#loading").show();
+//
+//                            $('#ifrm').attr('src', 'commonFileDownloader.jsp?fileFullPath=' + path + '&reqType=open');
+//                            $("#loading").hide();
+                            //                    window.location.href = 'viewUploadedFIRFile.htm?app_id=' + app_id + '&app_sl_no=' + app_sl_no;
+
+                        }
+                    };
+
+                    window.ButtonActionEvent2 = {
+                        'click .view_uploaded_file': function (e, value, row, index) {
+                            //                    alert("Calling for view_uploaded_file");
+                            //                    var app_id = row.app_id.toString();
+                            //                    var app_sl_no = row.app_sl_no.toString();
+                            //alert("row.uploaded_file_path.toString()==" + row.uploaded_file_path.toString());
+                            var path = row.uploaded_file_path.toString();
+                            $('#pdfview').modal('show');
+                            $('#pdfviewLabel').html('<font color="red">Uploaded Supporting Document</font>');
+                            $('#ifrm').attr('src', 'commonFileDownloader.jsp?fileFullPath=' + path + '&reqType=open');
+                            //                    window.location.href = 'viewUploadedFIRFile.htm?app_id=' + app_id + '&app_sl_no=' + app_sl_no;
+
+                        }
+                    };
+                    window.ButtonActionEvent3 = {
+                        'click .view_grade_card_file': function (e, value, row, index) {
+                            //                    alert("Calling for view_uploaded_file");
+                            //                    var app_id = row.app_id.toString();
+                            //                    var app_sl_no = row.app_sl_no.toString();
+                            //alert("row.certi_file_path.toString()==" + row.certi_file_path.toString());
+                            var path = row.certi_file_path.toString();
+                            window.open('commonFileDownloader.jsp?fileFullPath=' + path + '&reqType=open');
+//                            $('#pdfview').modal('show');
+//                            $('#ifrm').attr('src', '');
+//                            $("#loading").show();
+//                            $('#pdfviewLabel').html('<font color="red">Generated Certificate</font>');
+//                            $('#ifrm').attr('src', 'commonFileDownloader.jsp?fileFullPath=' + path + '&reqType=open');
+//                            $("#loading").hide();
+                            //                    window.location.href = 'viewUploadedFIRFile.htm?app_id=' + app_id + '&app_sl_no=' + app_sl_no;
+
+                        }
+                    };
+
+                </script>
+            </head>
+            <body>
+                <div class="container-fluid"><br>
+                    <div class="panel panel-default">
+                        <div class="panel-heading has-success" style="font-weight: bolder;font-size: large">
+                            <center><font color="green"><h3><b>Application for Interim Grade card, Various Certificate &amp; Duplicate ID card</b></h3></font></center>
+                        </div>
+                        <form id="stud_details_entry_form_for_certificates" action="https://erp.iitkgp.ac.in/Academic/insertStudDetailForCertificates.htm">
+                            <div class="panel panel-body">
+                                <div class="panel-body has-danger hidden" style="font-weight: bolder;font-size: medium" id="ineligibleMessageDiv">
+                                    <center><font color="red"><h3>Sorry, You are not eligible for this facility. </h3></font></center>
+                                </div>
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-row" id="eligible">
+                                    <div class="col-lg-7 col-md-7 col-sm-12 col-xs-12"> 
+                                        <div class="col-lg-4 col-md-5 col-sm-6 col-xs-12 text-left">
+                                            <label class="control-label" for="certificate_type"><font color="red">* </font>Select Application Type :</label>                                                        
+                                        </div>
+                                        <div class="col-lg-8 col-md-6 col-sm-6 col-xs-12">
+                                            <div class="form-group">
+                                                <select class="selectpicker form-control" name="certificate_type" id="certificate_type" autocomplete="off" onchange="getCertificateApplyDetailsOnChange()" style="display: none;"><option value="">-SELECT-</option><option value="1">Application For Bona-Fide Certificate</option><option value="3">Application For Interim Grade Card</option><option value="4">Application For Instruction discourse language (IDL) /  CGPA to PERCENTAGE Certificate</option></select><div class="btn-group bootstrap-select form-control"><button type="button" class="btn dropdown-toggle selectpicker btn-default" data-toggle="dropdown" data-id="certificate_type" title="-SELECT-"><span class="filter-option pull-left">-SELECT-</span>&nbsp;<span class="caret"></span></button><div class="dropdown-menu open"><ul class="dropdown-menu inner selectpicker" role="menu"><li data-original-index="0" class="selected"><a tabindex="0" class="" data-normalized-text="&lt;span class=&quot;text&quot;&gt;-SELECT-&lt;/span&gt;"><span class="text">-SELECT-</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li><li data-original-index="1"><a tabindex="0" class="" data-normalized-text="&lt;span class=&quot;text&quot;&gt;Application For Bona-Fide Certificate&lt;/span&gt;"><span class="text">Application For Bona-Fide Certificate</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li><li data-original-index="2"><a tabindex="0" class="" data-normalized-text="&lt;span class=&quot;text&quot;&gt;Application For Interim Grade Card&lt;/span&gt;"><span class="text">Application For Interim Grade Card</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li><li data-original-index="3"><a tabindex="0" class="" data-normalized-text="&lt;span class=&quot;text&quot;&gt;Application For Instruction discourse language (IDL) /  CGPA to PERCENTAGE Certificate&lt;/span&gt;"><span class="text">Application For Instruction discourse language (IDL) /  CGPA to PERCENTAGE Certificate</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li></ul></div></div>
+                                                <div class="invalid-feedback text-danger certificate_type"></div>
+                                            </div>
+                                        </div> 
+                                        <div class="hidden" id="inputFieldForDuplicateIdCrad">
+                                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 text-left">
+                                                <label class="control-label" for="reason_for_duplicate_id_card"><font color="red">* </font>Purpose :</label>                                                        
+                                            </div>
+                                            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                <div class="form-group">
+                                                    <select class="selectpicker form-control" name="reason_for_duplicate_id_card" id="reason_for_duplicate_id_card" onchange="onChangeReasonField()" autocomplete="off" style="display: none;"></select><div class="btn-group bootstrap-select form-control"><button type="button" class="btn dropdown-toggle selectpicker btn-default" data-toggle="dropdown" data-id="reason_for_duplicate_id_card" title="Nothing selected"><span class="filter-option pull-left">Nothing selected</span>&nbsp;<span class="caret"></span></button><div class="dropdown-menu open"><ul class="dropdown-menu inner selectpicker" role="menu"></ul></div></div>
+                                                    <div class="invalid-feedback text-danger reason_for_duplicate_id_card"></div>
+                                                </div>
+                                            </div> 
+                                        </div>
+                                        <div class="hidden" id="UploadFileDiv">
+                                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 text-left">
+                                                <label class="control-label" for="upload_fir"><font color="red">* </font>Upload FIR :</label>                                                        
+                                            </div>
+                                            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                <div class="form-group">
+                                                    <input type="file" class="btn btn-danger" id="upload_fir" name="upload_fir">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <center><font color="red"><h4><blink>For this case the Academic section will justify the reason and approve. If approve a fee demand will be generated for payment for reissuing ID card. </blink></h4></font></center>
+                                            </div>
+                                        </div>
+                                        <div class="hidden" id="uptoSemRequiredInterimGradeCard">
+                                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 text-left">
+                                                <label class="control-label" for="upto_sem_no"><font color="red">* </font>Required Upto Semester No. :</label>                                                        
+                                            </div>
+                                            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                <div class="form-group">
+                                                    <select class="selectpicker form-control" name="upto_sem_no" id="upto_sem_no" autocomplete="off" style="display: none;"></select><div class="btn-group bootstrap-select form-control"><button type="button" class="btn dropdown-toggle selectpicker btn-default" data-toggle="dropdown" data-id="upto_sem_no" title="Nothing selected"><span class="filter-option pull-left">Nothing selected</span>&nbsp;<span class="caret"></span></button><div class="dropdown-menu open"><ul class="dropdown-menu inner selectpicker" role="menu"></ul></div></div>
+                                                    <div class="invalid-feedback text-danger upto_sem_no"></div>
+                                                </div>
+                                            </div> 
+                                        </div>
+                                    </div>                      
+                                    <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12"> 
+                                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 text-left">
+                                            <label class="control-label" for="remarks"><font color="red">* </font>Write Purpose :</label>                                                        
+                                        </div>
+                                        <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12">
+                                            <div class="form-group">
+                                                <textarea rows="7" class="form-control" style="min-width: 108%" id="remarks" name="remarks" placeholder="you can write here the purpose for that you want to apply." autocomplete="off"></textarea>
+                                                <div class="invalid-feedback text-danger remarks"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="well">
+                                    <center><input type="button" class="btn btn-info" id="submitBtn" value="Click Here To Apply" title="Click Here To Apply For Certificates" onclick="submitStudApplication()"></center>
+                                    <center class="bg-warning"><h4><font color="maroon">If you apply for any certificate or duplicate ID Card, a fee demand will be generated for payment for issuing the certificate or duplicate ID Card. You can not be revert back.</font></h4></center>
+                                </div>
+                                <div class="col-lg-12 hidden" id="tableDiv1">
+                                    <div class="form-group">
+                                        <div class="bootstrap-table"><div class="fixed-table-toolbar"><div class="pull-left search"><input class="form-control" type="text" placeholder="Search"></div></div><div class="fixed-table-container" style="height: 180px; padding-bottom: 37px;"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="stud_applied_table_show_non_duplicate_certi" class="table table-responsive table-hover table-condensed" data-toggle="table" data-method="post" data-pagination="false" data-height="200" data-search="true" data-search-align="left" data-show-export="false" data-show-columns="false">
+                                            <thead class="bg-info">
+                                                <tr><th style="text-align: center; "><div class="th-inner ">Application Type</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Application Serial No.</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Remarks</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Application Status</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Action</div><div class="fht-cell"></div></th></tr>
+                                            </thead>
+                                        <tbody><tr class="no-records-found"><td colspan="5">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 hidden" id="tableDiv2">
+                                    <div class="form-group">
+                                        <div class="bootstrap-table"><div class="fixed-table-toolbar"><div class="pull-left search"><input class="form-control" type="text" placeholder="Search"></div></div><div class="fixed-table-container" style="height: 180px; padding-bottom: 37px;"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="stud_applied_table_show_duplicate_certi" class="table table-responsive table-hover table-condensed" data-toggle="table" data-method="post" data-pagination="false" data-height="200" data-search="true" data-search-align="left" data-show-export="false" data-show-columns="false">
+                                            <thead class="bg-info">
+                                                <tr><th style="text-align: center; "><div class="th-inner ">Application Type</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Application Serial No.</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Remarks</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Reason</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Application Status</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Delivery Date</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Delivery Time</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Action</div><div class="fht-cell"></div></th></tr>
+                                            </thead>
+                                        <tbody><tr class="no-records-found"><td colspan="8">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 hidden" id="tableDiv3">
+                                    <div class="form-group">
+                                        <div class="bootstrap-table"><div class="fixed-table-toolbar"><div class="pull-left search"><input class="form-control" type="text" placeholder="Search"></div></div><div class="fixed-table-container" style="height: 180px; padding-bottom: 37px;"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="stud_applied_table_show_for_grade_card" class="table table-responsive table-hover table-condensed" data-toggle="table" data-method="post" data-pagination="false" data-height="200" data-search="true" data-search-align="left" data-show-export="false" data-show-columns="false">
+                                            <thead class="bg-info">
+                                                <tr><th style="text-align: center; "><div class="th-inner ">Application Type</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Application Serial No.</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Remarks</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Upto Semester Required</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Application Status</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Action</div><div class="fht-cell"></div></th></tr>
+                                            </thead>
+                                        <tbody><tr class="no-records-found"><td colspan="6">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div>
+                                    </div>
+                                </div>
+                                <div class="modal fade" id="pdfview" role="dialog">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                                                <h4 class="modal-title" id="pdfviewLabel"></h4>
+                                            </div>
+                                            <!--                                    <div class="modal-body" id="pdfviewBody" >    
+                                                                                    <iframe src="#" id="ifrm" scrolling="yes" frameborder="0" style="height: 550px; width: 100%;">
+                                                                                    </iframe>
+                                                                                </div>-->
+                                            <div class="modal-body" id="pdfviewBody">
+                                                <div><iframe src="./interim_files/saved_resource.html" frameborder="0" width="100%" height="500" id="ifrm" name="ifrm" class="iframe-placeholder"></iframe></div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--                        <script>
+                                                            $('#pdfview').on('show.bs.modal', function () {
+                                                                $('.modal-content').css('height', $(window).height() * 0.9);
+                                                            });
+                                                            $('#ifrm').css('height', $(window).height() * 2.77);
+                                                        </script>-->
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            
+        
+</body></html>

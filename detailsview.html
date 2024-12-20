@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<!-- saved from url=(0071)https://erp.iitkgp.ac.in/Academic/studentInformationDetailsViewPage.htm -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <title>Student Information </title>
+        <link rel="stylesheet" href="./detailsview_files/bootstrap.css">
+        <link rel="stylesheet" href="./detailsview_files/bootstrap-select.css">
+        <link rel="stylesheet" href="./detailsview_files/bootstrap-table.css">
+        <link rel="stylesheet" href="./detailsview_files/datepicker.css">
+        <script src="./detailsview_files/jquery-1.11.1.min.js.download"></script>
+        <script src="./detailsview_files/bootstrap.js.download"></script>
+        <script src="./detailsview_files/bootstrap-table.js.download"></script>
+        <script src="./detailsview_files/bootstrap-select.js.download"></script>
+        <script src="./detailsview_files/tableExport.js.download"></script>
+        <script src="./detailsview_files/bootstrap-table-export.js.download"></script>
+        <script src="./detailsview_files/bootstrap-table-filter.js.download"></script>
+        <script src="./detailsview_files/bootstrap-table-flatJSON.js.download"></script>
+        <script src="./detailsview_files/jquery.base64.js.download"></script>
+        <script src="./detailsview_files/bootstrap-dialog.js.download"></script>
+        <script src="./detailsview_files/custom.js.download"></script>
+        <script src="./detailsview_files/bootstrap-datepicker.js.download"></script>
+        <link rel="stylesheet" href="./detailsview_files/font-awesome.min.css">
+        <script>
+            $(function () {
+                refreshDataTable();
+            });
+            function openNewProposal() {
+                $("#title_id").text("Add/Update Information ");
+                $("#new_student_information_entry_id").modal('show');
+            }
+            function bootstrapIndividualTablePopulate(table_id, urlLink) {
+                $(table_id).bootstrapTable('refresh', {url: urlLink});
+            }
+            function refreshDataTable() {
+                setTimeout(function () {
+                }, 1000);
+                var url = "getStudentInformationDetailsList.htm";
+                var table_id = "#searchdata";
+                bootstrapIndividualTablePopulate(table_id, url);
+            }
+
+            $('#searchdata').bootstrapTable({
+            }).on('load-success.bs.table', function (e, data) {
+            });
+            function saveDetails() {
+                if ($('#information_id').val() == 'undefine' || $('#information_id').val() == null || $('#information_id').val() == '') {
+                    alert('Please Select Information Id');
+                    return false;
+                } else {
+                    var formData = new FormData($("#student_information_model")[0]);
+                    $.ajax({
+                        url: "saveStudentInformationDetails.htm",
+                        type: "POST",
+                        data: formData,
+                        enctype: 'multipart/form-data',
+                        async: false,
+                        cache: false,
+                        dataType: "json",
+                        contentType: false,
+                        processData: false,
+                        success: function (json) {
+
+                            var conf = confirm("Do you want to save the details ?");
+                            if (conf)
+                            {
+                                if (json.status === "Data Inserted Successfully!!") {
+                                    alert(json.status);
+                                    refreshDataTable();
+                                    $("#new_student_information_entry_id").modal('hide');
+                                } else {
+                                    alert(json.status);
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+
+            function informationDetails() {
+                var information_value = $('#information_value').val();
+                var parts = information_value.split(" - ");
+                var information_id = parts[0];
+                var information_id_no_req = parts[1];
+                var information_doc_req = parts[2];
+                var information_doc_type = parts[3];
+                var information_upload_times = parts[4];
+                $('#information_id').val(information_id);
+                $('#information_id_no_req').val(information_id_no_req);
+                $('#information_doc_req').val(information_doc_req);
+                $('#information_doc_type').val(information_doc_type);
+                $('#information_upload_times').val(information_upload_times);
+                $("#information_no_div").addClass("hidden");
+                if (information_id_no_req === "Y") {
+                    $("#information_no_div").removeClass("hidden");
+                }
+                $("#doc_upload_div_id").addClass("hidden");
+                if (information_doc_req === "Y") {
+                    $("#doc_upload_div_id").removeClass("hidden");
+                    $("#doc_type_label_id").html("Upload Document (" + information_doc_type + " Only) :");
+                }
+            }
+
+            function ButtonActionFormatter(value, row, index) {
+                return ['<span class="download_pdf ml10 badge alert-success btn fdet" title="download" class="btn btn-info btn-lg">&nbsp; Download </span>'];
+            }
+            window.ButtonActionEvent = {
+                'click .download_pdf': function (e, value, row, index) {
+                    var doc_id = row.doc_id;
+                    var doc_type = row.doc_type;
+                    var conf = confirm("Do you really want to see the uploaded " + doc_type + " file ?");
+                    if (conf)
+                    {
+                        $('#mainFrame').attr('src', 'downloadUploadFile.htm?doc_id=' + doc_id + '&doc_type=' + doc_type);
+                        $('#uploadPDF').modal('show');
+                    }
+                }
+            };
+
+
+        </script>
+    </head>
+    <body>
+        <div class="container-fluid"><br>
+            <div class="panel panel-default" style="width:100%;overflow:auto; margin: auto;">
+                <div class="panel panel-success">
+                    <div class="panel-heading" style="font-weight: bolder;font-size: large">
+                        <center><font color="black"><h2>Application for Uploading the Student Information</h2></font></center>
+                    </div>
+                </div>
+                <div class="container-fluid" style="padding-top: 2px">
+                    <div class="form-group">
+                        <!--<label for="">&nbsp; &nbsp;</label>-->
+                        <span class="glyphicon glyphicon-hand-right"></span>&nbsp;
+                        <button type="submit" class="btn btn-primary" onclick="openNewProposal();">Add / Update Details</button>
+                    </div>  
+                    <div class="well">                           
+                        <div class="bootstrap-table"><div class="fixed-table-toolbar"><div class="columns columns-right btn-group pull-right"><button class="btn btn-default" type="button" name="refresh" title="Refresh"><i class="glyphicon glyphicon-refresh icon-refresh"></i></button><button class="btn btn-default" type="button" name="toggle" title="Toggle"><i class="glyphicon glyphicon-list-alt icon-list-alt"></i></button><div class="keep-open btn-group" title="Columns"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-th icon-th"></i> <span class="caret"></span></button><ul class="dropdown-menu" role="menu"><li><label><input type="checkbox" data-field="rollno" value="0" checked="checked"> Roll number</label></li><li><label><input type="checkbox" data-field="name" value="1" checked="checked"> Name</label></li><li><label><input type="checkbox" data-field="information_id" value="2" checked="checked"> Information Type</label></li><li><label><input type="checkbox" data-field="information_desc" value="3" checked="checked"> Information Description</label></li><li><label><input type="checkbox" data-field="information_no" value="4" checked="checked"> Information Number</label></li><li><label><input type="checkbox" data-field="verification_status" value="5" checked="checked"> verification_status</label></li><li><label><input type="checkbox" data-field="remarks_by_verifying_authority" value="6" checked="checked"> Remark By Verifying Authority</label></li><li><label><input type="checkbox" data-field="" value="7" checked="checked"> Action</label></li></ul></div><div class="export btn-group"><button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button"><i class="glyphicon glyphicon-export icon-share"></i> <span class="caret"></span></button><ul class="dropdown-menu" role="menu"><li data-type="json"><a href="javascript:void(0)">JSON</a></li><li data-type="xml"><a href="javascript:void(0)">XML</a></li><li data-type="csv"><a href="javascript:void(0)">CSV</a></li><li data-type="txt"><a href="javascript:void(0)">TXT</a></li><li data-type="sql"><a href="javascript:void(0)">SQL</a></li><li data-type="excel"><a href="javascript:void(0)">Ms-Excel</a></li></ul></div></div><div class="pull-left search"><input class="form-control" type="text" placeholder="Search"></div></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px; display: none;">Loading, please wait...</div><table id="searchdata" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" data-show-refresh="true" data-show-columns="true" data-show-toggle="true" data-show-export="true" data-pagination="true" data-search="true" data-search-align="left" class="table table-bordered table-condensed table-hover">
+                            <thead class="bg-info">
+                                <tr><th style=""><div class="th-inner sortable">Roll number</div><div class="fht-cell"></div></th><th style=""><div class="th-inner sortable">Name</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Information Type</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Information Description</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Information Number</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">verification_status</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Remark By Verifying Authority</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner sortable">Action</div><div class="fht-cell"></div></th></tr>
+                            </thead>
+                        <tbody><tr class="no-records-found"><td colspan="8">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"><div class="pull-left pagination-detail"><span class="pagination-info">Showing 1 to 0 of 0 rows</span><span class="page-list" style="display: none;"><span class="btn-group dropup"><button type="button" class="btn btn-default  dropdown-toggle" data-toggle="dropdown"><span class="page-size">10</span> <span class="caret"></span></button><ul class="dropdown-menu" role="menu"><li class="active"><a href="javascript:void(0)">10</a></li></ul></span> records per page</span></div><div class="pull-right pagination" style="display: none;"><ul class="pagination"><li class="page-first disabled"><a href="javascript:void(0)">&lt;&lt;</a></li><li class="page-pre disabled"><a href="javascript:void(0)">&lt;</a></li><li class="page-next disabled"><a href="javascript:void(0)">&gt;</a></li><li class="page-last disabled"><a href="javascript:void(0)">&gt;&gt;</a></li></ul></div></div></div></div><div class="clearfix"></div>  
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade edit_new_modal" id="new_student_information_entry_id" role="dialog">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-info">
+                        <font color="black"> <h2 class="modal-title" id="title_id"></h2></font>
+                        <button type="button" class="close" data-dismiss="modal">×</button>
+                    </div>
+                    <div class="modal-body col-lg-12" id="edit_dpcode_div">
+                        <form id="student_information_model" action="https://erp.iitkgp.ac.in/Academic/studentInformationDetailsViewPage.htm" method="post">
+                            <div class="col-lg-4 form-group">
+                                <font color="red" size="2"><b>***</b></font><label>Information Type :</label>
+                                 
+                                <input id="information_id" name="information_id" class="form-control hidden field_input" type="text" value="">  
+                                <input id="information_id_no_req" name="information_id_no_req" class="form-control hidden field_input" type="text" value="">  
+                                <input id="information_doc_req" name="information_doc_req" class="form-control hidden field_input" type="text" value="">  
+                                <input id="information_doc_type" name="information_doc_type" class="form-control hidden field_input" type="text" value="">  
+                                <input id="information_upload_times" name="information_upload_times" class="form-control hidden  field_input" type="text" value="">  
+                                <input id="verification_status" name="verification_status" class="form-control hidden  field_input" type="text" value="">  
+
+                                <select id="information_value" name="information_value" data-live-search="true" class="form-control  selectpicker" onchange="informationDetails(this.value)" style="display: none;">  
+                                    <option value="">----------SELECT----------</option>
+                                                              
+                                        <option value="ABC - Y - Y - PDF - 1">Academic Bank Credit</option>
+                                    
+                                </select><div class="btn-group bootstrap-select form-control"><button type="button" class="btn dropdown-toggle selectpicker btn-default" data-toggle="dropdown" data-id="information_value" title="----------SELECT----------"><span class="filter-option pull-left">----------SELECT----------</span>&nbsp;<span class="caret"></span></button><div class="dropdown-menu open"><div class="bs-searchbox"><input type="text" class="input-block-level form-control" autocomplete="off"></div><ul class="dropdown-menu inner selectpicker" role="menu"><li data-original-index="0" class="selected"><a tabindex="0" class="" data-normalized-text="&lt;span class=&quot;text&quot;&gt;----------SELECT----------&lt;/span&gt;"><span class="text">----------SELECT----------</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li><li data-original-index="1"><a tabindex="0" class="" data-normalized-text="&lt;span class=&quot;text&quot;&gt;Academic Bank Credit&lt;/span&gt;"><span class="text">Academic Bank Credit</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li></ul></div></div>
+                            </div> 
+                            <div class="col-lg-8 form-group hidden" id="information_no_div">
+                                <font color="red" size="2"><b>***</b></font><label>Card No:</label> 
+                                <input id="information_no" name="information_no" class="form-control  field_input" type="text" value="">  
+                            </div> 
+                            <div class="col-lg-6 form-group hidden" id="doc_upload_div_id">
+                                <font color="red" size="2"><b>***</b></font><label id="doc_type_label_id">Upload Document (PDF Only) :</label>
+                                <input path="file" class="form-control field__input" type="file" name="file_location" required="" placeholder="File Location">
+                            </div>
+                            <div class="col-lg-12 form-group">
+                                <input type="button" id="edit_btn" class="btn btn-block btn-success" value="Submit" onclick="saveDetails()">
+                            </div>
+                        </form> 
+                    </div>
+                    <div class="modal-footer">
+                        <div id="modal_edit" class="col-lg-10 col-md-10 col-sm-12 col-xs-12" align="left"></div>
+                        <div>
+                            <button type="submit" class="btn btn-danger col-lg-2 col-md-2 col-sm-12 col-xs-12 pull-right" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+        </div>
+        <!------- Modal for View Syllabus Card ------->
+        <div id="uploadPDF" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-lg">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">×</button>
+                        <h4 class="modal-title">Syllabus</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div><iframe src="./detailsview_files/saved_resource.html" frameborder="0" width="100%" height="500" id="mainFrame" name="mainFrame"></iframe></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+</body></html>

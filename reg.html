@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!-- saved from url=(0060)https://erp.iitkgp.ac.in/Acad/micro_subject_registration.jsp -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script language="JavaScript" type="text/javascript" src="./reg_files/common.js.download"></script>
+
+
+
+<script>
+
+    function chk_1(obj, val) { 
+                if (obj.checked == true)
+                {
+                    document.getElementById(val).value = 'Y'
+                }
+                else {
+                    document.getElementById(val).value = 'N'
+                }
+            }
+
+ function getDown(lec_doc_id)
+            {
+                window.open("syll_download.jsp?doc="+lec_doc_id)    ;
+            }
+            
+            function chkcontrol(j) {
+  
+var total=0;
+for(var i=0; i < document.frm.chk.length; i++){
+if(document.frm.chk[i].checked){
+total =total +1;
+}
+/*if(total > 2 ){
+alert("You can regsiter for Two Micro Crd Subjects In a semester") 
+document.frm.chk[j].checked = false ;
+document.frm.hid_val[j].value = 'N' ;
+return false;
+}*/
+}
+}
+
+function drpt_sub(i1,i2,i3)
+{
+ document.frm.action.value='DRP'   ;
+ document.frm.drp_sub.value=document.getElementById(i2).value;
+ document.frm.drp_rem.value=document.getElementById(i3).value;
+ if(document.getElementById(i3).value=='')
+     {
+         alert('Please enter Reason for dropping');
+         return false;
+     }
+     else{
+ document.frm.action="micro_subject_registration.jsp";
+ document.frm.method="post";
+ document.frm.submit();
+     }
+}
+</script>
+
+    
+
+        <link rel="StyleSheet" href="./reg_files/style1.css">
+        
+        <title>JSP Page</title>
+    </head>
+    <body>
+
+        <form name="frm" action="https://erp.iitkgp.ac.in/Acad/micro_subject_registration.jsp" method="post">
+            <center><font><b style="color:green">Micro- Credit Subject Registration</b></font></center><font>
+            <center><font><b style="color:green"></b></font></center><font>
+            <table align="center" cellpadding="6" cellspacing="1" border="0"><tbody><tr bgcolor="#58ACFA">
+                    <td>Select To Apply</td>
+                    <td>Sl.</td>
+                    <td>Subname</td>
+                    <td>Proposed By</td>
+                    <td>Visiting Faculty</td>
+                    <td>Clicked to get the Syllabus</td>
+                    <td>Start Date</td>
+                    <td>End Date</td>
+                    <td>Coordinator Confirmation Flag</td>
+                    
+                
+                </tr>
+                <tr bgcolor="white"><td><input type="checkbox" name="chk" onclick="chk_1(this, &#39;hid_val_1&#39;);chkcontrol(&#39;0&#39;)" disabled=""><input type="hidden" name="hid_val" id="hid_val_1" value="N"></td>
+                    <td>1<input type="hidden" name="subno" id="subno_1" value="ME66004"></td>
+                    <td>BATTERY THERMAL MANAGEMENT</td>
+                    <td>Anandaroop Bhattacharya</td>
+                    <td>Prof. Pradip Majumdar</td>
+                    <td><a href="javascript:void(0)" onclick="getDown(&#39;ACAD/SUBJECT/SYLLABUS/2009/ME66004/1&#39;)">Click To Get the Syllabus</a></td>
+                    <td>2024-03-07</td>
+                    <td>2024-03-09</td>
+                    <td>N</td>
+                    
+                </tr>         
+                
+                <tr align="center"><td><input type="hidden" value="submit" name="action">
+                <input type="hidden" value="" name="drp_sub">
+                <input type="hidden" value="" name="drp_rem">
+                <input type="submit" class="button" id="btnsubmit" value="Apply" onclick="return showConfirm()"></td></tr>
+            </tbody></table>
+
+
+             
+
+        
+        <div id="get_detail" style="border:2px black solid;background-color:#FBFBEF;width:680px;display:none;position:absolute;overflow:auto"></div>
+    
+
+ </font></font></form></body></html>

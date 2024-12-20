@@ -1,0 +1,697 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!-- saved from url=(0066)https://erp.iitkgp.ac.in/Acad/central_breadth_tt.jsp?action=second -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script language="JavaScript" type="text/javascript" src="./breadth_files/common.js.download"></script>
+
+
+
+<script>
+function changeSemester(val){
+
+        var curSes =document.getElementById('session').value;
+        var curSem =document.getElementById('semester').value;
+        if(val=='N'){
+            if(curSem=='SPRING'){
+                document.getElementById('semester').value='AUTUMN';
+                var year=curSes.split('-');
+                var nextSem=year[1]+'-'+(parseInt(year[1])+1);
+                document.getElementById('session').value=nextSem;
+            }else{
+                document.getElementById('semester').value='SPRING';
+            }
+        }else if(val=='P'){
+            if(curSem=='AUTUMN'){
+                document.getElementById('semester').value='SPRING';
+                var year=curSes.split('-');
+                var prevSem=(parseInt(year[0])-1)+'-'+year[0];
+                document.getElementById('session').value=prevSem;
+            }else{
+                document.getElementById('semester').value='AUTUMN';
+            }
+        }document.frm.submit();
+    }
+    function getDtl(subno,obj)
+    {
+        var xmlHttp=null;
+        try
+        {  // Firefox, Opera 8.0+, Safari
+           xmlHttp=new XMLHttpRequest();
+        }
+        catch (e)
+        {  // Internet Explorer
+           try
+           {
+                xmlHttp= null
+              xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");
+           }
+           catch (e)
+           {
+                try
+                {
+                    xmlHttp = null;
+                    xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+                }
+                catch (e)
+                {
+                    alert("Your browser does not support AJAX!");
+                    return false;
+                }
+            }
+         }
+
+
+
+         xmlHttp.onreadystatechange=function()
+         {
+
+            if(xmlHttp.readyState==4)
+            {
+              document.getElementById('get_detail').style.display='block';
+              document.getElementById('get_detail').innerHTML=xmlHttp.responseText;
+               getPos(obj,'show');
+              parent.setFrameWH();
+
+
+
+
+
+            }
+         }
+         xmlHttp.open("GET","get_dtl.jsp?session="+document.getElementById('session').value+"&semester="+document.getElementById('semester').value+"&subno="+subno,true);
+         xmlHttp.send(null);
+
+    }
+    function getPos(obj,action){
+
+            clicklocation=obj;
+            var div_ref = document.getElementById('get_detail');
+            var x=0,y=0;
+            var obj1 = obj;
+            while(obj.offsetParent){
+                x += obj.offsetLeft;
+                y += obj.offsetTop;
+                obj = obj.offsetParent;
+            }
+            var abs_x = x+'px', abs_y = ((y+obj1.offsetHeight)-50)+'px';
+
+            //alert(abs_x+'   ::   '+abs_y);
+            div_ref.style.right = abs_x;
+            div_ref.style.top = abs_y;
+
+            //div_ref.style.display='block';
+            switch(action){
+                case 'show':
+                div_ref.style.display = 'block';
+                break;
+                case 'hide':
+                div_ref.style.display = 'none';
+                break;
+                default:
+            }
+
+        }
+</script>
+   
+    
+
+           <link rel="StyleSheet" href="./breadth_files/style1.css">
+        
+        <title>JSP Page</title>
+    </head>
+<body>
+
+        <form name="frm" action="https://erp.iitkgp.ac.in/Acad/central_breadth_tt.jsp" method="post">
+         
+<table align="center" border="0">
+                                        <tbody><tr>
+                                            <td align="left" style="color:maroon">
+                                                <label onclick="changeSemester(&#39;P&#39;)" style="cursor:pointer"><b>&lt;&lt;</b></label>
+                                                <input type="text" name="session" id="session" value="2024-2025" size="10px" onkeyup="checkSession(this)" class="ReadOnlyBGColor" readonly="">
+                                                <input type="text" name="semester" id="semester" value="AUTUMN" size="8px" onkeyup="checkSession(this)" class="ReadOnlyBGColor" readonly="">
+                                                <label onclick="changeSemester(&#39;N&#39;)" style="cursor:pointer"><b>&gt;&gt;</b></label>
+                                            </td>
+</tr></tbody></table>
+
+
+
+       
+     <center><font color="#000099"><b>Breadth Subjects<br>
+    </b></font></center>
+<center><font color="#000099"><b>Pink colour indicates, no seats are available (only for breadth subject). <br>
+    </b></font></center>
+     
+     <br> <font color="brown"><b>Guidelines for choosing Breadth Elective:<br><br>
+Criteria for choosing breadth electives: <br>Students in the New Curricula can choose any subject from the parent department, other than Departmental Core (Depth Core) and Departmental Elective (Depth Elective) or from any other department, subject to satisfying the level criteria and pre-requisite criteria. <br>
+<br>Level Criteria: <br>Students at 2nd year cannot take 600 level subjects, i.e., the subjects starting with 6 number (e.g.,CS60001 etc.), except those offered by Rekhi Centre of Excellence in Science of Happiness and Humanities and Social Sciences.<br><br>
+Pre-requisite Criteria:<br>As prescribed by the subject teachers for a specific subject, if any
+At present on ERP-Academic-&gt;Subjects-&gt;Breadth List for Current Semester: displays few subjects. However, a student can select any other subject in addition to those listed under Breadth List as per the criteria mentioned above.
+Note: For some of the subjects,there may be a constraint in terms of maximum intake.
+</b></font> 
+
+  <table border="0" style="border-color:#557CD7" id="display_tab" cellpadding="4" align="center">       <tbody><tr>
+  <th> Subject No</th>
+  <th> Subject Name</th>
+  <th>L-T-P</th>
+  <th>Pre-requisite 1</th>
+  <th>Pre-requisite 2</th>
+  <th>Pre-requisite 3</th>
+  <th> Offered By</th>
+  <th>Slot</th>
+  <th>Room</th>
+ 
+     </tr>
+     <tr><td colspan="8" align="center">Management</td></tr>
+     <tr bgcolor="white">
+    
+    <td>EP60007<input type="hidden" name="subno" id="subno" value="EP60007" <="" td="">
+    </td><td>TECHNO-ENTREPRENEURIAL LEADERSHIP</td>
+    <td>3-0-0</td>
+    <td>       </td>
+    <td>       </td>
+    <td>       </td>
+    <td>RJ<input type="hidden" name="dept" id="dept" value="RJ" <="" td="">
+    </td><td>
+     --
+
+    </td>
+    <td>
+   </td>
+   </tr>
+    <input type="hidden" name="check" value="I">
+     <tr bgcolor="white">
+    
+    <td>EP60021<input type="hidden" name="subno" id="subno" value="EP60021" <="" td="">
+    </td><td>ENGINEERING B-PLAN DEVELOPMENT - 1</td>
+    <td>2-1-0</td>
+    <td>       </td>
+    <td>       </td>
+    <td>       </td>
+    <td>RJ<input type="hidden" name="dept" id="dept" value="RJ" <="" td="">
+    </td><td>
+     --
+
+    </td>
+    <td>
+   </td>
+   </tr>
+    <input type="hidden" name="check" value="I">
+     <tr bgcolor="white">
+    
+    <td>EP60025<input type="hidden" name="subno" id="subno" value="EP60025" <="" td="">
+    </td><td>SPECIAL TOPICS IN ENTREPRENEURSHIP</td>
+    <td>2-1-0</td>
+    <td>       </td>
+    <td>       </td>
+    <td>       </td>
+    <td>RJ<input type="hidden" name="dept" id="dept" value="RJ" <="" td="">
+    </td><td>
+     --
+
+    </td>
+    <td>
+   </td>
+   </tr>
+    <input type="hidden" name="check" value="I">
+     <tr bgcolor="white">
+    
+    <td>EP60029<input type="hidden" name="subno" id="subno" value="EP60029" <="" td="">
+    </td><td>SMALL BUSINESS DEVELOPMENT</td>
+    <td>2-0-1</td>
+    <td>       </td>
+    <td>       </td>
+    <td>       </td>
+    <td>RJ<input type="hidden" name="dept" id="dept" value="RJ" <="" td="">
+    </td><td>
+     --
+
+    </td>
+    <td>
+   </td>
+   </tr>
+    <input type="hidden" name="check" value="I">
+     <tr bgcolor="white">
+    
+    <td>EP60038<input type="hidden" name="subno" id="subno" value="EP60038" <="" td="">
+    </td><td>ENTREPRENEURSHIP IN SOCIAL SECTOR</td>
+    <td>2-1-0</td>
+    <td>       </td>
+    <td>       </td>
+    <td>       </td>
+    <td>RJ<input type="hidden" name="dept" id="dept" value="RJ" <="" td="">
+    </td><td>
+     --
+
+    </td>
+    <td>
+   </td>
+   </tr>
+    <input type="hidden" name="check" value="I">
+     <tr bgcolor="white">
+    
+    <td>EP60044<input type="hidden" name="subno" id="subno" value="EP60044" <="" td="">
+    </td><td>FRUGAL ENGINEERING</td>
+    <td>3-0-0</td>
+    <td>       </td>
+    <td>       </td>
+    <td>       </td>
+    <td>RJ<input type="hidden" name="dept" id="dept" value="RJ" <="" td="">
+    </td><td>
+     --
+
+    </td>
+    <td>
+   </td>
+   </tr>
+    <input type="hidden" name="check" value="I">
+     <tr bgcolor="white">
+    
+    <td>EP60201<input type="hidden" name="subno" id="subno" value="EP60201" <="" td="">
+    </td><td>DIGITAL ENTREPRENEURSHIP</td>
+    <td>3-0-0</td>
+    <td>       </td>
+    <td>       </td>
+    <td>       </td>
+    <td>RJ<input type="hidden" name="dept" id="dept" value="RJ" <="" td="">
+    </td><td>
+     --
+
+    </td>
+    <td>
+   </td>
+   </tr>
+    <input type="hidden" name="check" value="I">
+     <tr bgcolor="white">
+    
+    <td>EP61201<input type="hidden" name="subno" id="subno" value="EP61201" <="" td="">
+    </td><td>ENTREPRENEURSHIP ESSENTIALS</td>
+    <td>3-1-0</td>
+    <td>       </td>
+    <td>       </td>
+    <td>       </td>
+    <td>RJ<input type="hidden" name="dept" id="dept" value="RJ" <="" td="">
+    </td><td>
+     {B3,S3}
+
+    </td>
+    <td>
+   </td>
+   </tr>
+    <input type="hidden" name="check" value="U">
+     <tr bgcolor="white">
+    
+    <td>EP61203<input type="hidden" name="subno" id="subno" value="EP61203" <="" td="">
+    </td><td>FINANCIAL AND LEGAL ASPECTS OF NEW TECHNOLOGY VENTURES</td>
+    <td>3-1-0</td>
+    <td>       </td>
+    <td>       </td>
+    <td>       </td>
+    <td>RJ<input type="hidden" name="dept" id="dept" value="RJ" <="" td="">
+    </td><td>
+     --
+
+    </td>
+    <td>
+   </td>
+   </tr>
+    <input type="hidden" name="check" value="I">
+     <tr bgcolor="white">
+    
+    <td>EP61205<input type="hidden" name="subno" id="subno" value="EP61205" <="" td="">
+    </td><td>INNOVATION IN PRODUCT DEVELOPMENT PROCESS</td>
+    <td>3-1-0</td>
+    <td>       </td>
+    <td>       </td>
+    <td>       </td>
+    <td>RJ<input type="hidden" name="dept" id="dept" value="RJ" <="" td="">
+    </td><td>
+     {F4}
+
+    </td>
+    <td>
+   </td>
+   </tr>
+    <input type="hidden" name="check" value="U">
+     <tr bgcolor="white">
+    
+    <td>IM60213<input type="hidden" name="subno" id="subno" value="IM60213" <="" td="">
+    </td><td>PRINCIPLES OF SAFETY ENGINEERING</td>
+    <td>3-0-0</td>
+    <td>       </td>
+    <td>       </td>
+    <td>       </td>
+    <td>IM<input type="hidden" name="dept" id="dept" value="IM" <="" td="">
+    </td><td>
+     --
+
+    </td>
+    <td>
+   </td>
+   </tr>
+    <input type="hidden" name="check" value="I">
+     <tr bgcolor="white">
+    
+    <td>IM61003<input type="hidden" name="subno" id="subno" value="IM61003" <="" td="">
+    </td><td>HUMAN FACTORS ENGINEERING</td>
+    <td>3-1-0</td>
+    <td>       </td>
+    <td>       </td>
+    <td>       </td>
+    <td>IM<input type="hidden" name="dept" id="dept" value="IM" <="" td="">
+    </td><td>
+     --
+
+    </td>
+    <td>
+   </td>
+   </tr>
+    <input type="hidden" name="check" value="I">
+     <tr bgcolor="white">
+    
+    <td>IM61207<input type="hidden" name="subno" id="subno" value="IM61207" <="" td="">
+    </td><td>APPLIED MULTIVARIATE STATISTICAL MODELLING</td>
+    <td>3-1-0</td>
+    <td>       </td>
+    <td>       </td>
+    <td>       </td>
+    <td>IM<input type="hidden" name="dept" id="dept" value="IM" <="" td="">
+    </td><td>
+     --
+
+    </td>
+    <td>
+   </td>
+   </tr>
+    <input type="hidden" name="check" value="I"><tr><td colspan="8" align="center">Breadth</td></tr>
+     <tr bgcolor="white">
+    
+    <td>CL60019<input type="hidden" name="subno" id="subno" value="CL60019" <="" td="">
+    </td><td>CARBON CYCLE AND GLOBAL CLIMATE CHANGE</td>
+    <td>3-0-0</td>
+    <td>       </td>
+    <td>       </td>
+    <td>       </td>
+    <td>CL<input type="hidden" name="dept" id="dept" value="CL" <="" td="">
+    </td><td>
+     --
+
+    </td>
+    <td>
+   </td>
+   </tr>
+    <input type="hidden" name="check" value="I">
+     <tr bgcolor="white">
+    
+    <td>CL60201<input type="hidden" name="subno" id="subno" value="CL60201" <="" td="">
+    </td><td>PHYSICAL OCEANOGRAPHY AND CLIMATE</td>
+    <td>3-0-0</td>
+    <td>       </td>
+    <td>       </td>
+    <td>       </td>
+    <td>CL<input type="hidden" name="dept" id="dept" value="CL" <="" td="">
+    </td><td>
+     --
+
+    </td>
+    <td>
+   </td>
+   </tr>
+    <input type="hidden" name="check" value="I">
+     <tr bgcolor="white">
+    
+    <td>CL60203<input type="hidden" name="subno" id="subno" value="CL60203" <="" td="">
+    </td><td>AGRICULTURAL METEOROLOGY</td>
+    <td>3-0-0</td>
+    <td>       </td>
+    <td>       </td>
+    <td>       </td>
+    <td>CL<input type="hidden" name="dept" id="dept" value="CL" <="" td="">
+    </td><td>
+     --
+
+    </td>
+    <td>
+   </td>
+   </tr>
+    <input type="hidden" name="check" value="I">
+     <tr bgcolor="white">
+    
+    <td>CL60205<input type="hidden" name="subno" id="subno" value="CL60205" <="" td="">
+    </td><td>TECTONICS AND FLUVIAL DYNAMICS</td>
+    <td>3-0-0</td>
+    <td>       </td>
+    <td>       </td>
+    <td>       </td>
+    <td>CL<input type="hidden" name="dept" id="dept" value="CL" <="" td="">
+    </td><td>
+     --
+
+    </td>
+    <td>
+   </td>
+   </tr>
+    <input type="hidden" name="check" value="I">
+     <tr bgcolor="white">
+    
+    <td>CL60207<input type="hidden" name="subno" id="subno" value="CL60207" <="" td="">
+    </td><td>WEATHER ANALYSIS &amp; PREDICTION</td>
+    <td>3-0-0</td>
+    <td>       </td>
+    <td>       </td>
+    <td>       </td>
+    <td>CL<input type="hidden" name="dept" id="dept" value="CL" <="" td="">
+    </td><td>
+     --
+
+    </td>
+    <td>
+   </td>
+   </tr>
+    <input type="hidden" name="check" value="I">
+     <tr bgcolor="white">
+    
+    <td>CL60209<input type="hidden" name="subno" id="subno" value="CL60209" <="" td="">
+    </td><td>DYNAMICS OF PLANETARY AND MARINE BOUNDARY LAYER</td>
+    <td>3-0-0</td>
+    <td>       </td>
+    <td>       </td>
+    <td>       </td>
+    <td>CL<input type="hidden" name="dept" id="dept" value="CL" <="" td="">
+    </td><td>
+     --
+
+    </td>
+    <td>
+   </td>
+   </tr>
+    <input type="hidden" name="check" value="I">
+     <tr bgcolor="white">
+    
+    <td>CL61015<input type="hidden" name="subno" id="subno" value="CL61015" <="" td="">
+    </td><td>MODELING OF EXTREME EVENTS</td>
+    <td>3-1-0</td>
+    <td>       </td>
+    <td>       </td>
+    <td>       </td>
+    <td>CL<input type="hidden" name="dept" id="dept" value="CL" <="" td="">
+    </td><td>
+     --
+
+    </td>
+    <td>
+   </td>
+   </tr>
+    <input type="hidden" name="check" value="I">
+     <tr bgcolor="white">
+    
+    <td>CL61201<input type="hidden" name="subno" id="subno" value="CL61201" <="" td="">
+    </td><td>ATMOSPHERIC DYNAMICS</td>
+    <td>3-1-0</td>
+    <td>       </td>
+    <td>       </td>
+    <td>       </td>
+    <td>CL<input type="hidden" name="dept" id="dept" value="CL" <="" td="">
+    </td><td>
+     --
+
+    </td>
+    <td>
+   </td>
+   </tr>
+    <input type="hidden" name="check" value="I">
+     <tr bgcolor="white">
+    
+    <td>CL61203<input type="hidden" name="subno" id="subno" value="CL61203" <="" td="">
+    </td><td>COMPUTATIONAL METHODS FOR EARTH SYSTEM SCIENCE</td>
+    <td>3-1-0</td>
+    <td>       </td>
+    <td>       </td>
+    <td>       </td>
+    <td>CL<input type="hidden" name="dept" id="dept" value="CL" <="" td="">
+    </td><td>
+     --
+
+    </td>
+    <td>
+   </td>
+   </tr>
+    <input type="hidden" name="check" value="I">
+     <tr bgcolor="white">
+    
+    <td>CL61205<input type="hidden" name="subno" id="subno" value="CL61205" <="" td="">
+    </td><td>GEOPHYSICAL FLUID DYNAMICS</td>
+    <td>3-1-0</td>
+    <td>       </td>
+    <td>       </td>
+    <td>       </td>
+    <td>CL<input type="hidden" name="dept" id="dept" value="CL" <="" td="">
+    </td><td>
+     --
+
+    </td>
+    <td>
+   </td>
+   </tr>
+    <input type="hidden" name="check" value="I">
+     <tr bgcolor="white">
+    
+    <td>EP21201<input type="hidden" name="subno" id="subno" value="EP21201" <="" td="">
+    </td><td>INTRODUCTION TO INNOVATION AND ENTREPRENEURSHIP</td>
+    <td>2-1-0</td>
+    <td>       </td>
+    <td>       </td>
+    <td>       </td>
+    <td>RJ<input type="hidden" name="dept" id="dept" value="RJ" <="" td="">
+    </td><td>
+     --
+
+    </td>
+    <td>
+   </td>
+   </tr>
+    <input type="hidden" name="check" value="I">
+     <tr bgcolor="white">
+    
+    <td>MS31007<input type="hidden" name="subno" id="subno" value="MS31007" <="" td="">
+    </td><td>MATERIAL SCIENCE</td>
+    <td>3-0-0</td>
+    <td>       </td>
+    <td>       </td>
+    <td>       </td>
+    <td>MS<input type="hidden" name="dept" id="dept" value="MS" <="" td="">
+    </td><td>
+     --
+
+    </td>
+    <td>
+   </td>
+   </tr>
+    <input type="hidden" name="check" value="I">
+     <tr bgcolor="white">
+    
+    <td>MS60009<input type="hidden" name="subno" id="subno" value="MS60009" <="" td="">
+    </td><td>FUNDAMENTALS OF ELECTRONIC MATERIALS</td>
+    <td>3-0-0</td>
+    <td>       </td>
+    <td>       </td>
+    <td>       </td>
+    <td>MS<input type="hidden" name="dept" id="dept" value="MS" <="" td="">
+    </td><td>
+     --
+
+    </td>
+    <td>
+   </td>
+   </tr>
+    <input type="hidden" name="check" value="I">
+     <tr bgcolor="white">
+    
+    <td>PE40001<input type="hidden" name="subno" id="subno" value="PE40001" <="" td="">
+    </td><td>PETROLEUM ENGINEERING FUNDAMENTALS</td>
+    <td>3-0-0</td>
+    <td>       </td>
+    <td>       </td>
+    <td>       </td>
+    <td>DE<input type="hidden" name="dept" id="dept" value="DE" <="" td="">
+    </td><td>
+     --
+
+    </td>
+    <td>
+   </td>
+   </tr>
+    <input type="hidden" name="check" value="I">
+     <tr bgcolor="white">
+    
+    <td>PE60001<input type="hidden" name="subno" id="subno" value="PE60001" <="" td="">
+    </td><td>DRILLING AND HYDROFRACKING TECHNOLOGY</td>
+    <td>3-0-0</td>
+    <td>       </td>
+    <td>       </td>
+    <td>       </td>
+    <td>DE<input type="hidden" name="dept" id="dept" value="DE" <="" td="">
+    </td><td>
+     --
+
+    </td>
+    <td>
+   </td>
+   </tr>
+    <input type="hidden" name="check" value="I">
+     <tr bgcolor="white">
+    
+    <td>PE60003<input type="hidden" name="subno" id="subno" value="PE60003" <="" td="">
+    </td><td>RESERVOIR SIMULATION</td>
+    <td>3-0-0</td>
+    <td>       </td>
+    <td>       </td>
+    <td>       </td>
+    <td>DE<input type="hidden" name="dept" id="dept" value="DE" <="" td="">
+    </td><td>
+     --
+
+    </td>
+    <td>
+   </td>
+   </tr>
+    <input type="hidden" name="check" value="I">
+     <tr bgcolor="white">
+    
+    <td>PE60009<input type="hidden" name="subno" id="subno" value="PE60009" <="" td="">
+    </td><td>CARBON GEO-STORAGE AND MONITORING</td>
+    <td>3-0-0</td>
+    <td>       </td>
+    <td>       </td>
+    <td>       </td>
+    <td>DE<input type="hidden" name="dept" id="dept" value="DE" <="" td="">
+    </td><td>
+     --
+
+    </td>
+    <td>
+   </td>
+   </tr>
+    <input type="hidden" name="check" value="I">
+     <tr bgcolor="white">
+    
+    <td>RT30019<input type="hidden" name="subno" id="subno" value="RT30019" <="" td="">
+    </td><td>SCI AND TECH. RUBBER &amp; RUBBER LIKE MATERIALS</td>
+    <td>3-0-0</td>
+    <td>       </td>
+    <td>       </td>
+    <td>       </td>
+    <td>RT<input type="hidden" name="dept" id="dept" value="RT" <="" td="">
+    </td><td>
+     --
+
+    </td>
+    <td>
+   </td>
+   </tr>
+    <input type="hidden" name="check" value="I"></tbody></table>
+ 
+          
+
+</form>
+         <div id="get_detail" style="border:2px black solid;background-color:#FBFBEF;width:680px;display:none;position:absolute;overflow:auto"></div>
+
+
+</body></html>

@@ -1,0 +1,782 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0062)https://erp.iitkgp.ac.in/Acad/subject/syllabus_upload_dept.jsp -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>HTML Tabs</title>
+
+<style type="text/css">
+
+
+</style>
+<script type="text/javascript">
+
+    function getPDF(subno,year)
+    {
+        window.open("get_syllabus_pdf.jsp?subno="+subno+"&year="+year,"my_window1")
+    }
+
+
+  /*   function getSyllabus(subno,type,year)
+    {
+        window.open("get_syllabus.jsp?year="+year+"&subno="+subno+"&session1="+document.getElementById('session').value+"&type="+type,"mywindow","location=1,status=1,scrollbars=1,width=1000,height=1000");
+    }
+*/
+
+
+
+
+function getDetails_other(i_val,year,type)
+{
+
+if(document.getElementById('getdetails_'+i_val).style.display=='block')
+    {
+    document.getElementById('getdetails_'+i_val).style.display='none'
+    }else{
+var xmlHttp=null;
+        try
+        {  // Firefox, Opera 8.0+, Safari
+           xmlHttp=new XMLHttpRequest();
+        }
+        catch (e)
+        {  // Internet Explorer
+           try
+           {
+                xmlHttp= null
+              xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");
+           }
+           catch (e)
+           {
+                try
+                {
+                    xmlHttp = null;
+                    xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+                }
+                catch (e)
+                {
+                    alert("Your browser does not support AJAX!");
+                    return false;
+                }
+            }
+         }
+
+
+
+         xmlHttp.onreadystatechange=function()
+         {
+
+            if(xmlHttp.readyState==4 && xmlHttp.status == 200)
+            {
+
+              document.getElementById('getdetails_'+i_val).style.display='block';
+              document.getElementById('getdetails_'+i_val).innerHTML=xmlHttp.responseText;
+              parent.setFrameWH();
+              //parent.setFrameWH();
+            }
+         }
+         xmlHttp.open("GET","syllabus_upload_get_details_other.jsp?action=second&year="+year+"&session1="+document.getElementById('session').value+"&upload=N"+"&type="+type,true);
+         xmlHttp.send(null);
+    }
+
+}
+
+function getSyllabus_other(subno,subname,ltp,crd,type,year,obj,action)
+{
+   var xmlHttp=null;
+        try
+        {  // Firefox, Opera 8.0+, Safari
+           xmlHttp=new XMLHttpRequest();
+        }
+        catch (e)
+        {  // Internet Explorer
+           try
+           {
+                xmlHttp= null
+              xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");
+           }
+           catch (e)
+           {
+                try
+                {
+                    xmlHttp = null;
+                    xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+                }
+                catch (e)
+                {
+                    alert("Your browser does not support AJAX!");
+                    return false;
+                }
+            }
+         }
+
+
+
+         xmlHttp.onreadystatechange=function()
+         {
+
+            if(xmlHttp.readyState==4 && xmlHttp.status == 200)
+            {
+
+             // document.getElementById('getsyllabus').style.display='block';
+              document.getElementById('getsyllabus').innerHTML=xmlHttp.responseText;
+              getPos(obj,'show');
+              parent.setFrameWH();
+            }
+         }
+
+
+
+          // xmlHttp.open("GET","get_detail_syllabus.jsp?action=second&year="+year+"&subno="+subno+"&session1="+document.getElementById('session').value+"&semester="+document.getElementById('semester').value+"&type="+type,true);
+          xmlHttp.open("GET","get_detail_syllabus_other.jsp?action=second&year="+year+"&subno="+subno+"&subname="+subname+"&ltp="+ltp+"&crd="+crd+"&session1="+document.getElementById('session').value+"&type="+type,true);
+          xmlHttp.send(null);
+
+
+    }
+
+
+    function openDiv(year_val)
+    {//alert("in th ");
+     document.getElementById('first_view').style.display="none";
+      var xmlHttp=null;
+        try
+        {  // Firefox, Opera 8.0+, Safari
+           xmlHttp=new XMLHttpRequest();
+        }
+        catch (e)
+        {  // Internet Explorer
+           try
+           {
+                xmlHttp= null
+              xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");
+           }
+           catch (e)
+           {
+                try
+                {
+                    xmlHttp = null;
+                    xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+                }
+                catch (e)
+                {
+                    alert("Your browser does not support AJAX!");
+                    return false;
+                }
+            }
+         }
+
+
+
+         xmlHttp.onreadystatechange=function()
+         {
+
+            if(xmlHttp.readyState==4 && xmlHttp.status == 200)
+            {
+
+              document.getElementById('first_view').style.display='block';
+              document.getElementById('first_view').innerHTML=xmlHttp.responseText;
+              parent.setFrameWH();
+            }
+         }
+         xmlHttp.open("GET","get_second_div.jsp?year="+year_val+"&session1="+document.getElementById('session').value+"&dept="+document.getElementById('dept').value,true);
+         xmlHttp.send(null);
+
+    }
+
+
+function getSyllabus(subno,type,year,obj)
+{
+   var xmlHttp=null;
+        try
+        {  // Firefox, Opera 8.0+, Safari
+           xmlHttp=new XMLHttpRequest();
+        }
+        catch (e)
+        {  // Internet Explorer
+           try
+           {
+                xmlHttp= null
+              xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");
+           }
+           catch (e)
+           {
+                try
+                {
+                    xmlHttp = null;
+                    xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+                }
+                catch (e)
+                {
+                    alert("Your browser does not support AJAX!");
+                    return false;
+                }
+            }
+         }
+
+
+
+         xmlHttp.onreadystatechange=function()
+         {
+
+            if(xmlHttp.readyState==4 && xmlHttp.status == 200)
+            {
+
+             // document.getElementById('getsyllabus').style.display='block';
+              document.getElementById('getsyllabus').innerHTML=xmlHttp.responseText;
+              getPos(obj,'show');
+              parent.setFrameWH();
+            }
+         }
+         xmlHttp.open("GET","get_detail_syllabus.jsp?action=second&year="+year+"&subno="+subno+"&session1="+document.getElementById('session').value+"&type="+type,true);
+         xmlHttp.send(null);
+    }
+
+
+
+function getDetails(i_val,c_code,type,year)
+{
+
+if(document.getElementById('getdetails_'+i_val).style.display=='block')
+    {
+    document.getElementById('getdetails_'+i_val).style.display='none'
+    }else{
+var xmlHttp=null;
+        try
+        {  // Firefox, Opera 8.0+, Safari
+           xmlHttp=new XMLHttpRequest();
+        }
+        catch (e)
+        {  // Internet Explorer
+           try
+           {
+                xmlHttp= null
+              xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");
+           }
+           catch (e)
+           {
+                try
+                {
+                    xmlHttp = null;
+                    xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+                }
+                catch (e)
+                {
+                    alert("Your browser does not support AJAX!");
+                    return false;
+                }
+            }
+         }
+
+
+
+         xmlHttp.onreadystatechange=function()
+         {
+
+            if(xmlHttp.readyState==4 && xmlHttp.status == 200)
+            {
+
+              document.getElementById('getdetails_'+i_val).style.display='block';
+              document.getElementById('getdetails_'+i_val).innerHTML=xmlHttp.responseText;
+
+              parent.setFrameWH();
+            }
+         }
+         xmlHttp.open("GET","get_details.jsp?action=second&year="+year+"&course="+c_code+"&session1="+document.getElementById('session').value+"&type="+type,true);
+         xmlHttp.send(null);
+    }
+
+}
+
+
+
+
+
+
+/*
+
+var prev_tab = null;
+
+        function loadFrame(){
+            var myframe = document.getElementById('iFrame');
+            myframe.style = '100px';
+            
+            if(typeof parent.setFrameWH != 'undeifned') parent.setFrameWH();
+        }
+
+function getDocWidth(id){
+            var iFrame = document.getElementById(id);
+            var maxWidth = 0;
+            var children = iFrame.contentDocument.body.childNodes;
+            for(var i=0;i<children.length;i++){
+                if(children[i].offsetWidth && children[i].offsetWidth>maxWidth)
+                {
+                    maxWidth = children[i].offsetWidth;
+                }
+            }
+            //alert("maxWidth : "  +maxWidth);
+            return maxWidth;
+        }
+
+        function getDocHeight(id){
+            var iFrame = document.getElementById(id);
+            var children = iFrame.contentDocument.body.childNodes;
+            var totHeight = 0;
+            for(var i=0;i<children.length;i++){
+                totHeight += children[i].offsetHeight?children[i].offsetHeight:0;
+            }
+            return totHeight;
+        }
+
+
+        function setFrameWH(){
+            var myframe = document.getElementById('iFrame');
+            var w = getDocWidth('iFrame');
+            var h = getDocHeight('iFrame');
+            //alert(h + "\t" + w);
+            //Setting the width
+            var screen_w = screen.width - 40;
+            if(screen_w >= w)
+                myframe.style.width = (screen_w) + 'px';
+            else if(screen_w < w)
+                myframe.style.width = (w) + 'px';
+            //Setting the height
+            var screen_h = screen.height - 270;
+            if(screen_h >= h) myframe.style.height = (screen_h) + 'px';
+            else if(screen_h < h)
+                myframe.style.height = (h) + 'px';
+        }
+
+function set(){
+    var tabsholder = document.getElementById('tabsholder');
+        var first_row = tabsholder.rows[0];
+        var cell = first_row.cells.length>0?first_row.insertCell(0):null;
+        if(cell){
+            //cell.style.width='80px';
+            var tab = document.createElement('table');
+            tab.border=0;
+            tab.cellPadding = 2;
+            tab.cellSpacing = 1;
+            var row = tab.insertRow(0);
+
+            cell.appendChild(tab);
+            cell.style.backgroundColor = 'pink';
+            //cell.className = '';
+            //cell.title = 'Download XL file for roll list for all subjects with section(if any) you are teaching presently.'
+            //cell.width = '150px';
+        }
+    var mainTab = document.getElementById('mainTab');
+    var tabsholder_wd = tabsholder.offsetWidth;
+    var doc_wd = document.body.offsetWidth;
+    if(tabsholder_wd>doc_wd){
+        mainTab.width = (tabsholder_wd+10)+'px';
+    }else mainTab.width = '100%';
+}
+
+function loadURL(url){
+
+    //if(tab==prev_tab) return;
+   /* if(prev_tab) prev_tab.className = "TAB";
+    tab.className = "TAB ACTIVE";
+    prev_tab = tab;*/
+ /*   window.frames['frame'].location.href = url;
+
+    }
+*/
+
+function getSub()
+{
+ document.frm.method="post"   ;
+ document.frm.action="syllabus_upload_dept.jsp"   ;
+  document.frm.submit()  ;
+}
+
+
+
+function getSearch()
+{var year=null
+   /*  var year=null
+    for(var k=0;k<document.frm.radio_val.length;k++)
+        {
+         if(document.frm.radio_val[k].checked==true)
+             {
+                 year=document.frm.radio_val[k].value;
+             }
+        }*/
+       
+ document.getElementById('first_view').style.display="none";
+      var xmlHttp=null;
+        try
+        {  // Firefox, Opera 8.0+, Safari
+           xmlHttp=new XMLHttpRequest();
+        }
+        catch (e)
+        {  // Internet Explorer
+           try
+           {
+                xmlHttp= null
+              xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");
+           }
+           catch (e)
+           {
+                try
+                {
+                    xmlHttp = null;
+                    xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+                }
+                catch (e)
+                {
+                    alert("Your browser does not support AJAX!");
+                    return false;
+                }
+            }
+         }
+
+
+
+         xmlHttp.onreadystatechange=function()
+         {
+
+            if(xmlHttp.readyState==4 && xmlHttp.status == 200)
+            {
+
+              document.getElementById('first_view').style.display='block';
+              document.getElementById('first_view').innerHTML=xmlHttp.responseText;
+              parent.setFrameWH();
+            }
+         }
+         xmlHttp.open("GET","open_search_div.jsp?search="+document.getElementById('search').value+"&session1="+document.getElementById('session').value+"&dept="+document.getElementById('dept').value+"&year="+year+"&type="+document.getElementById('type').value,true);
+         xmlHttp.send(null);
+}
+
+
+
+
+function getPos(obj,action){
+    
+            clicklocation=obj;
+            var div_ref = document.getElementById('getsyllabus');
+            
+            var x=0,y=0;
+            var obj1 = obj;
+            while(obj.offsetParent){
+                x += obj.offsetLeft;
+                y += obj.offsetTop;
+                obj = obj.offsetParent;
+            }
+            var abs_x = x+'px', abs_y = ((y+obj1.offsetHeight)-150)+'px';
+            //alert(abs_x+'   ::   '+abs_y);
+            div_ref.style.right = abs_x;
+            div_ref.style.top = abs_y;
+
+            //div_ref.style.display='block';
+            switch(action){
+                case 'show':
+                div_ref.style.display = 'block';
+                break;
+                case 'hide':
+                div_ref.style.display = 'none';
+                break;
+                default:
+            }
+
+        }
+
+
+
+</script>
+<link rel="StyleSheet" href="./syllab_files/style1.css">
+</head>
+
+
+
+    <body>
+
+    <table width="50%"><tbody><tr><td>
+                <form name="frm" action="https://erp.iitkgp.ac.in/Acad/subject/syllabus_submit.jsp">
+                    <table align="left" width="50%"><tbody><tr>
+                            <td valign="top" width="50%" colspan="2">
+
+      <table align="left"><tbody><tr>
+           <td> Select Department :-  <select name="dept" style="width:250px" onchange="getSub()"><option id="ME" value="ME">Mechanical Engineering</option>
+
+           <option id="AT" value="AT">Advanced Technology Development Centre</option>
+           
+
+           <option id="AE" value="AE">Aerospace Engineering</option>
+           
+
+           <option id="AG" value="AG">Agricultural and Food Engineering</option>
+           
+
+           <option id="AR" value="AR">Architecture and Regional Planning</option>
+           
+
+           <option id="BS" value="BS">Bio Science</option>
+           
+
+           <option id="BT" value="BT">Bioscience and Biotechnology</option>
+           
+
+           <option id="CD" value="CD">Centre for Computational and Data Sciences</option>
+           
+
+           <option id="ET" value="ET">Centre For Educational Technology</option>
+           
+
+           <option id="CL" value="CL">Centre for Ocean, River, Atmosphere and Land Sciences (CORAL)</option>
+           
+
+           <option id="RD" value="RD">Centre for Rural Development and Innovative Sustainable Technology</option>
+           
+
+           <option id="TV" value="TV">Centre for Teaching Learning and Virtual Skilling</option>
+           
+
+           <option id="TS" value="TS">Centre For Theoretical Studies</option>
+           
+
+           <option id="KS" value="KS">Centre of Excellence for Indian Knowledge Systems</option>
+           
+
+           <option id="DH" value="DH">Centre of Excellence in Advanced Manufacturing Technology</option>
+           
+
+           <option id="EX" value="EX">Centre of Excellence in Advanced Transportation</option>
+           
+
+           <option id="FH" value="FH">Centre of Excellence in Affordable Healthcare</option>
+           
+
+           <option id="AI" value="AI">Centre of Excellence in Artificial Intelligence (AI)</option>
+           
+
+           <option id="FN" value="FN">Centre of Excellence in Precision Agriculture &amp; Food Nutrition</option>
+           
+
+           <option id="CP" value="CP">Centre of Excellence in Public Policy, Law and Governance</option>
+           
+
+           <option id="UP" value="UP">Centre of Excellence in Urban Planning and Design</option>
+           
+
+           <option id="SE" value="SE">Centre of Excellence on Safety Engineering &amp; Analytics (COE-SEA)</option>
+           
+
+           <option id="CH" value="CH">Chemical Engineering</option>
+           
+
+           <option id="CY" value="CY">Chemistry</option>
+           
+
+           <option id="CE" value="CE">Civil Engineering</option>
+           
+
+           <option id="CS" value="CS">Computer Science and Engineering</option>
+           
+
+           <option id="CR" value="CR">Cryogenic  Engineering</option>
+           
+
+           <option id="DE" value="DE">Deysarkar Centre of Excellence in Petroleum Engineering</option>
+           
+
+           <option id="SH" value="SH">Dr B C Roy Multi Speciality Medical Research Centre</option>
+           
+
+           <option id="DR" value="DR">DRDO Industry Academia - Centre of Excellence (DIA-CoE)</option>
+           
+
+           <option id="SD" value="SD">Education</option>
+           
+
+           <option id="EE" value="EE">Electrical Engineering</option>
+           
+
+           <option id="EC" value="EC">Electronics and Electrical Communication Engg.</option>
+           
+
+           <option id="ES" value="ES">Energy Science and Engineering</option>
+           
+
+           <option id="EF" value="EF">Environmental Science and Engineering</option>
+           
+
+           <option id="GG" value="GG">Geology and Geophysics</option>
+           
+
+           <option id="GS" value="GS">G.S Sanyal School of Telecommunication</option>
+           
+
+           <option id="HS" value="HS">Humanities and Social Sciences</option>
+           
+
+           <option id="IM" value="IM">Industrial and Systems Engineering</option>
+           
+
+           <option id="MS" value="MS">Materials Science Centre</option>
+           
+
+           <option id="MA" value="MA">Mathematics</option>
+           
+
+           <option id="MT" value="MT">Metallurgical and Materials Engineering</option>
+           
+
+           <option id="MI" value="MI">Mining Engineering</option>
+           
+
+           <option id="FA" value="FA">M. N. Faruqi Centre for Innovation</option>
+           
+
+           <option id="NT" value="NT">Nano Science and Technology</option>
+           
+
+           <option id="NA" value="NA">Ocean Engg and Naval Architecture</option>
+           
+
+           <option id="PH" value="PH">Physics</option>
+           
+
+           <option id="BE" value="BE">P.K. Sinha Centre for Bioenergy and Renewables</option>
+           
+
+           <option id="RJ" value="RJ">Rajendra Mishra School of Engg Entrepreneurship</option>
+           
+
+           <option id="IP" value="IP">Rajiv Gandhi School of Intellectual Property Law</option>
+           
+
+           <option id="ID" value="ID">Ranbir and Chitra Gupta School of Infrastructure Design and Mngt.</option>
+           
+
+           <option id="RX" value="RX">Rekhi Centre of Excellence for the Science of Happiness</option>
+           
+
+           <option id="RT" value="RT">Rubber Technology</option>
+           
+
+           <option id="IT" value="IT">School of Information Technology</option>
+           
+
+           <option id="MM" value="MM">School of Medical Science and Technology</option>
+           
+
+           <option id="WM" value="WM">School of Water Resources</option>
+           
+
+           <option id="SL" value="SL">Steel Technology Centre</option>
+           
+
+           <option id="RE" value="RE">Subir Chowdhury School of Quality and Reliability</option>
+           
+
+           <option id="BM" value="BM">Vinod Gupta School of Management</option>
+           
+
+  </select></td>
+  <td><fieldset>
+  <center><font color="">For Subject Search</font></center><table>
+      
+  <tbody><tr><td nowrap="">Subject Type :-<select name="type" id="type" style="width:50px">
+  <option id="0" value="UG">UG</option>
+  <option id="1" value="PG">PG</option>
+  </select></td>
+  <td nowrap="">Search By Subno/Subname<input type="text" name="search" id="search">
+  <input type="BUTTON" class="button" onclick="getSearch()" value="Search"> </td></tr>
+  </tbody></table>
+ </fieldset>
+  </td> </tr><tr>   
+
+  </tr>
+        </tbody></table></td></tr></tbody></table><table width="50%" align="left"><tbody><tr><td valign="top" width="50%">
+        <table><tbody><tr><td valign="top" width="30%">
+<div id="first_view">
+      <table border="0" align="left">
+      <tbody><tr><td><center><font color="#817339"><b></b></font></center><table id="disptab" border="0" style="border-color:#557CD7" cellspacing="0" cellpadding="6">
+      <tbody><tr align="center">
+        </tr><tr bgcolor="#FFFFE0"><td>UG</td></tr><tr><td bgcolor="#C6DEFF">
+        <a href="javascript:void(0);" onclick="getDetails(&#39;0&#39;,&#39;ME&#39;,&#39;UG&#39;,&#39;null&#39;)">MECHANICAL ENGG.(B.TECH 4Y)  -  (ME) </a>
+        <div id="getdetails_0" style="display:none"></div></td> </tr>
+         <tr><td bgcolor="#C6DEFF">
+        <a href="javascript:void(0);" onclick="getDetails(&#39;1&#39;,&#39;ME1&#39;,&#39;UG&#39;,&#39;null&#39;)">MECH.ENGG.  MANUF.SCIENCE &amp; ENGG. (M.TECH DUAL 5Y)  -  (ME1) </a>
+        <div id="getdetails_1" style="display:none"></div></td> </tr>
+         <tr><td bgcolor="#C6DEFF">
+        <a href="javascript:void(0);" onclick="getDetails(&#39;2&#39;,&#39;ME2&#39;,&#39;UG&#39;,&#39;null&#39;)">MECH.ENGG.  THER. SCIENCE &amp; ENGG. (M.TECH DUAL 5Y)  -  (ME2) </a>
+        <div id="getdetails_2" style="display:none"></div></td> </tr>
+         <tr><td bgcolor="#C6DEFF">
+        <a href="javascript:void(0);" onclick="getDetails(&#39;3&#39;,&#39;ME3&#39;,&#39;UG&#39;,&#39;null&#39;)">MECH.ENGG.  MECH.SYSTEMS DESIGN (M.TECH DUAL 5Y)  -  (ME3) </a>
+        <div id="getdetails_3" style="display:none"></div></td> </tr>
+         <tr><td bgcolor="#C6DEFF">
+        <a href="javascript:void(0);" onclick="getDetails(&#39;4&#39;,&#39;ME4&#39;,&#39;UG&#39;,&#39;null&#39;)">MECH.ENGG.  MECH.SYSTEMS ,DYNAMICS &amp; CONTROL (M.TECH DUAL 5Y)  -  (ME4) </a>
+        <div id="getdetails_4" style="display:none"></div></td> </tr>
+         <tr><td bgcolor="#C6DEFF">
+        <a href="javascript:void(0);" onclick="getDetails(&#39;5&#39;,&#39;ME5&#39;,&#39;UG&#39;,&#39;null&#39;)">MECH.ENGG.  MANUF.SYSTEMS ENGG. (M.TECH DUAL 5Y)  -  (ME5) </a>
+        <div id="getdetails_5" style="display:none"></div></td> </tr>
+         <tr><td bgcolor="#C6DEFF">
+        <a href="javascript:void(0);" onclick="getDetails(&#39;6&#39;,&#39;ME6&#39;,&#39;UG&#39;,&#39;null&#39;)">MECH.ENGG. THERMAL AND FLUIDS ENGINEERING(M.TECH DUAL 5Y)  -  (ME6) </a>
+        <div id="getdetails_6" style="display:none"></div></td> </tr>
+         <tr><td bgcolor="#C6DEFF">
+        <a href="javascript:void(0);" onclick="getDetails(&#39;7&#39;,&#39;MEA&#39;,&#39;UG&#39;,&#39;null&#39;)">MECHANICAL ENGINEERING/ARTIFICIAL INTELLIGENCE MACHINE LEARNING AND APPLICATIONS  -  (MEA) </a>
+        <div id="getdetails_7" style="display:none"></div></td> </tr>
+         <tr><td bgcolor="#C6DEFF">
+        <a href="javascript:void(0);" onclick="getDetails(&#39;8&#39;,&#39;MED&#39;,&#39;UG&#39;,&#39;null&#39;)">MECH.ENGG.  DUAL DEGREE IN ANY SPL. (M.TECH DUAL 5Y)  -  (MED) </a>
+        <div id="getdetails_8" style="display:none"></div></td> </tr>
+         <tr><td bgcolor="#C6DEFF">
+        <a href="javascript:void(0);" onclick="getDetails(&#39;9&#39;,&#39;MEJ&#39;,&#39;UG&#39;,&#39;null&#39;)">MECHANICAL ENGINEERING/FINANCIAL ENGINEERING  -  (MEJ) </a>
+        <div id="getdetails_9" style="display:none"></div></td> </tr>
+         <tr><td bgcolor="#C6DEFF">
+        <a href="javascript:void(0);" onclick="getDetails(&#39;10&#39;,&#39;MEK&#39;,&#39;UG&#39;,&#39;null&#39;)">MECHANICAL ENGINEERING/ENGINEERING ENTREPRENEURSHIP  -  (MEK) </a>
+        <div id="getdetails_10" style="display:none"></div></td> </tr>
+         <tr><td bgcolor="#C6DEFF">
+        <a href="javascript:void(0);" onclick="getDetails(&#39;11&#39;,&#39;MEM&#39;,&#39;UG&#39;,&#39;null&#39;)">MECHANICAL ENGINEERING/MBA  -  (MEM) </a>
+        <div id="getdetails_11" style="display:none"></div></td> </tr>
+         <tr><td bgcolor="#C6DEFF">
+        <a href="javascript:void(0);" onclick="getDetails(&#39;12&#39;,&#39;MEP&#39;,&#39;UG&#39;,&#39;null&#39;)">MECHANICAL ENGINEERING/PETROLEUM ENGINEERING  -  (MEP) </a>
+        <div id="getdetails_12" style="display:none"></div></td> </tr>
+         <tr><td bgcolor="#C6DEFF">
+        <a href="javascript:void(0);" onclick="getDetails(&#39;13&#39;,&#39;MF&#39;,&#39;UG&#39;,&#39;null&#39;)">MANUFACTURING SCIENCE &amp; ENGG.(B.TECH 4Y)  -  (MF) </a>
+        <div id="getdetails_13" style="display:none"></div></td> </tr>
+         <tr><td bgcolor="#C6DEFF">
+        <a href="javascript:void(0);" onclick="getDetails(&#39;14&#39;,&#39;MF1&#39;,&#39;UG&#39;,&#39;null&#39;)">MANUF. SCI &amp; ENGG.IND. ENGG.MAN. (M.TECH DUAL 5Y)  -  (MF1) </a>
+        <div id="getdetails_14" style="display:none"></div></td> </tr>
+         <tr><td bgcolor="#C6DEFF">
+        <a href="javascript:void(0);" onclick="getDetails(&#39;15&#39;,&#39;MFA&#39;,&#39;UG&#39;,&#39;null&#39;)">MANUFACTURING SCIENCE &amp; ENGINEERING/ARTIFICIAL INTELLIGENCE MACHINE LEARNING AND APPLICATIONS  -  (MFA) </a>
+        <div id="getdetails_15" style="display:none"></div></td> </tr>
+         <tr><td bgcolor="#C6DEFF">
+        <a href="javascript:void(0);" onclick="getDetails(&#39;16&#39;,&#39;MFJ&#39;,&#39;UG&#39;,&#39;null&#39;)">MANUFACTURING SCIENCE AND ENGINEERING/FINANCIAL ENGINEERING  -  (MFJ) </a>
+        <div id="getdetails_16" style="display:none"></div></td> </tr>
+         <tr><td bgcolor="#C6DEFF">
+        <a href="javascript:void(0);" onclick="getDetails(&#39;17&#39;,&#39;MFK&#39;,&#39;UG&#39;,&#39;null&#39;)">MANUFACTURING SCIENCE AND ENGINEERING/ENGINEERING ENTREPRENEURSHIP  -  (MFK) </a>
+        <div id="getdetails_17" style="display:none"></div></td> </tr>
+         <tr><td bgcolor="#C6DEFF">
+        <a href="javascript:void(0);" onclick="getDetails(&#39;18&#39;,&#39;MFM&#39;,&#39;UG&#39;,&#39;null&#39;)">MANUFACTURING SCIENCE AND ENGINEERING/MBA  -  (MFM) </a>
+        <div id="getdetails_18" style="display:none"></div></td> </tr>
+         <tr bgcolor="#FFFFE0"><td>PG</td></tr><tr><td bgcolor="#C6DEFF">
+        <a href="javascript:void(0);" onclick="getDetails(&#39;19&#39;,&#39;ME1&#39;,&#39;PG&#39;,&#39;null&#39;)">MANUFACTURING SCIENCE AND ENGINEERING (MTECH)  -  (ME1) </a>
+        <div id="getdetails_19" style="display:none"></div></td> </tr>
+         <tr><td bgcolor="#C6DEFF">
+        <a href="javascript:void(0);" onclick="getDetails(&#39;20&#39;,&#39;ME2&#39;,&#39;PG&#39;,&#39;null&#39;)">THERMAL AND FLUIDS ENGINEERING (MTECH)  -  (ME2) </a>
+        <div id="getdetails_20" style="display:none"></div></td> </tr>
+         <tr><td bgcolor="#C6DEFF">
+        <a href="javascript:void(0);" onclick="getDetails(&#39;21&#39;,&#39;ME3&#39;,&#39;PG&#39;,&#39;null&#39;)">MECHANICAL SYSTEMS DESIGN (MTECH)  -  (ME3) </a>
+        <div id="getdetails_21" style="display:none"></div></td> </tr>
+         
+       <tr><td bgcolor="#FFFFE0">
+        <a href="javascript:void(0);" onclick="getDetails_other(&#39;24&#39;,&#39;null&#39;,&#39;PHD&#39;)">INTERDISCIPLINARY SUBJECTS TAKEN BY RS STUDENTS</a>
+        <div id="getdetails_24" style="display:none"></div></td> </tr>
+                  
+    </tbody></table></td></tr></tbody></table></div>
+    <div id="second_view" style="display:none"></div></td></tr></tbody></table></td></tr></tbody></table>
+   
+  
+    <input type="hidden" name="session" id="session" value="2023-2024">
+    <input type="hidden" name="dept" id="dept" value="ME">
+
+
+   </form>
+
+
+    <div id="getsyllabus" style="border:2px black solid;background-color:#FBFBEF;width:680px;display:none;position:absolute;overflow:auto">
+    
+    </div>
+   </td></tr></tbody></table>
+
+</body></html>

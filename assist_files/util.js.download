@@ -1,0 +1,1499 @@
+/*
+ * Copyright (c) 2008 Indian Institute of Technology,Kharagpur. All Rights Reserved.
+ *
+ * This software is the confidential and proprietary information of Indian Institute of Technology,Kharagpur.
+ * You shall not disclose such Confidential Information and shall use it only in
+ * accordance with the terms of the license agreement you entered into with IITKGP.
+ * 
+ * Author:      Debasis Jana
+ * Description: All utility javascript functions and variables are here.
+ * Verson     : 0.1
+ */
+var __SCROLLBAR_SIZE__ = null; //scrollbar width
+
+var month_desc = []; //month description array, month description can be obtained by month index(starts from 0)
+month_desc[0] = 'Jan'; month_desc[1] = 'Feb'; month_desc[2] = 'Mar'; month_desc[3] = 'Apr'; month_desc[4] = 'May'; month_desc[5] = 'Jun';
+month_desc[6] = 'Jul'; month_desc[7] = 'Aug'; month_desc[8] = 'Sep'; month_desc[9] = 'Oct'; month_desc[10] = 'Nov'; month_desc[11] = 'Dec';
+
+var month_full_desc = []; //month description array, month description can be obtained by month index(starts from 0)
+month_full_desc[0] = 'January'; month_full_desc[1] = 'February'; month_full_desc[2] = 'March'; month_full_desc[3] = 'April'; month_full_desc[4] = 'May'; month_full_desc[5] = 'June';
+month_full_desc[6] = 'July'; month_full_desc[7] = 'August'; month_full_desc[8] = 'September'; month_full_desc[9] = 'October'; month_full_desc[10] = 'November'; month_full_desc[11] = 'December';
+
+/**
+ * browser object as each browser has got some different specification apart from W3C standards
+ */
+var Browser = (function(){
+    var ua = navigator.userAgent.toLowerCase();
+    return {
+        mozilla: ua.indexOf('mozilla') != -1, //whether browser is mozilla
+        ie: ua.indexOf('microsoft') != -1, //whether browser is microsoft
+
+        //gets the scroll bar width
+        getScrollbarWidth: function(){
+            if(!isNull(__SCROLLBAR_SIZE__)) return __SCROLLBAR_SIZE__;
+            var inner = document.createElement('p');
+            inner.style.width = "100%";
+            inner.style.height = "200px";
+
+            var outer = document.createElement('div');
+            outer.style.display = "hidden";
+            outer.style.width = "200px";
+            outer.style.height = "150px";
+            outer.style.overflow = "hidden";
+            outer.appendChild (inner);
+
+            document.body.appendChild (outer);
+            var w1 = inner.offsetWidth;
+            outer.style.overflow = 'scroll';
+            var w2 = inner.offsetWidth;
+            if (w1 == w2) w2 = outer.clientWidth;
+
+            document.body.removeChild (outer);
+
+            return __SCROLLBAR_SIZE__ = w1-w2;
+        }
+    };
+})();
+
+/**
+ * The _toStr function returns a Object type representation value
+ */
+var _toStr = Object.prototype.toString; //abbreviate Object toString as _toStr
+
+/**
+ * Checks whether object is array or not.<br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * var o = []; then isArray(o) returns true.<br/>
+ * <br/>
+ * @param o the object to be checked
+ * @return returns true if type is array or false otherwise
+ */
+function isArray(o){
+    return _toStr.call(o) == '[object Array]';
+};
+
+/**
+ * Checks whether object is string or not.<br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * var o = "" or new String(""); then isString(o) returns true.<br/>
+ * <br/>
+ * @param o the object to be checked
+ * @return returns true if type is string or false otherwise
+ */
+function isString(o){
+    return _toStr.call(o) == '[object String]';
+};
+
+/**
+ * Checks whether object is function or not.<br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * var o = function(){some content}; isFunction(o) returns true.<br/>
+ * <br/>
+ * @param o the object to be checked
+ * @return returns true if type is function or false otherwise
+ */
+function isFunction(o){
+    if(isUndefined(o) || isNull(o)) return false;
+    return _toStr.call(o) == '[object Function]';
+};
+
+/**
+ * Checks whether object is undefined or not.<br/>
+ *<span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * isUndefined(o) returns ture, because o not defined yet.<br/>
+ * <br/>
+ * @param o the object to be checked
+ * @return returns true if type is undefined or false otherwise
+ */
+function isUndefined(o){
+    return (typeof o == 'undefined');
+};
+
+/**
+ * Checks whether object is null or not.<br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * var o = null; then isNull() returns true, because o defined but the value is null.<br/>
+ * <br/>
+ * @param o the object to be checked
+ * @return returns true if type is null or false otherwise
+ */
+function isNull(o){
+    return o == null;
+};
+
+/**
+ * Checks whether a value is numeric or not
+ * @param v value to be checked
+ * @return returns true if the value is numeric otherwise false
+ */
+function isNumeric(v){
+    var str = v.toString();
+    return str.search(/[^0-9]/) == -1;
+};
+
+/**
+ * Gets HTMLElement by id or by name(the first element, if exists ), otherwise null.<br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * The HTML code goes here ..<br/>
+ * [input type=text id=textID /]<br/>
+ * [input type=text name=textName1 /]<br/>
+ * [input type=text name=textName2 /]<br/>
+ * <br/>
+ * Now ... $('textID') returns the element, $('textName1') returns 2nd element<br/>
+ * <br/>
+ * @param id the element id or name
+ * @param w the window reference(optional), if not specified then self window
+ * @reutrn returns the element object
+ */
+function $e(id,w){
+    if(!!!w) w = window;
+    var o = w.document.getElementById(id);
+    if(o == null){
+        o = w.document.getElementsByName(id);
+        if(o.length > 0) return o[0]; //returns first element by name
+        else return null;
+    }else return o;
+};
+
+/**
+ * Gets an array of elements by a name,tag name(for tag name, element reference should be specified, under which how many elements by the tag name) or class name.<br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * HTML code goes here<br/>
+ * [input type=text name=textName class=className/]<br/>
+ * [div id=divID]
+ * [input type=text name=textName class=className/]<br/>
+ * [/div]<br/>
+ * [HTML]<br/>
+ * <br/>
+ * Now .... $E('N','textName') returns two elements(by name), $E('C','className') returns two elements(by class name) and $('T','input',document) returns two elements(by tag name),<br/>
+ * but $E('T','input',$('divID')) returns 1 element, because under DIV one element is there with tag name <b>input</b><br/>
+ * When by tag name the elements retrieved then last parameter is provided because by tag name under any HTML element it's possible to retrieve. But for test two cases it's not mandatory,<br/>
+ * but if from any other window the elements to be retrieved then the window should be specified.<br/>
+ * 
+ * @param op the option T(tag name), N (element name) or C(class name)
+ * @param name the element name
+ * @param el the window reference or element reference(specially for tag name), if not specified then self window. But for tag name element reference required.
+ * @return returns the array of elements by name, if no elements found then array will be empty.
+ */
+function $E(op,name,el){
+    var w = null;
+    if(!!!el) w = window;
+    else w = el;
+    var c = null;
+    if(op == 'N') c = w.document.getElementsByName(name);
+    else if(op == 'T' && !!el){
+        c = el.getElementsByTagName(name);
+    }
+    else if(op == 'C') c = w.document.getElementsByClassName(name);
+    else c = [];
+    return c;
+};
+
+/**
+ * converts a collection object to an array
+ * @param c collection object
+ * @param f the function if each collection element does not contain value property then function converts that element into customized which in turn finally gets stored in array. if function defined then value property not checked.
+ * @return returns the converetd array
+ */
+function $A(c, f){
+    var l = c.length;
+    var a = [];
+    for(var i=0;i<l;i++){
+        var v = isFunction(f) ? f(c[i]) : c[i].value;
+        a.push(v);
+    }
+    return a;
+};
+
+/**
+ * Checks for an element/elements in an array whether it exists or not and returns the position(position starts from 0).<br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * var a = [1,2,3,'Debasis','Jana'];<br/>
+ * var _a = ['2','3'];<br/>
+ * var v = 'Debasis';<br/>
+ * alert(a.indexOf(_a)); //returns 1<br/>
+ * alert(a.indexOf(_a,true)); //returns -1, bacause '2' is not equal to 2 for strict checking<br/>
+ * alert(a.indexOf(v)); //returns 3<br/>
+ * <br/>
+ * @param el the element or elements to be searched
+ * @param sc whether the element gets varified with it's content as well as it's data type
+ * @param comparator compares two objects for equality
+ * @return returns the position of the element if found, -1 otherwise
+ */
+Array.prototype.indexOf = function(el,sc,comparator){
+    var ln = this.length;
+    if(isArray(el)){ //if type array
+        var l = el.length;
+        for(var k = 0;k < ln;k++){ //iterates the main array
+            var  o = this[k];
+            var b = null;
+            if(isUndefined(comparator) || isNull(comparator)){
+                if(!!sc) b = o === el[0];
+                else b = o == el[0];
+            }else{
+                b = o.compare(el[0], comparator);
+            }
+            if(b){ //check whether matches with first element
+                if(ln-(k+1) < l) return -1; //if rest elements are less than el array then return -1
+                for(var i=1;i<l;i++){ //iterates el array
+                    var _o = this[k+i];
+                    var _b = null;
+                    if(isUndefined(comparator) || isNull(comparator)){
+                        if(!!sc) _b = _o !== el[i];
+                        else _b = _o != el[i];
+                    }else{
+                        _b = _o.compare(el[i], comparator);
+                    }
+                    if(_b) break; //if no match found, break
+                }
+                if(i==l) return k; //if found all elements of el then return the position
+            }
+        }
+    }else{
+        for(var k = 0;k < ln;k++){ //iterates the main array
+            var  o = this[k];
+            var b = null;
+            if(isUndefined(comparator) || isNull(comparator)){
+                if(!!sc) b = o === el;
+                else b = o == el;
+            }else{
+                b = o.compare(el, comparator);
+            }
+            if(b) return k; //if element found then return the position
+        }
+    }
+    return -1; //returns -1 when no match found
+};
+
+/**
+ * Removes element/elements from an array and returns the removed object.<br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * var a = [1,2,3,'Debasis','Jana'];<br/>
+ * var _a = ['2','3'];<br/>
+ * var v = 'Debasis';<br/>
+ * a.remove(_a); //here it removes [2,3]<br/>
+ * a.remove(_a,true) //but here it removes nothing, because '2' not equal to 2 for strict checking<br/>
+ * a.remove(v) //removes 'Debasis'<br/>
+ * <br/>
+ * @param el the element or elements
+ * @param sc strict-checking, whether the element gets varified with it's content as well as it's data type
+ * @param comparator compares two objects for equality
+ * @return returns the removed object if found, otherwise null
+ */
+Array.prototype.remove = function(el,sc, comparator){
+    var p = this.indexOf(el, sc, comparator);
+    if(p != -1){ //element/elements found
+        var a = isArray(el);
+        var o = this.splice(p, a ? el.length : 1);
+        return a ? o : o[0]; //removes element/elements at that position
+    }
+    return null;
+};
+
+/**
+ * adds element into array
+ * @param el new element/elements(element array) to be added to array
+ * @param overwrite whether data to be overwritten or not. object equality checked through comparator function(which takes two object reference to check equality) or default object equality checking
+ * @param sc whether checking is to be strict or not, its vaid only for default object checking, for customized object comparison its not important
+ * @param comparator comparator function which takes two object reference to check equality
+ * @return returns true if added successfully, oherwise false
+ */
+Array.prototype.add = function(el,overwrite,sc,comparator){
+    var p = this.indexOf(el, sc, comparator);
+    var _a = isArray(el);
+    if(!!!overwrite){
+        if(p == -1){
+            if(_a){
+                var l = el.length;
+                for(var i=0;i<l;i++){
+                    var _l = this.length;
+                    this.splice(_l, 0, el[i]);
+                    //this.concat(el[i]);
+                }
+            }else this.splice(this.length, 0, el);
+            return true;
+        }
+        return false;
+    }else{
+        var _p = p == -1 ? this.length : p;
+        var c = p == -1 ? 0 : 1;
+        if(_a){
+            var l = el.length;
+            for(var i=0;i<l;i++){
+                this.splice(_p + i, c, el[i]);
+                //this.concat(el[i]);
+            }
+        }else this.splice(_p, c, el);
+        return true;
+    }
+};
+
+/**
+ * checks whether an array is empty or not
+ * @return returns true if array is empty otheriwse false
+ */
+Array.prototype.empty = function(){
+    this.length = 0;
+};
+
+/**
+ * Gets the string representation of date object using the provided format.<br/>
+ * @param f the format string(valid formats: DD/MM/YYYY HH:MI:SS:MS AM/PM; Date: <b>DD</b> Month: <b>MM/Mon/Month</b> Year: <b>YYYY</b>
+ * Hour: <b>HH/HH24</b> Minute: <b>MI</b> Second: <b>SS</b> Millisecond: <b>MS</b> <b>AM/PM</b>, date formats combined with <b>/</b> or <b>-</b> and time formats combined with <b>:</b> ,date time format spearated by a <b>space</b>).
+ * <b>DD</b> means numeric date value.
+ * @return returns the string represented by date object
+ */
+Date.prototype.getString = function(f){
+    var _f = f.trim().split(/ +/); //splits the format
+    var f1 = null, f2 = null, f3 = null;
+    f1 = _f[0];
+    f2 = _f[1];
+    f3 = _f[2];
+
+    var date_str = [];
+    var dt = this;
+    var _dt = dt.getDate();
+    var mon = dt.getMonth() + 1;
+    var mon_desc = month_desc[mon - 1];
+    var mon_full_desc = month_full_desc[mon - 1];
+    var year = dt.getFullYear();
+    var _HH = dt.getHours();
+    var HH = _HH % 12;
+    var min = dt.getMinutes();
+    var sec = dt.getSeconds();
+    var ms = dt.getMilliseconds();
+
+    if(!!f1){
+        var _f1 = f1.split(/\/|-|:/);
+
+        var separator = !!_f1[0] ? f1.substring(_f1[0].length, _f1[0].length + 1) : '';
+
+        if(!!_f1[0]){
+            if(_f1[0] == 'DD') date_str.push( (_dt > 9 ? '' : '0') + _dt + separator);
+            else if(_f1[0] == 'YY') date_str.push(year.substring(2) + separator);
+            else if(_f1[0] == 'YYYY') date_str.push(year + separator);
+            else if(_f1[0] == 'HH' || _f1[0] == 'HH12') date_str.push( (HH == 0 ? 12 : HH) + separator );
+            else if(_f1[0] == 'HH24') date_str.push(HH + 12 + separator);
+        }
+
+        if(!!_f1[1]){
+            if(_f1[1] == 'MM') date_str.push(mon + separator );
+            else if(_f1[1] == 'Mon') date_str.push(mon_desc + separator);
+            else if(_f1[1] == 'MON') date_str.push(mon_desc.toUpperCase() + separator);
+            else if(_f1[1] == 'Month') date_str.push(mon_full_desc + separator);
+            else if(_f1[1] == 'MONTH') date_str.push(mon_full_desc.toUpperCase() + separator);
+            else if(_f1[1] == 'MI') date_str.push(min + separator);
+        }
+        
+        if(!!_f1[2]){
+            if(_f1[2] == 'DD') date_str.push( (_dt > 9 ? '' : '0') + _dt + separator);
+            else if(_f1[2] == 'YY') date_str.push(year.substring(2) + separator);
+            else if(_f1[2] == 'YYYY') date_str.push(year + separator);
+            else if(_f1[2] == 'SS') date_str.push(sec + separator);
+            if( (_f1[2].indexOf('HH') != -1 || _f1[2].indexOf('HH12') != -1) && (_f1[2] == 'AM' || _f1[2] == 'PM') ) date_str.push(_HH > 12 ? 'PM' : 'AM');
+        }
+
+        if(!!_f1[3]){
+            if(_f1[3] == 'MS') date_str.push(ms + separator);
+        }
+    }
+
+    if(!!f2){
+        var _f1 = f1.split(/\/|-|:/);
+        if(!!_f1[0]){
+            if(_f1[0] == 'HH' || _f1[0] == 'HH12') date_str.push( (HH == 0 ? 12 : HH) + separator );
+            else if(_f1[0] == 'HH24') date_str.push(HH + 12 + separator);
+            if( (_f1[0].indexOf('HH') != -1 || _f1[0].indexOf('HH12') != -1) && (_f1[0] == 'AM' || _f1[0] == 'PM') ) date_str.push(_HH > 12 ? 'PM' : 'AM');
+        }
+
+        if(!!_f1[1]){
+            if(_f1[1] == 'MI') date_str.push(min + separator);
+        }
+
+        if(!!_f1[2]){
+            if(_f1[2] == 'SS') date_str.push(sec + separator);
+            else if( (_f1[2].indexOf('HH') != -1 || _f1[2].indexOf('HH12') != -1) && (_f1[2] == 'AM' || _f1[2] == 'PM') ) date_str.push(_HH > 12 ? 'PM' : 'AM');
+        }
+
+        if(!!f1[3]){
+            if( (_f1[3].indexOf('HH') != -1 || _f1[3].indexOf('HH12') != -1) && (_f1[3] == 'AM' || _f1[3] == 'PM') ) date_str.push(_HH > 12 ? 'PM' : 'AM');
+        }
+    }
+
+    if(!!f3){
+        if( (f3.indexOf('HH') != -1 || f3.indexOf('HH12') != -1) && (f3 == 'AM' || f3 == 'PM') ) date_str.push(_HH > 12 ? 'PM' : 'AM');
+    }
+
+    var f_dt_str = date_str.join("");
+    return f_dt_str.search(/(:|\/|-)$/) != -1 ? f_dt_str.substring(0, f_dt_str.length - 1) : f_dt_str;
+};
+
+Date.getDateString = function(dt,f){
+    return dt.getString(f);
+};
+
+/**
+ * Parses the date string and returns the date object, using the date format string.<br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * parseDate('12/12/2009 12:34:55:55 AM','DD/MM/YYYY HH:MI:SS:MS AM/PM');<br/>
+ * parseDate('12/12/2009 16:34:55:55','DD/MM/YYYY HH24:MI:SS:MS');<br/>
+ * <br/>
+ * @param str the date string
+ * @param f the format string using which the date is to be parsed(the valid formats: <b>DD/MM/YYYY, DD-MM-YY along with HH:MI:SS:MS, HH24:MI:SS:MS</b> ).
+ * The date format and time format can be used together with a space or can be used stand alone each. For time format hour and minute must be speciafied rest two can be avoided.
+ * If the hour format is <b>HH</b> then at last <b>AM/PM</b> to be provided, following a space.
+ * @return returns the parsed date object
+ */
+function parseDate(str,f){
+    var _f = f.trim().split(/ +/); //splits the format
+    var _str = str.trim().split(/ +/); //splits the input string
+    var f1 = null, f2 = null, f3 = null;
+    f1 = _f[0];
+    f2 = _f[1];
+    f3 = _f[2];
+
+    var y = null, m = null, d = null, h = null, mi = null, s = null, ms = null, am_pm = null;
+    var h_24 = false;
+
+    if(!!f1 && !!_str[0]){
+        var __str = _str[0].split(/\/|-|:/); //further split
+        var _f1 = f1.split(/\/|-|:/);
+        if(_f1[0] == 'DD'){ //date format
+            d = __str[0];
+            m = __str[1];
+            y = __str[2];
+        }else if(_f1[0] == 'HH' || _f1[0] == 'HH24'){ //time format
+            if(_f1[0] == 'HH24') h_24 = true;
+            h = __str[0];
+            mi = __str[1];
+            s = __str[2];
+            ms = __str[3];
+        }
+    }
+    if(!!f2 && !!_str[1]){
+        if(f2 == 'AM' || f2 == 'PM'){ //if only time format is used
+            am_pm = f2;
+        }else{
+            var __str = _str[1].split(/:| /); //further split
+            var _f2 = f2.split(":");
+            if(_f2[0] == 'HH' || _f2[0] == 'HH24'){
+                if(_f2[0] == 'HH24') h_24 = true;
+                h = __str[0];
+                mi = __str[1];
+                s = __str[2];
+                ms = __str[3];
+            }
+        }
+    }
+    if(!!f3 && !!_str[2]){ //if date and time format both used,for HH, AM/PM
+        am_pm = _str[2];
+    }
+
+    var dt = new Date(); //creates a default date object with current date & time
+
+    //sets the available values to the date object according to the format
+    if(!!y && !!m && !!d) dt.setFullYear(y, parseInt(m,10)-1, d);
+    if(!!h && !!mi) dt.setHours(h_24 ? (h-1) : (am_pm == 'AM' ? (h-1) : (am_pm == 'PM' ? (h+11) : 0)), m);
+    if(!!s) dt.setSeconds(s);
+    if(!!ms) dt.setMilliseconds(ms);
+
+    return dt;
+};
+
+/**
+ * Sums the values of an array with the provided sum handler(specially for customized object) or defalut one for numeric value.<br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * var a = [2,3,4,'5','7','Debasis','#xfr%'];<br/>
+ * sum(a) //returns 21, last two elements ignored because those are not valid numeric vaule<br/>
+ * a = [{a:10,b:'tom',c:25},{a:20,b:'dic',c:-10}];<br/>
+ * sum(a,function(p){<br/>
+ *  return p.a;<br/>
+ * }); //returns 30, because handler function returns field value of <b>a</a>, so 10+20 = 30<br/>
+ * <br/>
+ * @param a the array
+ * @param hndl the handler(specially for customized objects), if not provided then default one used for numeric value.
+ * Hnadler takes the array element and returns the numeric value to used in sum operation.
+ * @return returns the summation of the elements of array
+ */
+function sum(a,hndl){
+    if(!isArray(a)) return 0; //if not array then returns 0
+    var s = 0;
+    var l = a.length;
+    for(var i=0;i<l;i++){ //iterates the array
+        var el = !!hndl ? hndl(a[i]) : a[i]; //if handler not specified then default element used
+        var v = 0;
+        try{
+            v = parseInt(el, 10); //forces to convert into numeric, if parse errors then it's 0
+        }catch(e){}
+        s += v;
+    }
+    return s; //returns the summation
+};
+
+/**
+ * Attaches event listener to a DOM element(which is under a document object).<br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * [div id=divID][/div]<br/>
+ * addEvent('click',$('divID'),function(e){<br/>
+ *  //code goes here<br/>
+ * });<br/>
+ * <br/>
+ * @param evt_n event name (eg: load,click ...)
+ * @param el the operating element
+ * @param hndl the event handler
+ * @return returns true if attached successfully, false otherwise
+ */
+function addEvent(evt_n,el,hndl){
+    if(!isFunction(hndl)) return false;
+    if(typeof attachEvent != 'undefined'){ //for IE
+        return el.attachEvent('on' + evt_n,hndl);
+    }else if(typeof addEventListener != 'undefined'){ //for firefox
+        el.addEventListener(evt_n, hndl, false);
+        return true;
+    }else return false;
+};
+
+/**
+ * Removes the event listener from a DOM element.<br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * [div id=divID][/div]<br/>
+ * removeEvent('click',$('divID'));<br/>
+ * <br/>
+ * @param evt_n event name (eg: load,click ...)
+ * @param el the operating element
+ * @return returns true if removed successfully, false otherwise
+ */
+function removeEvent(evt_n,el){
+    if(!!detachEvent){ //for IE
+        return el.detachEvent(evt_n);
+    }else if(!!removeEventListener){ //for firefox
+        el.removeEventListener('on' + evt_n);
+        return true;
+    }else return false;
+};
+
+/**
+ * Checks or unchecks all checkboxes having same name(this is for internal ussage).<br/>
+ * @param el_n checkbox element name
+ * @param checked whether to check or uncheck(true for check, false otherwise)
+ * @param callback callback function which gets called on checking/unchekcing checkbox
+ * @param w the window reference(optional), if not specified then self window
+ */
+function check_uncheck(el_n,checked,filter, callback,w){
+    if(!!!w) w = window;
+    var a = $E('N',el_n,w); //gets the checkbox elements by name
+    var l = a.length;
+    var f = !isNull(callback) && isFunction(callback);
+    var c = 0;
+    for(var i=0;i<l;i++){ //iterates the checkboxes
+        var o = a[i];
+        if(isUndefined(filter) || isNull(filter) || filter(o)){
+            o.checked = checked; //sets checked or unchecked
+            if(f) callback(o);
+            c++;
+        }
+    }
+    return c;
+};
+
+/**
+ * Checks all checkboxes having same name.<br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * HTML code is...<br/>
+ * [input type=checkbox name=Chk value='tom'/]<br/>
+ * [input type=checkbox name=Chk value='dic'/]<br/>
+ * [input type=checkbox name=Chk value='harry'/]<br/>
+ * <br/>
+ * checkAll('Chk') //checks all the checkboxes<br/>
+ * <br/>
+ * @param el_n checkbox element name
+ * @param callback callback function which gets called on checking/unchekcing checkbox
+ * @param w the window reference(optional), if not specified then self window
+ */
+function checkAll(el_n,filter,callback,w){
+    return check_uncheck(el_n,true,filter,callback,w); //checked with true
+};
+
+/**
+ * Unchecks all checkboxes having same name.<br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * HTML code is...<br/>
+ * [input type=checkbox name=Chk value='tom'/]<br/>
+ * [input type=checkbox name=Chk value='dic'/]<br/>
+ * [input type=checkbox name=Chk value='harry'/]<br/>
+ * <br/>
+ * uncheckAll('Chk') //checks all the checkboxes<br/>
+ * <br/>
+ * @param el_n checkbox element name
+ * @param callback callback function which gets called on checking/unchekcing checkbox
+ * @param w the window reference(optional), if not specified then self window
+ */
+function uncheckAll(el_n,filter,callback,w){
+    return check_uncheck(el_n,false,filter,callback,w); //checked with false
+};
+
+/**
+ * Gets checked list[indices,values] for checkboxes and index,value for radio button.<br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * HTML code is...<br/>
+ * [input type=checkbox name=Chk value='tom' checked/]<br/>
+ * [input type=checkbox name=Chk value='dic'/]<br/>
+ * [input type=checkbox name=Chk value='harry' checked/]<br/>
+ * <br/>
+ * [input type=radio name=Radio value='TOM' /]<br/>
+ * [input type=radio name=Radio value='DIC' checked /]<br/>
+ * [input type=radio name=Radio value='HARRY' /]<br/>
+ * <br/>
+ * getCheckedList('Chk'); //returns [[0,2],['tom','dic']], because for checkbox multiples cane checked at a time.<br/>
+ * getCheckedList('Radio'); //returns [1,'DIC'], because for radio button only single can be checked at a time.<br/>
+ * <br/>
+ * @param el_n checkbox/radio element name
+ * @param el_type whether the element is checkbox(C) or radio button
+ * @param w the window reference(optional), if not specified then self window
+ * @returns array of index/indices and value/values of checked one
+ */
+function getCheckedList(el_n,el_type,w){
+    var a = $E('N',el_n,w); //gets the elements by name
+    var l = a.length;
+    if(el_type == 'C'){
+        var indices = [];
+        var values = [];
+    }
+    for(var i=0;i<l;i++){
+        var o = a[i];
+        if(o.checked){
+            if(el_type == 'R'){ //if radio button, then checked is only one if they are in same group
+                return [i,o.value];
+            }else if(el_type == 'C'){ //for checkbox checked can be multiples
+                indices[indices.length] = i;
+                values[values.length] = o.value;
+            }
+        }
+    }
+
+    return [indices,values]; //first element the index, 2nd element value
+};
+
+/**
+ * Reverses the string content.<br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * var str = 'abc'; <br/>
+ * str.reverse(); //returns 'cba'<br/>
+ * <br/>
+ * @return returns the reversed string.
+ */
+String.prototype.reverse = function(){
+    var l = this.length;
+    var c = [];
+    for(var i=l-1;i>=0;i--){ //takes the characters from the end, stores into array then coverts into string
+        c[c.length] = this.charAt(i);
+    }
+    return c.join('');
+};
+
+function replaceMetaCharacters(v){
+    var _v = v;
+    _v = _v.replace(/\\/g, '\\\\');
+    _v = _v.replace(/\^/g, '\\^');
+    _v = _v.replace(/\[/g, '\\[');
+    _v = _v.replace(/\]/g, '\\]');
+    _v = _v.replace(/\{/g, '\\}');
+    _v = _v.replace(/\}/g, '\\}');
+    _v = _v.replace(/\$/g, '\\$');
+    _v = _v.replace(/\(/g, '\\(');
+    _v = _v.replace(/\)/g, '\\)');
+    _v = _v.replace(/\|/g, '\\|');
+    _v = _v.replace(/\./g, '\\.');
+    return _v;
+};
+
+/**
+ * Removes left side spaces of a string.<br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * var str = '  abc   ';<br/>
+ * ltrim(str); //returns 'abc   ';<br/>
+ * <br/>
+ * @return returns the resultant string
+ */
+String.prototype.ltrim = function(){
+    return this.replace(/^( +)/, "");
+};
+
+/**
+ * Removes right side spaces of a string.<br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * var str = '  abc   ';<br/>
+ * rtrim(str); //returns ' abc';<br/>
+ * <br/>
+ * @return returns the resultant string
+ */
+String.prototype.rtrim = function(){
+    return this.replace(/(( +)$)/,"");
+};
+
+/**
+ * Removes leading and trailing spaces in the string content.<br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * var str = '  abc   ';<br/>
+ * trim(str); //returns 'abc';<br/>
+ * <br/>
+ * @return returns the resultant value
+ */
+String.prototype.trim = function(){
+    var str = this.ltrim().rtrim();
+    return str;
+};
+
+/**
+ * string matcher function which matches starting characters of a string with a given string value
+ * @param str string value matched with the working string value
+ * @param case_sensitive whether match will on the basis of case sensitivity or not
+ * @return returns true if match found otheriwse false
+ */
+String.prototype.startsWith = function(str,case_sensitive){
+    var cs = !isUndefined(case_sensitive) ? case_sensitive : true;
+    if(str.length > this.length) return false;
+    str = replaceMetaCharacters(str);
+    return this.search(cs ? new RegExp('^' + str) : new RegExp('^' + str, 'i')) != -1;
+};
+
+/**
+ * string matcher function which matches end characters of a string with a given string value
+ * @param str string value matched with the working string value
+ * @param case_sensitive whether match will on the basis of case sensitivity or not
+ * @return returns true if match found otheriwse false
+ */
+String.prototype.endsWidth = function(str,case_sensitive){
+    var cs = !isUndefined(case_sensitive) ? case_sensitive : true;
+    if(str.length > this.length) return false;
+    str = replaceMetaCharacters(str);
+    return this.search(cs ? new RegExp(str + '$') : new RegExp(str + '$', 'i')) != -1;
+};
+
+/**
+ * inserts a character into a string object after specified position. original string object doesn't get changed
+ * @param str the string value to inserted
+ * @param pos after which position the string to be inserted
+ * @return returns changed string object, original string object remains same
+ */
+String.prototype.insertAfter = function(str,pos){
+    if(pos > this.length) return this;
+    var s1 = this.substring(0,pos);
+    s1 += str;
+    s1 += this.substring(pos);
+    return s1;
+};
+
+/**
+ * inserts a character into a string object before specified position. original string object doesn't get changed
+ * @param str the string value to inserted
+ * @param pos before which position the string to be inserted
+ * @return returns changed string object, original string object remains same
+ */
+String.prototype.insertBefore = function(str,pos){
+    if(pos > this.length) return this;
+    var _pos = this.length - pos;
+    return this.insertAfter(str, _pos);
+};
+
+/**
+ * Generates a random number between a given range.<br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * alert(Math.generateRandom(10,20)) returns a random number between 10 and 20
+ * <br/>
+ * @param range the range specified in JSON object, {lower:lower limit,uppper:uppper limit}
+ * @return returns the random number between a given range, -1 if lower limit is greater than upper limit
+ */
+Math.generateRandom = function(range){
+    var l = range.lower, u = range.upper;
+    if(l < u){ //if lower is less than uppper
+        var rand = Math.random(); //generates random number
+        var n = Math.round(rand*10000000); //10000000 is the maximum limit
+        var num = n%(u-l); //random number between the 0 and (upper-lower)
+        return l+num; //then sum up with lower
+    }
+    return -1; //-1, if the range is invalid
+};
+
+
+/**
+ * JSON object for ajax calling. There are 2 function inside the JSON has been defined.<br/>
+ * <b>Ajax.Initiate: </b>It initializes the ajax call.<br/>
+ * <b>Ajax.call: </b>It taken the initialzed object then send a request.<br/>
+ * <br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * var ajax = new Ajax.initiate('My_URL','GET/POST',[{name:'param1',value:'value1'},{name:'param2',value:'value2'}],<br/>
+ * {success:function(responseText){<br/>
+ *  //success function, do with responseText<br/>
+ * },error:function(errorCode){<br/>
+ *  //error code, do with error code<br/>
+ * }},true);<br/>
+ * //The parameters(3rd paramter) is the array of JSON object{name:param name,value:param value}<br/>
+ * //The callback handler(4th parameter) is a JSON object{success:successHandler,error:errorHandler}<br/>
+ * //Last parameter is, whether the call is sychronous(false) or asynchronous(true)<br/>
+ * <br/>
+ * Ajax.call(ajax);<br/>
+ * <br/>
+ */
+var Ajax = {
+    /**
+     * It's for internal usage for getting ajax object
+     */
+    getXmlHttp : function(){
+        var xmlhttp = null;
+        if (window.XMLHttpRequest)
+        {// code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp=new XMLHttpRequest();
+        }
+        else
+        {// code for IE6, IE5
+            xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        return xmlhttp;
+    },
+
+    /**
+     * Initiates ajax call.<br/>
+     * @param url the url to be called using Ajax
+     * @param method method the submit method(GET/POST ...)
+     * @param params the array of JSON object of parameters {name:param_name,value:param_value}
+     * @param callbakFunc the callbck handler JSON object, which contains{success:handler1,error:handler2}
+     * @param asyn whether the call is asynchronous or synchronous
+     */
+    Initiate : function(url,
+        method,
+        params,
+        callbakFunc,
+        asyn){
+
+        if(!isFunction(callbakFunc.success) || !isFunction(callbakFunc.error)) return;//if call back handlers are not function type
+
+        this.method = method;
+        this.queryStr = null;
+        this.xmlhttp = Ajax.getXmlHttp();
+        this.callbakFunc = callbakFunc;
+        this.asyn = asyn;
+
+        var g = method == "GET";
+        if(this.xmlhttp != null){
+            this.queryStr = "";
+            if(!!params){
+                //prepares query string on the basis of parameters (array of JSON object{name : value})
+                var params_l = params.length;
+                for(var i=0;i<params_l;i++){
+                    var o = params[i];
+                    this.queryStr += o.name + "=" + o.value + "&";
+                }
+            }
+            this.queryStr += "rand=" + Math.generateRandom({lower:0,upper:100}); //appends a random number
+            this.xmlhttp.open(method,url + (g ? ("?" + this.queryStr) : ""),asyn);
+            if(!g){ //for POST request only
+                this.xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                this.xmlhttp.setRequestHeader("Content-length", this.queryStr.length);
+                this.xmlhttp.setRequestHeader("Connection", "close");
+            }
+        }else alert("Ajax call can't be made"); //if ajax not supported by browser
+    },
+
+    /**
+     * Calls to ajax with the ajax init object<br/>
+     * @param o the AJAX.Initiate object which initiated before ajax call
+     */
+    call : function(o){
+        var _o = o.xmlhttp;
+        if(!!_o){
+            if(o.asyn){
+                _o.onreadystatechange = function(){
+                    var state = _o.readyState;
+                    if(state == 4){
+                        var status = _o.status;
+                        if(status == 200){
+                            o.callbakFunc.success(_o.responseText); //forwards success handler with response text
+                        }
+                        else o.callbakFunc.error(status); //forwards the error handler with error code
+                    }
+                }
+            }
+            _o.send(o.method == "POST" ? o.queryStr : null);
+            if(!o.asyn){ //if the call is synchronous
+                var s = _o.status;
+                if(s == 200) o.callbakFunc.success(_o.responseText); //forwards success handler with response text
+                else o.callbakFunc.error(s); //forwards the error handler with error code
+            }
+        }else alert('Ajax initialization errors');
+    }
+};
+
+/**
+ * Validates the form according to given field details. Let's describe the field details, the fields details object is array of JSON object.<br/>
+ * JSON object contains 3 fields, field ID 2nd error message for flashing the erro mressage if corerct value not given for the field 3rd regular expression and last handler.<br/>
+ * Either regular expression or handler for test whether the field gets correct value. Handler takes element reference and element value. The handler function should not contain any<br/>
+ * alert message. Handler function returns true of false.<br/>
+ * <br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * HTML code goes here ...<br/>
+ * [form name=FormName><br/>
+ * ...<br/>
+ * ...<br/>
+ * [input type=text name=textBox id=textBox /]<br/>
+ * [select name=selectBox]<br/>
+ *  [option value="TOM" id=selectBox]Tom[/option]<br/>
+ *  [option value="DIC"]Dic[/option><br/>
+ *  [option value="HARRY"]Harry[/option]<br/>
+ * [/select]<br/>
+ * ...<br/>
+ * ...<br/>
+ * ...<br/>
+ * [/form]<br/>
+ * <br/>
+ * var s = formValidate([{<br/>
+ * fld_ID:'textBox',<br/>
+ * err_msg:'text box should be numeric',<br/>
+ * regx: /[0-9]/,<br/>
+ * hndl: null<br/>
+ * },{<br/>
+ * fld_ID:'selectBox',<br/>
+ * err_msg:'select box value cant b TOM',<br/>
+ * regx: null,<br/>
+ * hndl: function(v){<br/>
+ *  if(v == 'TOM') return false;<br/>
+ *  else return true;<br/>
+ * }<br/>
+ * }]);<br/>
+ * <br/>
+ * //either regular expression or handler should be specified, regualr expression for resting the value and function(user defined) returns true/false on the basis of value<br/>
+ * //it returns true/false on basis of which the form sumission can be controlled<br/>
+ * <br/>
+ * if(s) forms['formName'].submit(); //is form validation successfull then submits the form<br/>
+ * <br/>
+ * @param fld_dtls the array of JSON object of field details [{fld_ID : field ID,err_msg: error message if not correct value given,regx : regular expression for test,hndl: handler for test} ... ]
+ * @param w the window reference(optional), if not specified then self window
+ * @return returns true if validated successfully, false otherwise
+ */
+function formValidate(fld_dtls,w){
+    var l = fld_dtls.length;
+    for(var i=0;i<l;i++){
+        var o = fld_dtls[i];
+        if(o){ //if JSON specified
+            var _o = $e(o.fld_ID,w);
+            if(_o){ //if field ID is correct
+                var regx = o.regx;
+                var hndl = o.hndl;
+                if((!!regx && !_o.value.test(regx)) || (!!hndl && !w.hndl(_o,_o.value))){
+                    alert(o.err_msg); //flashes the error message
+                    _o.focus(); //focuses to the element
+                    return false; //stops form submission
+                }
+            }
+        }
+    }
+    return true; //proceeds form submission
+};
+
+/**
+ * Gets the maximum value from an array, on the basis of optional comparator function.<br/>
+ * The comparator function returns true if first element greater than 2nd element, otherwise false.<br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * var a = [10,12,34,55];<br/>
+ * max(a); //returns 55<br/>
+ * a = [{a:10},{a:20},{a:-10}];<br/>
+ * max(a,function(o,v){<br/>
+ *  if(o.a > v) return true;<br/>
+ *  else false;<br/>
+ * }); //returns 20, because the comparator compares on the basis of <b>object.a</b><br/>
+ * <br/>
+ * @param a the array
+ * @param comparator the comparator function(optional) otherwise default comparator.
+ * @return returns the maximum element or null if collection is empty or it's not an array
+ */
+function max(a,comparator){
+    if(!isArray(a)) return null;
+    var l = a.length;
+    if(l > 0){
+        var m = a[0];
+        for(var i = 1;i<l;i++){ //iterates the array
+            if((!!comparator && comparator(a[i],m)) || a[i] > m) m = a[i]; //if handler specified then use handler to compare otherwise use default
+        }
+        return m;
+    }
+    return null;
+};
+
+/**
+ * Gets the minimum value from an array, on the basis of optional comparator function.<br/>
+ * The comparator function returns true if first element less than 2nd element, otherwise false.<br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * var a = [10,12,34,55];<br/>
+ * max(a); //returns 55<br/>
+ * a = [{a:10},{a:20},{a:-10}];<br/>
+ * max(a,function(o,v){<br/>
+ *  if(o.a > v) return false;<br/>
+ *  else true;<br/>
+ * }); //returns -10, because the comparator compares on the basis of <b>object.a</b><br/>
+ * <br/>
+ * @param a the array
+ * @param comparator the comparing comparing function(optional) otherwise default comparing.
+ * @return returns the minimum element or null if collection is empty
+ */
+function min(a,comparator){
+    if(!isArray(a)) return null;
+    var l = a.length;
+    if(l > 0){
+        var m = a[0];
+        for(var i = 1;i<l;i++){ //iterates the array
+            if((!!comparator && comparator(a[i],m)) || a[i] < m) m = a[i]; //if handler specified then use handler to compare otherwise use default
+        }
+        return m;
+    }
+    return null;
+};
+
+/**
+ * Prints an element itself or the content(innerHTML) of the element.<br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * [DIV id=divID]......[/DIV]<br/>
+ * [table id=tabID]......[/table]<br/>
+ * <br/>
+ * printElement($('divID',false)); //prints the innerHTML of DIV so the <b>self</b> is false<br/>
+ * printElement($('tabID'),true); //prints the table itself so the <b>self</b> is true<br/>
+ * <br/>
+ * @param el the element reference
+ * @param self whether the element inself or the content to be print, value if true/false
+ */
+function printElement(el,self){
+    var o = null;
+    if(self) o = el;
+    else o = el.parentNode;
+    var w = window.open("","__win__",""); //opens a tempo window
+    var c = o.innerHTML;
+    w.document.body.write(!!c ? c : "<content is empty>"); //writes the content to window
+    w.print(); //prints
+    w.close(); //closes the tempo window
+};
+
+/**
+ * Adds to a table either last or at specifie row index dwith colum innerHTML generator handler or with the innerHTML of exisitng row.<br/>
+ * If row index not specified then added to last row or to specified row index. If colmuns innerHTML generator handler not specified then gets the<br/>
+ * HTML from exisitng row. If handlers specified then take only compatible no of rows, means if handlers are less than number of exisitng columns then added empty cell or if more<br/>
+ * then ignores rest. Remember if handlers not specified then there must be rows in table.<br/>
+ * <br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * [table id=tabID][/table]<br/>
+ * <br/>
+ * addRow('tabID',null,[function(){return "Debasis";},function(){"Jana"},function(){return "[input .. ][/input]";}]);<br/>
+ * //adds to the last row(2nd parameter is null, if the value specified then row added there) of the table on the basis of HTML generator.<br/>
+ * //if no handler specified then there must be one row from which it will be copied.<br/>
+ * addRow('tabID'); //adds to the last row on the basis of last existing row, so here no handler specified<br/>
+ * addRow('tabID',1,[function(){return "Anupam";},function(return "Somesh")]); //adds to the 2nd row on the basis of HTML generator<br/>
+ * addRow('tabID',null,[function(){return "Welcome";},function(){return "to"},function(){"Java Script"},function(){"Fake"}]); //adds to the last row again on the basis of HTML generator<br/>
+ * <br/>
+ * <b>The outputs are ...</b><br/>
+ * <br/>
+ * <table border=1><tr><td>Debasis</td><td>Jana</td><td><input type=text /></td></tr></table><br/><br/>
+ * <br/>
+ * <table border=1>
+ * <tr><td>Debasis</td><td>Jana</td><td><input type=text /></td></tr>
+ * <tr><td>Debasis</td><td>Jana</td><td><input type=text /></td></tr>
+ * </table><br/>
+ * //copies from the last existing row<br/>
+ * <br/>
+ * <table border=1>
+ * <tr><td>Debasis</td><td>Jana</td><td><input type=text /></td></tr>
+ * <tr><td>Anupam</td><td>Somesh</td><td>&nbsp;</td></tr>
+ * <tr><td>Debasis</td><td>Jana</td><td><input type=text /></td></tr>
+ * </table><br/>
+ * //here if row exists previously then handler contains exactly the number of cells(if less specified then rest will blank cell or in cas of more excessives ignored)<br/>
+ * <br/>
+ * <table  border=1>
+ * <tr><td>Debasis</td><td>Jana</td><td><input type=text /></td></tr>
+ * <tr><td>Anupam</td><td>Somesh</td><td>&nbsp;</td></tr>
+ * <tr><td>Debasis</td><td>Jana</td><td><input type=text /></td></tr>
+ * <tr><td>Welcome</td><td>to</td><td>Java Script</td></tr>
+ * </table><br/>
+ * //here excessives HTML generator ignored
+ * <br/>
+ * <br/>
+ * @param tab_id the table id
+ * @param index the row index(optional if not specifed then added to last)
+ * @param cols_hndl which is the array of column innerHTML generator(optional, if not specified then gets the innerHTML from the existing row)
+ * @param w the window reference (optional ,if not specified then window is self)
+ */
+function addRow(tab_id,index,cols_hndl,w){
+    var t = $e(tab_id,w);
+    var cols_html = [];
+    if(t){
+        var rows = t.rows;
+        var r_l = rows.length;
+        var c_l = null;
+        if(r_l){ //if rows exist previously
+            var cells = rows[r_l-1].cells;
+            c_l = cells.length;
+        }
+        if(!!!cols_hndl){ //if colums innerHTML generator handler not specified then takes from last exisitng row
+            if(r_l){ //if row exists
+                for(var i=0;i<c_l;i++){
+                    cols_html[cols_html.length] = cells[i].innerHTML; //copies cell html from existing last row
+                }
+            }
+        }else{
+            var l = cols_hndl.length;
+            //if extra handler provided then ignored
+            for(i = 0;i < l ;i++){ //iterates columns innerHTML generator handler
+                if(!!c_l && i==c_l) break; //ignores excess cells
+                var o = cols_hndl[i];
+                var html = null;
+                if(o && isFunction(o)){
+                    html = o();
+                }
+                cols_html[cols_html.length] = !!html ? html : "&nbsp"; //if handler function returns undefined or null then sets the html to empty(&nbsp;)
+            }
+            //if less handler provided then rest html assumed as empty
+            for(var j=i;!!c_l && j<c_l;j++){
+                cols_html[cols_html.length] = "&nbsp;";
+            }
+        }
+
+        //adds the row, if row index not specified then added to the last
+        var r = t.insertRow(!!index ? index : r_l);
+        l = cols_html.length;
+        for(var i = 0;i<l;i++){
+            var o = cols_html[i];
+            r.insertCell(i).innerHTML = o;
+        }
+
+    }
+};
+
+/**
+ * Hides/shows or removes(in case of remove the row can't be recovered) a table row on the basis of operation(H/D/S) and an element which is placed somewhere inside that row(may be nested tables are there).<br/>
+ * The element can be with in a nested table so with the reference of element to reach the row level of nested tables specified.<br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * HTML code goes here<br/>
+ * [table]<br/>
+ *  [tr id=outerTR]<br/>
+ *   [td][table][tr id=innerTR][td][input type=button onclick=toggleRow(this,1,'D')][/td][/tr][/table][/td]<br/>
+ *  [/tr]<br/>
+ * [/table]<br/>
+ * <br/>
+ * The <b>onclick</b> handler deletes the first row<b>(outerTR)</b> the of the outer table, because the level of nested tables mentioned here.<br/>
+ * If not mentioned then it would delete the immediate row<b>(innerTR)</b>.<br/>
+ * The row can be hidden or shown using the last parameter<b>(S/H)</b>. <b>S</b> fro show and <b>H</b> for hide.<br/>
+ * <br/>
+ * @param el the element which must be placed somewhere in that table row
+ * @param l the level of nested tables(if not specified then level considered as 0, means no nested tables)
+ * @param op the operation on the basis of which the row to be deleted,hidden or shown. H: hide, S: show, D: delete.
+ */
+function toggleRow(el,l,op){
+    var o = el;
+    var c = 0;
+    if(!!!l) l = 0; //if level not specified then it's default is 0
+    while(1){ //iterates upto root node until the TR(with the help of level of nested tables) tag not found
+        if(!!o){
+            var tag_n = o.tagName;
+            if(tag_n && tag_n.toUpperCase() == 'TR' && c++ == l) break;
+        }else break;
+        o = o.parentNode;
+    }
+
+    if(o){ //if TR tag found, means the element placed somewhere in the row
+        if(op == 'D') o.parentNode.removeChild(o); //removes the row
+        else if(op == 'H') o.style.display = 'none'; //hides the row
+        else if(op == 'S') o.style.display = 'table-row'; //shows the row
+    }
+};
+
+/**
+ * Fills the elements with specified values.<br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * [input type=text name=textBox /]<br/>
+ * [input type=text name=textBox /]<br/>
+ * [input type=text name=textBox /]<br/>
+ * <br/>
+ * fillElements('textBox','Debasis Jana');<br/>
+ * <br/>
+ * @param el_n element name
+ * @param v the value to be filled with
+ * @param h additional handler
+ * @param w the window reference(if not specified then self window)
+ */
+function fillElements(el_n,v,h,w){
+    var a = $E('N',el_n,w);
+    var l = a.length;
+    var f = isFunction(h) ? function(el){h(el);} : function(){};
+    for(var i=0;i<l;i++){
+        a[i].value = v;
+        f(a[i]);
+    }
+};
+
+/**
+ * Resets the elements with empty value.<br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * [input type=text name=textBox /]<br/>
+ * [input type=text name=textBox /]<br/>
+ * [input type=text name=textBox /]<br/>
+ * <br/>
+ * resetElements('textBox');<br/>
+ * <br/>
+ * @param el_n the element name
+ * @param w the window reference(if not specified then self window)
+ */
+function resetElements(el_n,w){
+    fillElements(el_n, '',w);
+};
+
+/**
+ * Adds to select box with the provided options.<br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * [select id=selectBox][/select]<br/>
+ * <br/>
+ * add2SB('selectBox',[{value:'TOM',text:'Tom'},{value:'DICK',text:'Dick'},{value:'HARRY',text:'Harry'}]);<br/>
+ * The options will be added to the selectbox.<br/>
+ * <br/>
+ * @param id the select box element ID
+ * @param options the options as array of JSON object, {value:option_value, text: option text to display}
+ * @param w the widows reference, if not specified then set to self windows
+ */
+function add2SB(id,options,w){
+    var o = $e(id,w);
+    var l = options.length;
+    for(var i=0;i<l;i++){
+        o.options.add(new Option(options[i].text,options[i].value)); //adds the options to select box
+    }
+};
+
+/**
+ * Checks whether string is empty.<br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * "".isEmpty(); //returns true<br/>
+ * "Debasis Jana".isEmpty(); //returns false<br/>
+ * <br/>
+ * @return returns true if empty otherwise false
+ */
+String.prototype.isEmpty = function(){
+    return this.length == 0;
+};
+
+/**
+ * Checks whether array is empty.<br/>
+ * <span style='font-family:Verdana, Arial, Helvetica, sans-serif;font-weight:bold;font-size:16'>Example: </span><br/>
+ * <br/>
+ * [].isEmpty(); //returns true<br/>
+ * [1,2,3].isEmpty(); //returns false<br/>
+ * <br/>
+ * @return returns true if empty otherwise false
+ */
+Array.prototype.isEmpty = function(){
+    return this.length == 0;
+};
+
+/**
+ * The magic of context execution, when a function call bound to a customized object.
+ * A customized object will be operating object on a function.
+ * @param obj customized object, supposed to be operating on the function
+ */
+Function.prototype.bind = function (obj) {
+    var fn = this; //function object
+    return function () {
+        return fn.apply(obj, arguments); //changes context execution operating object
+    };
+};
+
+/**
+ * gets an element position(left, top position)
+ * @param el_ref element reference, either element ID or element reference object
+ * @param win_ref window reference, in case of element refrence sent as element ID(in that case window refrence to get element reference object)
+ * @return returns a JSON object which left and top property to represet position of that element
+ */
+function getElementPosition(el_ref,win_ref){
+    var win = !isUndefined(win_ref) ? win_ref : window;
+    var el = isString(el_ref) ? $e(el_ref,win) : el_ref;
+    var l = 0, t = 0;
+    do{
+        l += el.offsetLeft;
+        t += el.offsetTop;
+    }while(!isNull(el = el.offsetParent));
+    return {left: l, top: t};
+};
+
+/**
+ * its specially for comparing customized object
+ * @comparator it helps to compare obejct with another object
+ * @return returns true if objects are equal, otheriwse false
+ */
+Object.prototype.compare = function(o, comparator){
+    if(isFunction(comparator)){
+        return comparator(this,o);
+    }else return false;
+};
+
+/**
+ * Shallow object cloning.
+ */
+Object.prototype.clone = function(){
+    if(isFunction(this)) return this;
+    if(!isArray(this)){ //non array object
+        var o = new Object;
+        for(var p in this){
+            eval('o.' + p + ' = this.' + p + ';');
+        }
+    }else{ //array object
+        var o = [];
+        var l = this.length;
+        for(var i=0;i<l;i++){
+            var d = this[i];
+            o.push(d.clone()); //array elements are getting clone only one level
+        }
+    }
+    return o;
+};
+
+/**
+ * supposed to get nearest color for a given color, its not wokring properly. supposed to be corrected.
+ * @param color color code of which the nearest color code to be extracted
+ * @param light whether resultant color will be lighter or darker than the specified color
+ */
+function getNearestColor(color,light){
+    var r, g, b;
+    if(isString(color) && color.length >= 6){
+        var c = color;
+        if(color.startsWith("#")) c = c.substring(1);
+        r = parseInt(c.substring(0,2),16);
+        g = parseInt(c.substring(2,4),16);
+        b = parseInt(c.substring(4,6),16);
+    }else if(!isNaN(color)){
+        var c = getRGB(color);
+        r = c.red;
+        g = c.green;
+        b = c.blue;
+    }else r = g = b = 0;
+    var s = (light ? "+" : "-") + 1 ;
+    eval("var o = {red: r " + s + ", green: g " + s + ", blue: b" + s + "};");
+    return "#" + getColorFromRGB(o).toString(16);
+};
+
+/**
+ * gets red, green and blue values from a color code
+ * @param color color code
+ */
+function getRGB(color){
+    if(isNaN(color)) return {red: 0, green: 0, blue: 0};
+    return {red: color >> 16, green: (color >> 8) & 0x00ff, blue: color & 0x0000ff};
+};
+
+/**
+ * get color code from RGB value
+ * @param color JSON object represents red, green value of a color
+ */
+function getColorFromRGB(color){
+    var r = color.red;
+    var g = color.green;
+    var b = color.blue;
+
+    return (r << 16) + (g << 8) + b;
+};
+
+/**
+ * this is server side scripting convention. when check box values are sent to server side only checked values sent, rest discarded by browser. so to each if a checkbox is attached for row marker then marked row/rows cant be indentified.<br/>
+ * in that case a hidden field attached behind the check box to track which row checked, when checkbox checked then field gets value 'Y' otheriwse 'N'
+ * @param o checkbox object
+ */
+function updatePreviousField4Checkbox(o){
+    o.previousSibling.value = o.checked ? 'Y' : 'N';
+};
+
+/**
+ * gets unique ID(a numeric number)
+ */
+function getUniqueID(){
+    var cur_date = new Date();
+    return Date.UTC(
+        cur_date.getFullYear(), cur_date.getMonth(), cur_date.getDate(),
+        cur_date.getHours(), cur_date.getMinutes(), cur_date.getSeconds(),
+        cur_date.getMilliseconds()
+        );
+};
+
+/**
+ * gets parameters from a form
+ * @param f form id or name
+ * @param win in which window the form resides
+ * @return returns parameter array in key-value pair
+ */
+function getFormParameters(f, win){
+    if(isUndefined(win)) win = window;
+    var frm = $e(f);
+    if(frm == null){
+        frm = win.document.forms[f];
+    }
+    if(isUndefined(frm) || frm == null) return [];
+    var p = [];
+    var els = frm.elements;
+    var l = els.length;
+    for(var i=0;i<l;i++){
+        var t = els[i].tagName;
+        if(!isUndefined(t)){
+            t = t.toUpperCase();
+            if(t == 'INPUT' || t == 'SELECT' || t == 'TEXTAREA'){
+                var n = els[i].name;
+                var v = els[i].value;
+                p.push({name: n, value: v});
+            }
+        }
+    }
+    return p;
+};
+
+function getEscapedHTMLText(html){
+    //replaces common special characters
+    return html.replace(
+    /&/g, "&amp;").replace(
+    /"/g, "&quot;"
+    ).replace(
+        />/g, "&gt;"
+    ).replace(
+        /</g, "&lt;"
+    ).replace(
+        / /g, "&nbsp;"
+    );
+};
+
+function insideAnElement(cor, el){
+    var l = el.offsetLeft, t = el.offsetTop;
+    var r = l + el.offsetWidth, b = t + el.offsetHieght;
+    var x = cor.x, y = cor.y;
+
+    return x >= l && x <= r && y >= t && y <= b;
+};

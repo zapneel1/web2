@@ -1,0 +1,2672 @@
+/*
+ * Copyright (c) 2008 Indian Institute of Technology,Kharagpur. All Rights Reserved.
+ *
+ * This software is the confidential and proprietary information of Indian Institute of Technology,Kharagpur.
+ * You shall not disclose such Confidential Information and shall use it only in
+ * accordance with the terms of the license agreement you entered into with IITKGP.
+ * 
+ * Author     : Debasis Jana
+ * Description: Well known GUI elements definitions
+ * Verson     : 0.1
+ */
+
+/**
+ * The GUI constants are defined here.
+ */
+var GUI_CONSTANTS = {
+    __APP_PATH__ : null, //application root path
+    __IMAGE_PATH__: null, //base image absolute path, where the core images supposed to be kept
+    __CSS_PATH__: null //CSS root path
+};
+
+/**
+ * Data grid window(tabular form) constructor. Its not so generic, most of the functions supposed to be defined. Simply its draws the outer skeleton
+ * and the data representation, header representation, data-row interaction ..most of the functions are supposed to be defined.
+ * @param data the array of data JSON object
+ * @param props the properties of data window grid, its JSON object..
+ * it contains ....<br/>
+ * title: window title<br/>
+ * height: window height<br/>
+ * width: window width<br/>
+ * drawHeaderFunction: header function which draws headers<br/>
+ * drawRowFunction: it draws each row<br/>
+ * NB: height or width may not be mentioned, then auto resizing can be done by calling <b>resize</b> method
+ */
+function DataGridWindow(data,props){
+    this.title = props.title; //window title
+    this.height = props.height; //window height
+    this.width = props.width; //window width
+
+    this.drawHeaderFunction = props.drawHeaderFunction; //user defined header draw function
+    this.drawRowFunction = props.drawRowFunction; //user defined each draw row function
+    this.noDataMessage = props.noDataMessage; //if no data found then this message gets flushed
+    
+    this.data_size = data.length; //how many datas
+
+    this.id = getUniqueID(); //gets unique ID
+
+    this.draw = function(){ //gets the HTML for whole grid window
+        var HTML = [];
+        HTML.push("<table border=0 cellpadding=0 cellspacing=0><tbody><tr><td class=window-title>"
+            + this.title + "</td></tr><tr><td><div style='height:" + this.height +"px;width:" + this.width + "px;overflow:auto;background-color:white;margin:0px;padding:0px;'>");
+        HTML.push("<table border=0 cellpadding=0 cellspacing=0 width=100% id='DGWMAINWINDOW_" + this.id + "'><tbody>");
+        var l = data.length;
+        if(this.drawHeaderFunction && l > 0) HTML.push(this.drawHeaderFunction()); //header required when data available, otherwise given "no data message" shown
+        for(var i=0;i<l;i++){
+            HTML.push(this.drawRowFunction(data[i],i)); //draws each row when data gets iterated
+        }
+        if(l == 0) HTML.push("<tr><td nowrap class='window-data no-data'>" + this.noDataMessage + "</td></tr>"); //if no data available then given "no data message" shown
+        HTML.push("</tbody></table></div></td></tr></tbody></table>");
+        var html = HTML.join("");
+        return html;
+    };
+
+    this.resize = function(parent){ //auto resizing method, its not automated. it needs a call.
+        var div = parent.firstChild.rows[1].cells[0].firstChild;
+        var div_tab = div.firstChild;
+        div.style.width = div_tab.offsetWidth + 'px';
+        div.style.height = (div_tab.offsetHeight + 15) + 'px';
+    };
+
+    this.autoResizeWidth = function(parent){
+        var div = parent.firstChild.rows[1].cells[0].firstChild;
+        var div_tab = div.firstChild;
+        div.style.width = (div_tab.offsetWidth + 18) + 'px';
+    }
+
+    this.drawLoading = function(loading_text){
+        drawLoading('DGWMAINWINDOW_' + this.id, loading_text);
+    };
+
+};
+
+/**
+ * resizes iFrame automatically
+ * @param iFrame iFrame reference, not window reference(but elemental reference, basically obtained by <b>getElementById('id')</b> call)
+ * @param setWidth flag, which mentiones whether width supposed to be set or left unchanged
+ */
+function autoIFrameResize(iFrame,setWidth){
+    if(iFrame == null) return;
+    var w = 0, h = 0;
+    var child_nodes = iFrame.contentDocument.body.childNodes; //gets first level all children inside the iFrame
+    var s = child_nodes.length;
+    for(var i=0;i<s;i++){ //iterates children
+        var _h = child_nodes[i].offsetHeight; //gets height of each element
+        if(!!!_h) continue; //if offsetWidth not supported
+        h += _h; //increments the height
+        var _w = child_nodes[i].offsetWidth; //gets width of each element
+        if(_w > w) w = _w; //if previous width less than current width then set the maximum width with current one
+    }
+
+    //resizes the iFrame
+    iFrame.style.height = (h + 3) + 'px';
+    if(setWidth) iFrame.style.width = w + 'px';
+};
+
+/**
+ * tabbed button window, which has tabbed button and on clicking each button a handler gets called.
+ * tabbed button window constructor
+ * @param data the data array of JSON object, 
+ * it contains....<br/>
+ * text: displaying name<br/>
+ * NB: the structure supposed to be changed, more properties to be added<br/>
+ * @param props the properties of tabbed button window, its a JSON object,
+ * it contains ....<br/>
+ * image_path: image root path to acces some image resources<br/>
+ * button_id: the initials of button id, suppose button_id is TABBED-BUTTON ..then tabs will have id like, TABBED-BUTTON-0, TABBED-BUTTON-1....so on<br/>
+ * width: window area width<br/>
+ */
+function TabbedButton(data,props){
+    this.width = props.width; //window width
+    this.data = data; //data to be tabbed
+    this.image_path = props.image_path; //base image path for a accessing core images
+
+    this.prevButton = null; //previosu button for holding previous active button
+    this.button_id = props.button_id;
+
+    /**
+     * draw function for tabbed button window
+     * @return returns HTML code for the window, HTML code supposed to be attched with some element
+     */
+    this.draw = function(){
+        var tab_HTML = [];
+        var l = data.length;
+        tab_HTML.push("<table id=tabbed_tab border=0 cellpadding=0 cellspacing=0><tbody><tr>");
+        
+        //draws the tabbed button
+        for(var i=0;i<l;i++){
+            tab_HTML.push("<td style='padding: 0px 3px 0px 0px' valign=bottom><table border=0 cellpadding=0 cellspacing=0><tbody><tr><td id='" + this.button_id + "-" + i + "' class='window-data tabbed-data tabbed-inactive' valign=bottom>" + data[i].text + "</td></tr></tbody></table>");
+        }
+        tab_HTML.push("</tr></tbody></table>");
+
+        var HTML = [];
+        HTML.push("<table border=0 cellpadding=0 cellspacing=0><tbody><tr>");
+
+        //in case of button overflows the window area then a next arrow and previous arrow button attached to framework
+        HTML.push("<td align=left valign=middle id='prevTD' onclick=\"scrollTabbedDiv('l','tabbed_div','tabbed_tab')\" style='padding-right:3px'><img src='" + this.image_path + "/core/prev.gif' alt='prev' style='width:15px;height:15px' /></td>"); //previous button to get back older tabbed buttons
+        HTML.push("<td align=center valign=bottom style='border-bottom:1px solid black;'><div id=tabbed_div style='overflow:hidden;width:" + width + "px;border-width:0px;'>" + tab_HTML.join("") + "</div></td>"); //attaches drawn tabbed buttons
+        HTML.push("<td align=right valign=middle id='nextTD' onclick=\"scrollTabbedDiv('r','tabbed_div','tabbed_tab')\" style='padding-left:3px'><img src='" + this.image_path + "/core/next.gif' alt='next' style='width:15px;height:15px'/></td>"); //next button to get newer tabbed buttons
+        HTML.push("</tr></tbody></table>");
+
+        return HTML.join("");
+    };
+
+    /**
+     * controls tabbed button click. when tabbed button click fires a user defined handler.
+     * when an another button clicked then previous clicked button de-activated and new one is activated/hilighted
+     * @param e the event object
+     */
+    this.controlTabbedButton = function(e){
+        //browser compatible event object and source element
+        var evt = !!window.event  ? window.event : e;
+        var button = !!evt.srcElement  ? evt.srcElement : evt.target;
+
+        //deactivates previous button and activates the new one
+        //user defined handler in-corporation is left here, supposed to be edited soon.
+        if(this.prevButton) this.prevButton.className = 'window-data tabbed-data tabbed-inactive';
+        button.className = 'window-data tabbed-data tabbed-active';
+        this.prevButton = button;
+    };
+
+    /**
+     * its not automated. it needs a call to work.
+     * after tabbed button widow setup done then its supposed to called and resizes the window
+     */
+    this.autoResize = function(){
+        var tabbed_tab = $e('tabbed_tab');
+        var tabbed_div =$e('tabbed_div');
+
+        tabbed_div.style.height = tabbed_tab.offsetHeight + 'px'; //only height is resized, because width overflow maintained by next/previous button
+    };
+
+    /**
+     * after drawing of tabbed button window done then it attaches handlers to GUI interaction elements, so that proper interaction takes place.
+     * its not automated, it needs a call to work
+     */
+    this.addEventHandlers = function(){
+        var l = data.length;
+        for(var i=0;i<l;i++){ //attaches event handler to each tabbed button
+            var button = $e(this.button_id + "-" + i);
+            addEvent('click',button,this.controlTabbedButton.bind(this));
+        }
+    };
+};
+
+/**
+ * external function, which enables a div to scroll automatically. Basically it gets called for getting hidden tabbed buttons for overflown tabbed window.
+ * @param where to whichi direction scroll takes place
+ * @param div_id div reference
+ * @param tab_id the table reference, which is attached to tabbed button window
+ */
+function scrollTabbedDiv(where,div_id,tab_id){
+    var tabbed_div = $e(div_id);
+    var tabbed_tab = $e(tab_id);
+
+    var l = tabbed_div.scrollLeft;
+    var w = tabbed_tab.offsetWidth;
+    var s = tabbed_div.offsetWidth;
+
+    if(where == 'l'){ //if DIV supposed to be scrolled on left side
+        var p = l - s; //decrease by div given width
+        if(p <= 0) p = 0; //if position comes to -1 then position set to 0
+        tabbed_div.scrollLeft = p;
+    }else if(where == 'r'){ //if DIV supposed to be scrolled on right side
+        var p = l + s; //increase by div given width
+        if(p > w) p = w; //if position excceds the given width then position set to given width
+        tabbed_div.scrollLeft = p;
+    }
+};
+
+/**
+ * automatic DIV resize function
+ * @param div_ref div reference
+ */
+function autoDivResize(div_ref){
+    //same logic as applied in case of iFrame resize
+    var children = div_ref.childNodes;
+    var l = children.length;
+    var w = 0,h = 0;
+    for(var i=0;i<l;i++){
+        h += children[i].offsetHeight;
+        var _w = children[i].offsetWidth;
+        if(_w > w) w = _w;
+    }
+    div_ref.style.width = w + 'px';
+    div_ref.style.height = h + 'px';
+};
+
+/**
+ * List of values window. It pops up a window having list of data, from which single or multiple data can be selected.
+ * @param props properties of LOV window<br/>
+ * image_path: base image path for accessing core images<br/>
+ * url: the url which retrieves JSON data from the given query code<br/>
+ * title: LOV window title<br/>
+ * cols: column(represented by JSON object) details array, JSON object contains properties (name: quesy column name, display_name: columnn header display name, display: whether its to be displayed or not)<br/>
+ * query_code: this is the understanding between server side scripting and this component. Lets go for details ...
+ * Against each code a query is stored in database.<br/>
+ * params: JSON array for additional parameters for SQL query. JSON contains name and value properties. its basically describes about name value pair.
+ * its the understanding between query stored in data for query code and client side.<br/>s
+ * height: LOV window height specified explicitly, where as width is auto<br/>
+ * left: left position of LOV window<br/>
+ * top: top position of LOV window<br/>
+ * serial_no: its a flag, whether serial no enables or not, with display data<br/>
+ * multiple_selection: its a flag, whether multiple selection allowed or not<br/>
+ * case_sensitive_search: its a flag, whether search is case sensitive or not<br/>
+ * close_after_done: its a flag, whether LOV window gets closed after selection or not<br/>
+ * handler: function reference(gets called when done button is clicked)
+ * @param win_ref window reference, if not mentioned, then current window used
+ */
+function LOV(props,win_ref){
+    this.referenceElement = props.reference;
+    this.image_path = isUndefined(props.image_path) ? GUI_CONSTANTS.__IMAGE_PATH__ : props.image_path; //core image path for accessing core images
+    this.url = props.url; //url for retrieving data for LOV display
+    this.title = props.title; //LOV window title
+    this.cols = props.cols; //column details
+    this.query_code = props.query_code; //query code for getting a particular query
+    this.params = !isUndefined(props.params) ? props.params : []; //additional parameters for executing the query
+    this.height = props.height; //LOV window height
+    this.left = props.left; //LOV window left position
+    this.top = props.top; //LOV window top position
+    this.serial_no = !isUndefined(props.serial_no) ? props.serial_no : true; //whether serail no comes along with display or not
+    this.multiple_selection = !isUndefined(props.multiple_selection) ? props.multiple_selection : false; //whether multiple selection allowed or not
+    this.case_sensitive_search = !isUndefined(props.case_sensitive_search) ? props.case_sensitive_search : false; //whether serach is case sensitive or not
+    this.close_after_done = !isUndefined(props.close_after_done) ? props.close_after_done : true; //whether LOV winodw gets closed or not
+
+    this.data = null; //after executing the query data gets stored here
+    this.selected_rows = [];  //selected row reference
+    this.selected_row_indices = []; //selected row indices
+    this.prev_row_ref = null; //previous selected row reference
+
+    this.handler = props.handler; //user defined handler, it gets called when user clicks on ok/done button
+
+    //unique id for indentifying each LOV
+    this.id = getUniqueID();
+
+    this.win_ref = !!win_ref ? win_ref : window;
+
+    /**
+     * it pops up the LOV window
+     */
+    this.pop = function(){
+        var re = this.referenceElement;
+        var f = !isUndefined(re);
+        var pn = f ? re.parentNode : null;
+        var w = this.win_ref;
+        var ld = null;
+        
+        var ld_fn = function(){
+            if(f){
+                re.style.display = 'none';
+                ld = w.document.createElement("div");
+                ld = pn.insertBefore(ld, re);
+                drawLoading(ld, "<Strong style='color:green'>Please wait...</strong>", win_ref);
+            }
+        };
+
+        var r_ld_fn = function(){
+            if(f){
+                re.style.display = 'block';
+                pn.removeChild(ld);
+                ld = null;
+                re.focus();
+            }
+        };
+
+        if(this.data == null){ //no need for each time data retrieving, once it retrieved
+            var ajax_params = [
+                {name:'json-object-name', value:'json_object_name_' + this.id} //unique JSON object name
+                ];
+            ajax_params.add(this.params);
+            var ofs = props.objectFromSession;
+            if(isUndefined(ofs)){
+                ajax_params.add({name: 'query-code', value: this.query_code}); //query code for retreiving data
+                var ds = props.adm_ds_name;
+                if(!isUndefined(ds)) ajax_params.add({name: 'adm-ds-name', value: ds});
+                ds = props.required_ds_name;
+                if(!isUndefined(ds)) ajax_params.add({name: 'required-ds-name', value: ds});
+            }
+            else ajax_params.add({name: "object-from-session", value: ofs});
+            var ajax = new Ajax.Initiate(this.url, "GET", ajax_params, {
+                success: (function(response){
+                    eval(response);
+                    this.data = eval('json_object_name_' + this.id);
+
+                    this.drawLOV(this.processData()); //draws LOV window
+                    this.attachEvents(); //attaches event to LOV window to make it interactble
+                    r_ld_fn();
+                }).bind(this),
+                error: (function(code){
+                    r_ld_fn();
+                    this.handleError(code);
+                }).bind(this)
+            }, true);
+            Ajax.call(ajax);
+            ld_fn();
+        }else{
+            ld_fn();
+            this.drawLOV(this.processData());
+            this.attachEvents();
+            r_ld_fn();
+        }
+    };
+
+    /**
+     * its called to process data and prepare HTML code
+     */
+    this.processData = function(){
+        var HTML = [];
+        HTML.push("<table border=0 cellpadding=0 cellspacing=0 id='LOVDATATAB_" + this.id + "' width=100% ><tbody>");
+        var l = this.data.length;
+        if(l > 0){
+
+            var s = this.cols.length;
+            HTML.push("<tr>");
+            if(this.serial_no) HTML.push("<th class='LOV-header' nowrap>Sl No.</th>"); //if serail no enabled then serial no header added
+            HTML.push("<th class='LOV-header' nowrap>&nbsp;</th>");
+            for(var i=0;i<s;i++){ //dislays column header
+                var d = this.cols[i].display;
+                d = isUndefined(d) ? true : d;
+                if(!d) continue; //if column is not supposed to be displayed
+                HTML.push("<th class='LOV-header' nowrap>" + this.cols[i].display_name + "</th>");
+            }
+            HTML.push("</tr>");
+            for(var i=0;i<l;i++){
+                HTML.push("<tr id='LOVTR_" + i + "_" + this.id + "' style='background-color:white;'>");
+                if(this.serial_no) HTML.push("<td class='LOV-data' nowrap>" + (i+1) + ".</td>");
+                HTML.push("<td class='LOV-data' nowrap><input type=checkbox id='LOVROWSELECTOR_" + i + "_" + this.id + "' /></td>");
+                for(var j=0;j<s;j++){
+                    var d = this.cols[j].display;
+                    d = isUndefined(d) ? true : d;
+                    if(!d) continue; //skips if column is not supposed to be displayed
+                    var v = eval('this.data[i].' + this.cols[j].name);
+                    HTML.push("<td class='LOV-data' nowrap>" + (v.isEmpty() ? "&nbsp;" : v) + "</td>");
+                }
+                HTML.push("</tr>");
+            }
+
+        }else{
+            HTML.push("<tr><td class='window-data no-data'>No data avialable</tr>");
+        }
+        HTML.push("</tbody></table>");
+
+        return HTML.join("");
+    };
+
+    /**
+     * error handler when LOV window cant be loaded
+     */
+    this.handleError = function(error_code){
+        alert("Ooopss!! Error page loading with code: " + error_code);
+    };
+
+    /**
+     * places the HTML into LOV window
+     */
+    this.drawLOV = function(content_html){
+        var HTML = [];
+        //prepares the HTML code to be drawn
+        HTML.push("<table boder=0 cellpadding=0 cellspacing=0><tbody>");
+        HTML.push("<tr><td class='window-title'>" + this.title + "</td>");
+        HTML.push("<td class='window-title' align=right valign=middle ><img id='LOVCloseButton_" + this.id + "' style='width:15px;height:15px;cursor:pointer;' src='" + this.image_path + "/core/close.jpg' alt='close' /></td></tr>");
+        HTML.push("<tr><td align=center colspan=2><table border=0 cellpadding=0 cellspacing=0 width=100% ><tbody><tr>");
+        HTML.push("<td align=right class='LOV-search-header'>Search: </td>");
+        HTML.push("<td align=left class='LOV-search-header'><input type=text id='LOVSEARCHBOX_" + this.id + "' size=12 /></td>");
+        HTML.push("<tr><td align=center colspan=2><div id='LOVDATADIV_" + this.id + "' style='width:auto;height:" + this.height + "px;border:none;overflow:scroll;padding:0px;margin:0px;border-bottom:1px solid gray'>");
+        HTML.push(content_html); //main LOV content
+        HTML.push("</div></td></tr>");
+        HTML.push("<tr><td align=center valign=middle colspan=2 style='padding:5px;background-color:#eeeeee;'>");
+        HTML.push("<input id='LOVDONEBUTTON_" + this.id + "' type=button value=' Done ' /></td></tr>");
+        HTML.push("</tbody></table>");
+
+        //appends physically to the target window
+        var div = $e('LOVDIV_' + this.id);
+        if(!div){
+            div = this.win_ref.document.createElement('DIV');
+            this.win_ref.document.body.appendChild(div);
+            div.id = 'LOVDIV_' + this.id; //assigns an ID
+            div.className = 'LOV-win';
+        }
+
+        //repositions the LOV
+        div.style.left = this.left + 'px';
+        div.style.top = this.top + 'px';
+        
+        //places the whole HTML code for LOV
+        div.innerHTML = HTML.join("");
+
+        var data_tab = $e('LOVDATATAB_' + this.id, this.win_ref);
+        var data_div = $e('LOVDATADIV_' + this.id, this.win_ref);
+        data_div.style.width = data_tab.offsetWidth + 'px'; //sets the data container width to avoid horizontal scroll bar
+
+        var c = div.firstChild;
+        //sets width/height
+        div.style.height = c.offsetHeight + 'px';
+        div.style.width = c.offsetWidth + 'px';
+
+        this.closed = false;
+    };
+
+    /**
+     * attaches event to make LOV window interactable
+     */
+    this.attachEvents = function(){
+        var close_b = $e('LOVCloseButton_' + this.id, this.win_ref);
+        addEvent('click', close_b, this.close.bind(this));
+
+        var i = 0;
+        while(true){
+            var row_selector = $e('LOVROWSELECTOR_' + i + '_' + this.id);
+            //var tr_row_selector = $e('LOVTR_' + i + '_' + this.id);
+            //if(tr_row_selector) addEvent('click',tr_row_selector,this.selectRow.bind(this));
+            if(row_selector) addEvent('click',row_selector,this.selectRow.bind(this)); //row selection code attachment
+            else break;
+            i++;
+        }
+        
+        //attaches search/done button click handler
+        addEvent('keyup',$e('LOVSEARCHBOX_' + this.id, this.win_ref),this.search.bind(this));
+        addEvent('click', $e('LOVDONEBUTTON_' + this.id, this.win_ref), this.done.bind(this));
+    };
+
+    /**
+     * searches data
+     */
+    this.search = function(e){
+        //browser compatible event object and source element
+        var evt = !!window.event  ? window.event : e;
+        var button = !!evt.srcElement  ? evt.srcElement : evt.target;
+
+        var v = button.value;
+        this._search(this.case_sensitive_search ? v : v.toLowerCase()); //actual search method
+    };
+
+    /**
+     * for internal use(actual search operation)
+     */
+    this._search = function(val){
+        var l = this.data.length;
+        var s = this.cols.length;
+        var tab = $e('LOVDATATAB_' + this.id, this.win_ref);
+        //sequential search
+        for(var i=0;i<l;i++){
+            for(var j=0;j<s;j++){ //iterates all columns
+                if(!this.cols[j].display) continue; //some column may not be visible according to the user's requirement
+                var v = eval('this.data[i].' + this.cols[j].name + (this.case_sensitive_search ? '' : '.toLowerCase()'));
+                if(v.startsWith(val)) break; //search looks for only starting characters
+            }
+            if(j == s) tab.rows[i+1].style.display = 'none'; //hides the row if tha search text does not match with the row data
+            else tab.rows[i+1].style.display = Browser.mozilla ? 'table-row' : 'block'; //make visible only those rows(whose value matches with the search text)
+        }
+    };
+
+    /**
+     * row selection function, row gets selected when checkbox(attached with the row) selected
+     */
+    this.selectRow = function(e){
+        //browser compatible event object and source element
+        var evt = !!window.event  ? window.event : e;
+        var button = !!evt.srcElement  ? evt.srcElement : evt.target;
+
+        var type = button.tagName.toLowerCase();
+        var checked = null;
+        var TR = null;
+        var rowIndex = null;
+        if(type == 'input'){ //if input checkbox clicked
+            checked = button.checked; //row selected/deselected
+            TR = button.parentNode.parentNode;
+            rowIndex = TR.rowIndex;
+        }/*else if(type == 'tr'){
+            var checkbox = button.cells[this.serial_no ? 0 : 1].firstChild;
+            checked = !checkbox.checked;
+            TR = button;
+            rowIndex = TR.rowIndex;
+        }*/
+
+        /**
+         * previous row concepts comes with single selection
+         * 4 multiple selection no need to uncheck the previous one
+         **/
+        if(checked){ //if row selected
+            TR.style.backgroundColor = '#cccccc';
+            if(!this.multiple_selection && this.prev_row_ref){ //if multiple selection not allowed then uncheck previoous row(if exists)
+                this.prev_row_ref.cells[this.serial_no ? 1 : 0].firstChild.checked = false;
+                this.prev_row_ref.style.backgroundColor = 'white';
+
+                this.selected_row_indices.remove(this.prev_row_ref.rowIndex - 1,true); //removes the previous entry from selected row indices
+            }
+            if(!this.multiple_selection) this.prev_row_ref = TR; //saves the previous row reference
+
+            this.selected_row_indices.push(rowIndex - 1); //adds the current row index into selected row indices
+        }else{ //if not checked then simply deselect the row
+            TR.style.backgroundColor = 'white';
+            if(!this.multiple_selection){
+                this.prev_row_ref = null; //if multiple selection is not allowed, then previous row is null
+            }
+
+            this.selected_row_indices.remove(rowIndex - 1,true); //removes the current entry
+        }
+    };
+
+    /**
+     * gets called when done button clicked
+     */
+    this.done  = function(){
+        var l = this.selected_row_indices.length;
+        if(l == 0){ //if no row selected then done operation is not allowed
+            alert('First select a row, or close it.');
+            return;
+        }
+        if(this.close_after_done) this.close(); //if close after done flag is on only then LOV window gets closed
+        
+        //cllects selected rows
+        for(var i=0;i<l;i++){
+            this.selected_rows[i] = this.data[this.selected_row_indices[i]];
+        }
+        this.handler.apply(this); //then call the user defined handler
+    };
+
+    /**
+     * closes LOV window
+     */
+    this.close = function(){
+        var div = $e('LOVDIV_' + this.id, this.win_ref);
+        div.parentNode.removeChild(div);
+        this.closed = true;
+    };
+
+    this.setPosition = function(p){
+        var l = p.left, t = p.top;
+        this.left = l;
+        this.top = t;
+    };
+
+    this.setData = function(d){
+        this.data = d;
+    };
+
+    this.getData = function(d){
+        return this.data;
+    };
+
+    this.setReferenceElement = function(el){
+        this.referenceElement = el;
+    }
+};
+
+function registerLOV(el, props, comp, win_ref){
+    if(el == null) return;
+    if(isString(el)) el = $e(el);
+    if(el.tagName != 'INPUT' || el.type != 'text') return;
+    var temp_lov = new LOV(props, win_ref);
+    if(!isFunction(comp)) comp = function(o1, o2){
+        return o1.query_code = o2.query_code && o1.win_ref == o2.win_ref;
+    };
+    addEvent("click", el, function(){
+        var lov = PoolManager.getObject("--LOV-POOL--", temp_lov, comp);
+        if(lov != temp_lov){ //found
+            var d = lov.getData;
+            var id = lov.id;
+            lov = temp_lov;
+            lov.setData(d);
+            lov.id = id;
+        }
+        if(!lov.closed && lov.referenceElement == el) return;
+        var p = getElementPosition(el, win_ref);
+        lov.setPosition({
+            left: p.left + 1,
+            top: p.top + el.offsetHeight + 1
+            });
+        lov.setReferenceElement(el);
+        lov.pop();
+    });
+};
+
+/**
+ * NB: DGW: data grid window
+ * enables drawing automated data grid window. it includes mutiple features in DGW.
+ * @param data json data array(each entry contains column name and column value). data should be like this ... <br/>
+ * [{col1: col_val, col2: col_val ..... }, {col1: col_val, col2: col_val ..... } .... ]
+ * @param cols column details array. each column entry contains a JSON object. JSON object contains..<br/>
+ * name: column name which is the property of JSON object, which is stored in the data list, if name is invalid then specifiy generatesHTML function<br/>
+ * generatesHTML: if name is not specified then this function must be provided to generate HTML of the column. the function takes whole data row. if this fucntion not specified then empty value put into the cell.<br/>
+ * wrapping: cell value/HTML whether to be wrapped or not. default is true<br/>
+ * tooltip: whether to place cell tool tip, default is no tooltip.<br/>
+ * display_name: the column name or HTML code which will be displayed in table header<br/>
+ * search: this is a flag which enables search on that column, default is true.<br/>
+ * searchHTML: default search function searches for the cell value/HTML but this function takes data row and returns the HTML value to be matched<br/>
+ * match: this a function which enables customized search on a column. basically default search function matches with the starting characters, if any customized search frunction defined then customized search done on that column.</br/>
+ * groupData: this function takes the whole data row and returns the value/HTML for a column(on which dataGroupRequired flag is on) to be collected to perform aggregate function.<br/>
+ * editable: whether the field is editable for change the value and send it to server side for saving into DB.<br/>
+ * fieldName: if editable flag is on then field name must be provided to send value against which parameter name.<br/>
+ * type: if editable flag is on then this parameter matters. which type of editble field it is, thats indentified by this value. valid types are plain-text and date, only two types are defined. if type is plain-text then the field is disbaled. default is plain-text.<br/>
+ * align: text alignment of the cell value/HTML. default is left.<br/>
+ * dataGroupRequired: on which column/columns aggregate functions to be applied. by default column value/HTML collected to perform aggregate functions. default is false.<br/>
+ * dataRequired: only those data supposed to be extracted for sending data to server side(in case of window data edit), default is false<br/>
+ * getData: its a function which takes current cell reference(to access cell elements) and returns data which supposed to be sent to server side. default value taken from cell value<br/>
+ * @param filter function to filter data(non-filter data not displayed), the function takes current processing data row
+ * @param props DGW features, the properties are listed below..<br/>
+ * title: window title, no default value<br/>
+ * height: window height(in px), default "auto"<br/>
+ * width: window width(in px), default "auto"<br/>
+ * data_separation: how each data separated(options are cell-wise/row-wise), default is cell-wise. cell-wise means each data contains a border and row-wise means each row separated by border.<br/>
+ * row_border: row contains a border or not(true/false), default true<br/>
+ * group_row_separation: whether group row contains border(true/false), default is true<br/>
+ * serial_no: whether each row dontains a serial no(true/false), default is false. for grouping block data row starts with serial no 1.<br/>
+ * bg_color: background color code of the DGW, default is inherit.<br/>
+ * no_data_message: if data not found then a string value no-message flushed, default is "No data found for this criteria...."<br/>
+ * search_enabled: whether search options come or not(true/false), default is true<br/>
+ * case_sensitive_search: whether search on specified column will be case-sensitive or not(true/false), default is false<br/>
+ * searchLabel: search label(a string value), default is "Search: "<br/>
+ * grouping: whether data will be grouped or not, its a grouping function. function accepts two parameters(previous and current data row) and the function decides when to start with a new group block. if function returns true then new grouping starts.<br/>
+ * _showGroupedRow: its specially for printing, whether grouped row to be shown in printing window or not, default is false<br/>
+ * drawGroupRow: its a function which draws group row. the funtion returns HTML code for the group row. HTML code contains "_COLLAPSE_EXPAND_" which will be replaced by +/- icon for expand/collapse. the function takes 3 parameters(current data row, column array and array of grouped column value array)<br/>
+ * print_filter: printing filter function which supposed to changed the window properties according to printing requirement. the function takes window object itself<br/>
+ * edit: window data edit options(optional). it contains some properties. "actions" either "V"/"e"(e can be along with -AR[addtion of row allowed]/-DR[removal of row allowed]), V is for view and e for update and the default is view. "buttons"(optional) contains editing button details(button value/display name), buttons.addRow/buttons.removeRow/buttons.save/buttons.update/buttons.del. "editURL" URL for updating data into DB.<br/>
+ * a little bit discussion required for edit URL, URL needs to call serverside code to update the selected window data into DB. now serverside code should return JSON script after updating data into DB. JSON script specification is the understanding betwen server and the cleint side code. json object contains.. success_message, error_message and the selected row/rows(which has been selected for update/remove)<br/>
+ * "getAdditionalParams"(optional) a function which returns additional parameters in name/value pair(except data row values) for saving the data into DB. "comparator" its a function(to check objects equality) for updating data after saving into DB to reflect in client side. for details see @Array.add and Array.remove function. "dateFormat" for date filed(if any field type is date). "additionalEdit"(optional) its a function which reflects the data into the clinet side.<br/>
+ * rowClickHandler: its a handler which fired when data row gets clicked, the function accepts the current clicked data row<br/>
+ * rowSelect: when data row gets clicked then whether row supposed to be highlighted or not, default is false<br/>
+ * rowTooltip: whether data row contains tool tip or not(string value)<br/>
+ * activeRowColor: whether row gets highlighted wita a color when row gets clicked. if rowSelect is true then only it matters. default is #cccccc.<br/>
+ * cellDecorator: its a function which decorates a cell, function takes current data row and data row index and finally returns styles<br/>
+ * rowDecorator: its a function which decorates whole row, function takes current data row only and then returns row background color<br/>
+ * totalSettings: its the settings of summary(vertical datas). it contains some properties. "position" is top/bottom/both, means summary will be placed top, bottom or both side. "drawTotal" its a function(accepts whole data array) which draws total row, means its retruns HTML code. "bgColor" background color of the total row.<br/>
+ * additionalResize: its the function which resizes top window as soon as the window data gets loaded. its optional.<br/>
+ * buttons: window control buttons(maximimze/minimize,refresh/close/print), if not specified then all buttons attached to the window. for details see at below.<br/>
+ * summary: how many data selected/added/removed all this statistics can be controlled by this flag, if its on then summary is to be shown otherwise not. default is true.<br/>
+ * actions_block: if additional action buttons supposed to be have by the data window(optional). it simply HTML code placed at the top the data window comtainer, just below the header block.<br/>
+ * groupRowSelector: its a handler function, gets fired when group row clicked(optional). it takes two parameters(source element and group data details).<br/>
+ * activeGroupRowColor: when group row clicked then group row highlighted with a color(optional).
+ * summary_msg: customized summary message details, property "total/found": its a string value which contains "__TOTAL__" and its replaced the total no. "total" is for total message and "found" is for after search message. if not specified then default message shown.
+ * @param parent_el_id parent element(where DGW to be placed) ID
+ * @param win_ref window reference where the container element resides, if no window reference provided then current window selected
+ */
+function AutomatedDataGridWindow(data,cols,filter,props,parent_el_id,win_ref){
+    this.data = data; //data array
+    this.originalData = this.data.clone(); //saves original data(its for printing purpose), because data array gets updated
+    
+    this.actualDataSize = data.length; //original data size
+    this.selectedRows = data.length; //how many rows selected(means original data size)
+    this.cols = cols; //column details array
+    this.parent_el_id = parent_el_id; //parent element(container element) ID
+    this.win_ref = !isUndefined(win_ref) ? win_ref : window; //window referece of container element, if not specified then current window selected
+
+    //DGW properties
+    this.title = props.title; //window title
+    this.height = !isUndefined(props.height) ? props.height : 'auto'; //if not height provided height considered as auto
+    this.width = !isUndefined(props.width) ? props.width : 'auto'; //similar for width
+    this.data_separation = !isUndefined(props.data_separation) ? props.data_separation : 'cell-wise'; //default data seperation is cell-wise, it may be row-wise
+    this.row_border = !isUndefined(props.row_border) ? props.row_border : true; //by default data row border is true, value true/false
+    this.row_separation = !isUndefined(props.group_row_separation) ? props.group_row_separation : false; //by default group row seperation is false, value true/false
+    this.serial_no = !isUndefined(props.serial_no) ? props.serial_no : false; //by default serial no is false, value true/false
+    this.bg_color = !isUndefined(props.bg_color) ? props.bg_color : 'inherit'; //background color by default is inherit, otherwise color code
+    this.no_data_message = !isUndefined(props.no_data_message) ? props.no_data_message : "No data found for this criteria...."; //if data not found then no data messsage flushed
+    for(var i=0;i<15;i++){ //adds 15 spaces to no data message
+        this.no_data_message += "&nbsp;"
+    }
+    this.search_enabled = !isUndefined(props.search_enabled) ? props.search_enabled : true; //by default search enabled is true, value true/false
+    this.case_sensative_search = !isUndefined(props.case_sensative_search) ? props.case_sensative_search : false; //by default case sensitive search is false, value true/false
+    this.searchLabel = !isUndefined(props.searchLabel) ? props.searchLabel : "Search"; //user defined search label can be provided
+
+    this.grouping = props.grouping; //grouping function
+    this.showGroupedRow = false; //its only for printing, it cant b true through props(its for internal use)
+    this._showGroupedRow = isUndefined(props._showGroupedRow) ? false : props._showGroupedRow; //whether group row to be shown or not for printing
+    this.drawGroupRow = props.drawGroupRow; //group row function(user must provide)
+    this.filter = filter; //data filtering function
+
+    if(!isUndefined(props.print_filter)){ //print filter function(it allows to change some properties of DGW for customzed printing)
+        this.print_filter = props.print_filter;
+    }else{
+        this.print_filter = function(o){} //otherwise default print filter considered
+    }
+
+    var edit = !isUndefined(props.edit) ? props.edit : {}; //edit options for editing DGW data and updating data into a target DB
+    this.actions = !isUndefined(edit.actions) ? edit.actions : 'V'; //which type data editing is allowed, if not specified only view mode is available
+    var dgw_e = this.actions.indexOf("e") != -1;
+    if(dgw_e){ //if other operations allowed
+        this.edit_buttons = !isUndefined(edit.buttons) ? edit.buttons : {}; //customized buttons can be provided
+        this.editURL = edit.url; //URL for updating data into a DB
+        this.getAdditionalParams = isUndefined(edit.getAdditionalParams) ? function(){return null;} : edit.getAdditionalParams; //additional parameters for data updation
+        this.comparator = edit.comparator; //comparator(to check object equality) needed when data gets update in afterEdit function to reflect the data in client side
+        this.dateFormat = !isUndefined(edit.dateFormat) ? edit.dateFormat : 'DD-MM-YYYY'; //if any date field is there then date format should be mentioned
+        var additionalEdit = !isUndefined(edit.additionalEdit) ? edit.additionalEdit : function(){}; //additional edit function, additional operation after updating data into DB
+    }
+
+    this.rowClickHandler = props.rowClickHandler; //data row click handler
+    this.rowSelect = !isUndefined(props.rowSelect) ? props.rowSelect : false; //whether row to be selected or not, when row clicked
+    this.rowTooltip = props.rowTooltip; //row tool tip
+    this.activeRowColor = !isUndefined(props.activeRowColor) ? props.activeRowColor : '#cccccc'; //the last clicked row highlighted
+
+    this.closed = false; //track whether DGW closed or not
+    //decorates row-cell
+    this.cellDecorator = !isUndefined(props.cellDecorator) ? props.cellDecorator : function(data,index){
+        return "";
+    };
+    //decorates row itself
+    this.rowDecorator = props.rowDecorator;
+
+    //summary settings
+    this.totalSettings = isUndefined(props.totalSettings) ? {} : props.totalSettings;
+
+    this.additionalResize = props.additionalResize; //when DGW drawn then if any additional resize operations needed
+    //control buttons attached with window, if no button mentioned then all buttons attached
+    this.buttons = !isUndefined(props.buttons) ? props.buttons :
+        (AutomatedDataGridWindow.REFRESH_BUTTON|AutomatedDataGridWindow.MINIMIZE_BUTTON|
+        AutomatedDataGridWindow.MAXIMIZE_BUTTON|AutomatedDataGridWindow.CLOSE_BUTTON);
+
+    //unique ID to identify each element attached to the window
+    this.id = getUniqueID();
+
+    var row_tooltip = null;
+    var data_row_style = "style=''"; //data row style is empty, which will be populated later if "rowDecorator" window property defined
+    if(!isUndefined(this.rowTooltip)){ //if rowToolTip defined, attached tool tip on each data row
+        data_row_style = data_row_style.insertBefore('cursor:pointer;',1);
+        row_tooltip = "title='" + this.rowTooltip + "'";
+    }
+
+    //data selection/data addtion/data removal  all these statistics can be controlled by this flag
+    this.summary = !isUndefined(props.summary) ? props.summary : true;
+    //this.initial_state = !isUndefined(props.initial_state) ? props.initial_state : AutomatedDataGridWindow.MAXIMIZED;
+
+    this.actions_block = props.actions_block; //additional action buttons
+    
+    this.groupRowSelector = props.groupRowSelector; //group row select handler
+    this.prevSelectedGroupRow = null;
+    this.activeGroupRowColor = props.activeGroupRowColor; //active group row selected color
+
+    this.summary_msg = !isUndefined(props.summary_msg) ? props.summary_msg : {}; //summary message details, contains total/found properties(string value). each string value contains __TOTAL_ which will be replaced by total no.
+
+    this.thrash = []; //temporay dustbin, if any data removed then its put into thrash instead of direct delete
+    this.cellHandlers = [];
+
+    /**
+     * draws the whole DGW window
+     */
+    this.draw = function(){
+        this.data = this.originalData.clone(); //when start from the begining then data populated from original data, because data may be changed during some operation. its specially for refresh and printing operation
+
+        var HTML = [];
+        //draws header HTML
+        HTML.push("<table border=0 cellpadding=0 cellspacing=0 width=100% id='ADGWMAINWINDOW_" + this.id + "'><tbody>");
+        HTML.push("<tr><td><table border=0 cellspacing=0 cellpadding=0 width=100%><tbody>");
+        HTML.push("<tr><td class='window-title' nowrap align=left>" + this.title + "</td>");
+        HTML.push("<td class='window-title' align=right valign=top><table boder=0 cellpadding=0 cellspacing=1><tbody>");
+
+        //places control buttons
+        if((this.buttons & AutomatedDataGridWindow.PRINT_BUTTON) == AutomatedDataGridWindow.PRINT_BUTTON){
+            //print button
+            HTML.push("<td align= center valign=top><img id='ADGWPRINT_" + this.id + "' src='" + GUI_CONSTANTS.__IMAGE_PATH__ + "/core/icon-print.jpg' alt='print' style='cursor:pointer;height:18px;width:18px;' title='Print window' /></td>");
+        }
+        if( (this.buttons & AutomatedDataGridWindow.REFRESH_BUTTON) == AutomatedDataGridWindow.REFRESH_BUTTON){
+            //refresh button
+            HTML.push("<td align= center valign=top><img id='ADGWREFRESH_" + this.id + "' src='" + GUI_CONSTANTS.__IMAGE_PATH__ + "/core/icon-refresh.jpg' alt='refresh' style='cursor:pointer;height:18px;width:18px;' title='Refresh window' /></td>");
+        }
+        if( (this.buttons & AutomatedDataGridWindow.MINIMIZE_BUTTON) == AutomatedDataGridWindow.MINIMIZE_BUTTON){
+            //minimize button
+            HTML.push("<td align= center valign=top><img id='ADGWMINIMIZE_" + this.id + "' src='" + GUI_CONSTANTS.__IMAGE_PATH__ + "/core/icon-minimize.png' alt='minimize' style='cursor:pointer;height:18px;width:18px;' title='Minimize window' /></td>");
+        }
+        if( (this.buttons & AutomatedDataGridWindow.MAXIMIZE_BUTTON) == AutomatedDataGridWindow.MAXIMIZE_BUTTON){
+            //maximize button
+            HTML.push("<td align= center valign=top><img id='ADGWMAXIMIZE_" + this.id + "' src='" + GUI_CONSTANTS.__IMAGE_PATH__ + "/core/icon-maximize.png' alt='maximize' style='cursor:pointer;height:18px;width:18px;' title='Maximize window' /></td>");
+        }
+        if( (this.buttons & AutomatedDataGridWindow.CLOSE_BUTTON) == AutomatedDataGridWindow.CLOSE_BUTTON){
+            //close button
+            HTML.push("<td align= center valign=top><img id='ADGWCLOSE_" + this.id + "' src='" + GUI_CONSTANTS.__IMAGE_PATH__ + "/core/icon-close.png' alt='close' style='cursor:pointer;height:18px;width:18px;' title='Close window' /></td>");
+        }
+
+        HTML.push("</tbody></table></td></tr></tbody></table></td></tr>");
+        //summary message(data selection/addition/removal) display row
+        HTML.push("<tr><td class='window-data summary-data' id='adgw-summary-table-" + this.id + "'><table border=0 cellpaddin=0 cellspacing=0><tbody><tr><td id='adgw-summary-td-" + this.id + "'></td><td id='adgw-updation-td'>&nbsp;</td></tr></tbody></table></td></tr>");
+        if(this.search_enabled && this.data.length > 0){ //search option only then comes when search option enabled and data exists
+            HTML.push("<tr><td style='background-color: #cccccc' align=center>");
+            HTML.push("<table border=0 cellpadding=0 celspacing=0><tbody><tr>");
+            HTML.push("<td class='window-data'>" + this.searchLabel + ": </td>");
+            HTML.push("<td class='window-data'><input id='DGWSEARCHBOX_" + this.id + "' type=tex size=15 /></td></tr>");
+            HTML.push("<tr><td><STRONG style='color:green' id='ADGWSEARCHRESULT_" + this.id + "'></STRONG></td></tr></tbody></table></tr></td>");
+        }
+        if(dgw_e){ //if DGW window data edit option available, edit message box drawn. where the after edit message will be displayed
+            HTML.push("<tr><td id='ADGWMESSAGE_" + this.id + "' style='padding:2px;background-color: #cccccc' align=center>");
+            HTML.push("&nbsp;");
+            HTML.push("</td></tr>");
+        }
+        //draws action buttons if provided
+        if(!isUndefined(this.actions_block) && !isNull(this.actions_block)){
+            HTML.push("<tr><td align=center style='padding:2px'>" + this.actions_block + "</td></tr>");
+        }
+        //main data container(DIV), if data-separation is row-wise then padding is 1 andotherwise(cell-wise) then padding is 0. DIV contains a table which ultimately wraps the data and the table cell padding style is inherited.
+        //overflow is hidden in case of automatic height and width for not to come with a scroll bars
+        HTML.push("<tr><td align=center style='border:1px solid " + this.bg_color + "'><div id='AUTOMATEDDGW_" + this.id + "' style='display:inherit;margin:0px;padding:" + (this.data_separation == 'row-wise' ? 1 : 0) + "px;overflow:" + ( (this.width == 'auto' && this.height == 'auto') ? 'hidden' : ('auto;width:' + this.width + 'px;height:' + this.height + 'px')) + ";background-color:" + this.bg_color + ";'>");
+        HTML.push(this.drawGridView()); //draws the main grid view
+        HTML.push("</div></td></tr>");
+
+        if(dgw_e){ //if window data edit is allowed  then action buttons drawn
+            HTML.push("<tr style='background-color:" + this.bg_color + "'><td align=center><table border=0 cellpadidng=1 cellspacing=2><tbody><tr>");
+            if(this.actions.indexOf('-AR') != -1){ //if addtion of row is allowed then add row button drawn
+                HTML.push("<td><input type=button id='DGWADDROWBUTTON_" + this.id + "' value=' " + (isUndefined(this.edit_buttons.addRow) ? "Insert Row" : this.edit_buttons.addRow) + " ' /></td>");
+            }
+            if(this.actions.indexOf('-DR') != -1){ //if removal of row is allowed then remove row button drawn
+                HTML.push("<td><input type=button id='DGWDELETEROWBUTTON_" + this.id + "' value=' " + (isUndefined(this.edit_buttons.removeRow) ? "Insert Row" : this.edit_buttons.removeRow) + " ' /></td>");
+            }
+            //save(insert) button and delete button is must
+            HTML.push("<td><input type=button id='DGWSAVEBUTTON_" + this.id + "' value=' " + (isUndefined(this.edit_buttons.save) ? "Save" : this.edit_buttons.save) + " ' /></td>");
+            HTML.push("<td><input type=button id='DGWDELETEBUTTON_" + this.id + "' value='" + (isUndefined(this.edit_buttons.del) ? "Delete Selected Rows" : this.edit_buttons.del) + "' /></td>");
+            HTML.push("<tr></tbody></table></td></tr>");
+        }
+        /*if(this.height != 'auto'){
+            HTML.push("<tr><td><table border=0 cellpadding=1 cellspacing=1>");
+            HTML.push("<tr><td style='border-right:1px solid black'></td>");
+            HTML.push("</table></td></tr>")
+        }*/
+        HTML.push("</tbody></table>");
+
+        var parent_el = $e(this.parent_el_id, this.win_ref); //gets the wrapper element reference
+        //$e('htmlbox').value = HTML.join("");
+        parent_el.innerHTML = HTML.join(""); //places the whole HTML into wrapper element
+
+        //places the summary message
+        if(this.summary && this.selectedRows > 0) $e('adgw-summary-td-' + this.id, this.win_ref).innerHTML = !isUndefined(this.summary_msg.total) ? this.summary_msg.total.replace('__TOTAL__','<STRONG>' + this.selectedRows + '</STRONG>') : 'Total: <STRONG>' + this.selectedRows + '</STRONG> rows selected.';
+        else $e('adgw-summary-table-' + this.id, this.win_ref).style.display = 'none';
+        //if any data changes then addition/removal message flushed
+        //$e('adgw-updation-td', this.win_ref).innerHTML = ( (!isUndefined(this.rowsDiff) && this.rowsDiff != null) ? (',<STRONG>' + this.rowsDiff + '</STRONG> row ' + (this.rowsDiff > 0 ? '<span style="color:green">added</span>' : '<span style="color:red">removed</span>') + '.') : '&nbsp;');
+
+        this.attachEvents(); //attaches events to make the window interactable
+        //if(this.initial_state & AutomatedDataGridWindow.MINIMIZED == AutomatedDataGridWindow.MINIMIZED){
+        //    this.minimize.call(this);
+        //}
+
+        this.resize();
+    };
+
+    //for internal use. gets called when data update is called.
+    var temp_u_f = function(e){
+        //browser compatible event object and source element
+        var evt = !!window.event  ? window.event : e;
+        var button = !!evt.srcElement  ? evt.srcElement : evt.target;
+
+        this.dataSubmit('U', button); //submits the data to save the data into DB
+    };
+
+    /**
+     * sets message into the summary block, if user wants to update messge externally
+     * @param msg the message to be displayed
+     */
+    this.setMessage = function(msg){
+        $e('adgw-summary-td-' + this.id, this.win_ref).innerHTML = msg;
+    };
+
+    /**
+     * maximizes the data window if window is collapsed(minimized)
+     */
+    this.maximize = function(){
+        var maintab = $e('ADGWMAINWINDOW_' + this.id, this.win_ref);
+        var rows = maintab.rows;
+        var l = rows.length;
+        for(var i=1;i<l;i++){ //shows all the table row which all been hidden earlier
+            maintab.rows[i].style.display = Browser.mozilla ? 'table-row' : 'block';
+        }
+        this.resize(); //calls the resize function to avoid scroll bars
+    };
+
+    /**
+     * minimizes/collapses the data window
+     */
+    this.minimize = function(){
+        var maintab = $e('ADGWMAINWINDOW_' + this.id, this.win_ref);
+        var rows = maintab.rows;
+        var l = rows.length;
+        for(var i=1;i<l;i++){ //hides all the table row to simulate table collapse
+            maintab.rows[i].style.display = 'none';
+        }
+        this.resize();
+    };
+
+    /**
+     * attaches event handlers to the specified elements to make the data window interacatble
+     */
+    this.attachEvents= function(){
+        var searchbox = $e('DGWSEARCHBOX_' + this.id, this.win_ref);
+        var insertrowbutton = $e('DGWADDROWBUTTON_' + this.id, this.win_ref);
+        var deleterowbutton = $e('DGWDELETEROWBUTTON_' + this.id, this.win_ref);
+
+        var savebutton = $e('DGWSAVEBUTTON_' + this.id, this.win_ref);
+        var deletebutton = $e('DGWDELETEBUTTON_' + this.id, this.win_ref);
+
+        if(!isNull(searchbox)) addEvent('keyup', searchbox, this.search.bind(this)); //on keyup event attached with search box for first search
+        if(!isNull(insertrowbutton)) addEvent('click', insertrowbutton, this.insertRow.bind(this));
+        if(!isNull(deleterowbutton)) addEvent('click', deleterowbutton, this._deleteRow.bind(this));
+
+        if(!isNull(savebutton)) addEvent('click', savebutton, (function(){
+            this.dataSubmit('S'); //data submit for insert function
+        }).bind(this));
+        if(!isNull(deletebutton)) addEvent('click', deletebutton, (function(){
+            this.dataSubmit('D'); //data submit for delete function
+        }).bind(this));
+
+        var closeButton = $e('ADGWCLOSE_' + this.id, this.win_ref);
+        var maxButton = $e('ADGWMAXIMIZE_' + this.id, this.win_ref);
+        var miniButton = $e('ADGWMINIMIZE_' + this.id, this.win_ref);
+        var refreshButton = $e('ADGWREFRESH_' + this.id, this.win_ref);
+        var printButton = $e('ADGWPRINT_' + this.id, this.win_ref);
+
+        //attach event handlers to the window control buttons
+        if(closeButton != null){
+            addEvent('click', closeButton, (function(){
+                this.close();
+            }).bind(this));
+        }
+        if(maxButton != null){
+            addEvent('click', maxButton, this.maximize.bind(this));
+        }
+        if(miniButton != null){
+            addEvent('click', miniButton, this.minimize.bind(this));
+        }
+        if(refreshButton != null){
+            addEvent('click', refreshButton, (function(){
+                this.refresh();
+            }).bind(this));
+        }
+        if(printButton != null){
+            addEvent('click', printButton, (function(){
+                this.print();
+            }).bind(this));
+        }
+
+        var c = 0;
+        //attaches update button to each data row if data edit option is on
+        while(true){
+            var updatebutton = $e('DGWUPDATEBUTTON_' + c + '_' + this.id, this.win_ref);
+            if(updatebutton != null && updatebutton.parentNode.parentNode.style.display != 'none'){
+                addEvent('click', updatebutton, temp_u_f.bind(this));
+            }else break;
+            c++;
+        }
+
+        c = 0;
+        //attaches group block colllapse/expand event to group row
+        while(true){
+            var groupTD = $e('ADGW_GROUPTD_' + c + '_' + this.id, this.win_ref);
+            if(groupTD != null){
+                addEvent('click', groupTD, (function(){
+                    var index = c;
+                    return (function(e){
+                        //browser compatible event object and source element
+                        var evt = !!window.event ? window.event : e;
+                        var button = !!evt.srcElement ? evt.srcElement : evt.target;
+
+                        this.groupCollapseExpand(button, index); //calls collapse/expand function
+                    }).bind(this);
+                }).call(this));
+            }else break;
+            c++;
+        }
+
+        //if data row click handler is available
+        if(!isUndefined(this.rowClickHandler)){
+            var s = this.data.length;
+            for(var i=0;i<s;i++){
+                //skips group row and total row
+                if(!isUndefined(this.data[i].groupRow) && this.data[i].groupRow) continue;
+                if(!isUndefined(this.data[i].totalRow) && this.data[i].totalRow) continue;
+                var tr = $e('DGWDATAROW_' + i + '_' + this.id, this.win_ref);
+                if(!isNull(tr)){
+                    if(isFunction(this.filter) && !this.filter(this.data[i])) continue; //skips non-filter data
+                    addEvent('click', tr, this._rowClickHandler.bind(this)); //attaches row click handler
+                }else break;
+            }
+        }
+
+        //if group row selector handler
+        if(!isUndefined(this.groupRowSelector)){
+            var s = this.data.length;
+            for(var i=0;i<s;i++){
+                if(!isUndefined(this.data[i].groupRow) && this.data[i].groupRow){ //only attaches to group row
+                    var tr = $e('ADGW_GROUPROW_' + i + '_' + this.id, this.win_ref);
+                    if(tr) addEvent('click', tr, this.groupRowClickHandler.bind(this)); //attaches handler
+                }
+            }
+        }
+
+        var s = this.data.length;
+        for(var i=0;i<s;i++){
+            var s1 = this.cols.length;
+            for(var j=0;j<s1;j++){
+                var ch = this.cellHandlers['ADGWTD-' + j];
+                if(!isUndefined(ch)) addEvent('click', $e('ADGWTD-' + i + '-' + j), (function(){
+                    var _ch = ch;
+                    var index = i;
+                    return function(e){
+                        //browser compatible event object and source element
+                        var evt = !!window.event ? window.event : e;
+                        var button = !!evt.srcElement ? evt.srcElement : evt.target;
+
+                        _ch(button, index);
+                    };
+                })());
+            }
+        }
+    };
+
+    /**
+     * group row click handler function
+     */
+    this.groupRowClickHandler = function(e){
+        //browser compatible event object and source element
+        var evt = !!window.event  ? window.event : e;
+        var button = !!evt.srcElement  ? evt.srcElement : evt.target;
+
+        var tr = null;
+        var tn = button.tagName;
+        //event only applicable to row
+        if(tn.toLowerCase() == 'td') tr = button.parentNode;
+        else if(tn.toLowerCase() == 'tr') tr = button;
+        if(tr){ //if row exists
+            if(this.prevSelectedGroupRow) colorRow(this.prevSelectedGroupRow, 'white'); //disables the previous selected row
+            colorRow(tr, this.activeGroupRowColor); //colors the cuurrent row with specified active group row color
+            this.prevSelectedGroupRow = tr; //saves as previous selected row
+            var rowIndex = tr.rowIndex;
+            
+            this.groupRowSelector(button, this.data[rowIndex - 1].groupData); //calls the user defined handler
+        }
+    };
+
+    /**
+     * closes the data window
+     */
+    this.close = function(){
+        if(this.closed) return;
+        this.closed = true;
+        var maintab = $e('ADGWMAINWINDOW_' + this.id, this.win_ref);
+        maintab.parentNode.removeChild(maintab); //removes the child window from DOM instead of hidding
+    }
+
+    /**
+     * group block collapse/expand function(for internal use)
+     * @param button the source element(+/- icon)
+     * @param index group row index
+     */
+    this.groupCollapseExpand = function(button,index){
+        var plus = button.innerHTML == '+';
+        var minus = button.innerHTML == '-';
+        var tab = $e('DGWTAB_' + this.id, this.win_ref);
+        //var var2 = 'ADGW_GROUPROW_' + index + '_' + this.id;
+        var groupRow = $e('ADGW_GROUPROW_' + index + '_' + this.id);
+        var rowIndex = groupRow.rowIndex;
+        this.data[rowIndex - 1].collapse = plus ? false : (minus ? true : true); //saves the collapse state
+        var s = this.data.length;
+        for(var i=rowIndex;i<s;i++){ //iterates the table row
+            if(!isUndefined(this.data[i].groupRow) && this.data[i].groupRow){ //when new group block comes then exists from loop
+                break;
+            }
+            //skips non-filter data and total row
+            if(isFunction(this.filter) && !this.filter(this.data[i])) continue;
+            if(!isUndefined(this.data[i].totalRow) && this.data[i].totalRow) continue;
+            //toggles row data according to collapse/expand operation
+            tab.rows[i + 1].style.display = plus ? (Browser.mozilla ? 'table-row' : 'block') : (minus ? 'none' : '');
+        }
+        button.innerHTML = plus ? '-' : (minus ? '+' : '');
+        button.title = plus ? 'Click to collapse' : (minus ? 'Click to expand' : '');
+
+        this.resize();
+    };
+
+    /**
+     * its basically called when search goes on. selected rows are under some group block, if those block are not expanded then those block needed to be expanded. same case for non-intended rows, if they expanded previously. its for internal use
+     * @param index selected row index
+     */
+    this.forcefulCollapse = function(index){
+        var groupRow = null;
+        //if selected rows are not expanded
+        for(var i=index + 1;i>=0;i--){
+            if(!isUndefined(this.data[i].groupRow) && this.data[i].groupRow){ //found the corresponding grouping block
+                groupRow = this.data[i];
+                break;
+            }
+        }
+        //documentation needed(its not now in use)
+        if(i >= 0){
+            var tab = $e('DGWTAB_' + this.id, this.win_ref);
+            var s = this.data.length;
+            var collapse = true;
+            for(var j=i;j<s;j++){
+                if(!!this.data[j].groupRow) break;
+                if(tab.rows[j].style.display == Browser.mozilla ? 'table-row' : 'block'){
+                    collapse = false;
+                    break;
+                }
+            }
+            if(collapse){
+                var groupIndex = groupRow.groupIndex;
+                var groupTD = $e('ADGW_GROUPTD_' + groupIndex + '_' + this.id, this.win_ref);
+                groupTD.innerHTML = '+';
+                groupRow.collapse = true;
+            }
+        }
+    };
+
+    /**
+     * gets the parent row(grouping row)
+     * @param index row index of which the parent row to be found
+     */
+    this.getParentRow = function(index){
+        //its also not now in use, so doumentation needed
+        for(var i=index + 1;i>=0;i--){
+            if(!isUndefined(this.data[i].groupRow) && this.data[i].groupRow){
+                return this.data[i];
+            }
+        }
+        return null;
+    };
+
+    /**
+     * submits the row data for saving the data into databse
+     * @param action S/U/D, save(insert)/update/delete
+     * @param button button reference for data update, to track the row which is to be updated
+     */
+    this.dataSubmit = function(action,button){
+        var params = null;
+        if(action == 'U'){ //updates the data
+            var tr = button.parentNode.parentNode;
+            params = getDataFromTR.call(this,tr); //gets the data from selected TR which is to be updated
+            if(isArray(params)) params.push({name : 'action' , value: 'U'});
+        }else if(action == 'S' || action == 'D'){//save(insert)/delete
+            var tab = $e('DGWTAB_' + this.id, this.win_ref);
+            var l = tab.rows.length;
+
+            var data = [];
+            var indices = [];
+            //collect group of data for save(insert)/delete
+            for(var i=1;i<l;i++){
+                var tr = tab.rows[i];
+                //first child value indicates which action to be taken. I for insert and D for delete. but for update no indicator needed, because of single row updation
+                var fcv = tr.cells[tr.cells.length - 2].firstChild.value;
+                if( (action == 'S' && fcv == 'I')
+                || (action == 'D' && fcv == 'D') ){
+                    data.add(getDataFromTR.call(this,tr)); //gets the data for each data row
+                    if(action == 'D' || action == 'S') indices.push(i); //saves the selected index(which is supposed to be updated)
+                }
+            }
+
+            params = data;
+            if(isArray(params)) params.push({name : 'action' , value: action}); //prepares parameters
+        }
+
+        //if edit URL(for data updation into DB) and comprator(for data updation into window data in client side) exists, then makes an ajax call for updating data into DB
+        if(!isUndefined(this.editURL) && isFunction(this.getAdditionalParams) && isFunction(this.comparator)){
+            var message_td = $e('ADGWMESSAGE_' + this.id, this.win_ref);
+            message_td.innerHTML = "&nbsp;"; //resets the after edit message
+            
+            var _this_ = this;
+            params.add(this.getAdditionalParams()); //takes additional parameters
+            /*var l = params.length;
+            alert(l);
+            for(var i=0;i<l;i++){
+                var o = params[i];
+                alert(o.name + "\t" + o.value);
+            }*/
+
+            //makes an ajax call for updating the data
+            var ajax = new Ajax.Initiate(this.editURL, "POST", params, {
+                success: function(response){
+                    //response is a mutual understanding between server side script and client side script
+                    //response represents a JSON object which contains success_message, error_message, updated row(update)/rows(insert or delete)
+                    var o = eval(response);
+                    afterEdit.call(_this_, o, action, indices); //calls after updating the data into DB, to reflect the data in client side
+                    additionalEdit(o.object, action); //customized function which also called after updating the data into DB
+                },
+                error: function(code){
+                    afterEdit.call(_this_, {error_message: 'Data updation error.'}); //calls afterEdit with error message
+                }
+            }, true);
+            Ajax.call(ajax); //ajax call
+        }
+    };
+
+    /**
+     * for internal use. its called after updating the data into DB
+     * @param o window object to access window properties
+     * @param a action, update/save(insert)/delete
+     * @param indices selected row(update)/rows index array
+     */
+    var afterEdit = function(o,a,indices){
+        var message_td = $e('ADGWMESSAGE_' + this.id, this.win_ref);
+        var sm = o.success_message;
+        var em = o.error_message;
+        var html = "<STRONG style='padding:1px 5px 1px 5px;background-color:#fff1a8;color:" + (!!sm ? "black" : (!!em ? "red" : "#white#")) + "'>" + (!!sm ? sm : (!!em ? em : "#No Message#")) + "</STRONG>";
+        message_td.innerHTML = html;
+        if(!isUndefined(sm) && sm != null){ //if success
+            if(a == 'U' || a == 'S'){
+                this.data.add(o.object, true, null, this.comparator); //reflect the window data in case of update
+                if(a == 'S'){ //if new data insert
+                    var tab = $e('DGWTAB_' + this.id, this.win_ref);
+                    var cl = tab.rows[0].cells.length;
+                    var l = indices.length;
+                    for(var i=0;i<l;i++){
+                        var cells = tab.rows[indices[i]].cells;
+                        //puts update button
+                        cells[cl - 1].innerHTML = "<input type=button id='DGWUPDATEBUTTON_" + indices[i] + "_" + this.id + "' value=' " + (!isUndefined(this.edit_buttons.update) ? this.edit_buttons.update : "Update") + " ' />";
+                        //puts checkbox for data remove
+                        cells[cl - 2].innerHTML = "<input type=hidden name='DGWACTION_" + this.id + "' value='U' />"
+                        + "<input type=checkbox name='DGWMARKBOX_" + this.id + "' onclick=\"this.previousSibling.value = this.checked ? 'D': 'U';\" />";
+
+                        //attaches event handler for new update button/buttons
+                        var updatebutton = $e('DGWUPDATEBUTTON_' + indices[i] + '_' + this.id, this.win_ref);
+                        addEvent('click', updatebutton, temp_u_f.bind(this));
+                    }
+
+                    this.resize();
+                }
+            }else if(a == 'D'){ //data remove
+                var l = indices.length;
+                for(var i=0;i<l;i++){
+                    this.deleteRow(indices[i] - i); //removes from window
+                }
+                this.data.remove(o.object, null, this.comparator); //removes from window data
+
+                this.resize();
+            }
+        }
+    };
+
+    /**
+     * get data(as name/value pair) from each row(its sepcially for sending data to server side). its for internal use.
+     * @param tr row reference of which the data to be extracted
+     */
+    var getDataFromTR = function(tr){
+        var l = this.cols.length;
+        var data = [];
+        var si = this.serial_no ? 1 : 0;
+        for(var i=0;i<l;i++){ //iterates column array
+            var dr = this.cols[i].dataRequired; //only those data supposed to be extracted which has dataRequired flag on
+            var gd = this.cols[i].getData; //getData function which returns only value of values in name/value pair
+            var name = this.cols[i].name;// gets column name/parameter name
+            var v = null;
+            if(!!dr){ //if data required flag is on
+                var c = tr.cells[i + si]; //cell refrence of column
+                v = null;
+                if(isFunction(gd)){ //if getData defined(customized)
+                    v = gd(c);
+                }else{ //otherwise first child node value/value(if exists)
+                    var fc =c.firstChild;
+                    if(fc){
+                        if(fc.nodeType == Node.TEXT_NODE) v = fc.nodeValue; //for text node node value
+                        else if(fc.nodeType == Node.ELEMENT_NODE && !isUndefined(fc.value) ) v = fc.value; //for element type plain value attribute
+                    }
+                }
+                if(v != null){ //value found
+                    if(isString(v)) data.push({name : name, value: v}); //if plain value then makes JSON object as name/value pair
+                    else{ //assumes its JSON array(if getData retruns JSON array as name/value pair)
+                        data.add(v);
+                    }
+                }
+            }
+        }
+        return data;
+    };
+
+    /**
+     * gets fired when row clicked(for internal use)
+     * @param e event object
+     */
+    this._rowClickHandler = function(e){
+        //browser compatible event object and source element
+        var evt = !!window.event  ? window.event : e;
+        var button = !!evt.srcElement  ? evt.srcElement : evt.target;
+
+        var index = -1;
+        var tn = button.tagName.toLowerCase();
+        var tr = null;
+        //event applied only on TR
+        if(tn == 'tr') tr = button;
+        else if(tn == 'td') tr = button.parentNode;
+        if(tr != null) index = tr.rowIndex;
+
+        if(index != -1) this.rowClickHandler(this.data[index - 1]); //calls user defined rowClickHandler function
+
+        //if rowSelect flag on then clors the active row
+        if(tr != null && this.rowSelect){
+            //disables previous row(if exists)
+            if(!isUndefined(this.prevSelectedRow) && !isNull(this.prevSelectedRow)){
+                colorRow(this.prevSelectedRow, 'white');
+            }
+            colorRow(tr, this.activeRowColor); //colors current row
+
+            this.prevSelectedRow = tr; //saves as previous selected row
+        }
+    };
+
+    /**
+     * window maintains a intermediate dustbin, user may select this features instead of throwing data directly.
+     * @param d data to be thrown of window container
+     * @param comparator function(to check object equality) ,its for updating the window data, for details see Array.remove/Array.indexOf
+     */
+    this.thrashData = function(d,comparator){
+        var index = this.data.indexOf(d, null, comparator);
+        if(index != -1){
+            this.deleteRow(index + 1); //removes data from window(interface)
+            var o = this.data.remove(d, null, comparator);
+            this.thrash.push({ //updates thrash data
+                index: index,
+                object: o
+            });
+        }
+    };
+
+    /**
+     * its for internal use, comprator for thrashing data
+     */
+    var thrashComparator = function(comparator){
+        //documentation needed
+        return function(o1, o2){
+            var _o1 = o1.object;
+            var _o2 = o2;
+            return comparator(_o1, _o2);
+        };
+    };
+
+    /**
+     * its not in use now
+     */
+    this.reviveData = function(d,comparator){
+        //documentation needed
+        var index = this.thrash.indexOf(d, null, thrashComparator(comparator));
+        if(index != -1){
+            var o = this.thrash[index];
+            this.data.splice(index, 0, o.object);
+            this.thrash.remove(o, null, thrashComparator(comparator));
+            return o;
+        }else return null;
+    };
+
+    /**
+     * inserts row into window(interface) table.it takes variable no of parameters. parameter details are given below... <br/>
+     * first parameter is the index where row to be inserted, it can be value: "__LAST_ROW__"(row to be inserted at last). and the additional arguments are for cellwise cell HTML value
+     */
+    this.insertRow = function(){
+        //var message_td = $e('ADGWMESSAGE_' + this.id, this.win_ref);
+        //if(message_td) message_td.innerHTML = '&nbsp';
+
+        var tab = $e('DGWTAB_' + this.id, this.win_ref);
+        var l = tab.rows.length;
+        //l == 1 means no-data-message shown in the first row
+        if(l == 1){ //no data found, starts from headers drawing
+            tab.deleteRow(0);
+            tab.insertRow(0).innerHTML = this.drawTabHeader();
+        }
+        var HTML = [];
+        //if serial no enabled then adds serial no against each row
+        if(this.serial_no) HTML.push("<td class='window-data inactive-data' align=center nowrap>" + l + ".</td>");
+        l = this.cols.length; //no of columns
+        var _i = isUndefined(arguments[0]) ? 0 : 1;
+        var _l = tab.rows.length;
+        for(var i= 0 ;i<l;i++){
+            //draws each cell upto no. of columns, if cell value not specified then cell value is empty
+            var html = this.drawTabCell(i, _l, (!isUndefined(arguments[i + _i]) ? arguments[i + _i] : ""));
+            HTML.push(html);
+        }
+        //if edit option is enabled then new row insert indicator placed
+        if(dgw_e){
+            HTML.push("<td class='window-data inactive-data'><input type=hidden name='DGWACTION_" + this.id + "' value='I' />&nbsp;</td>");
+            HTML.push("<td class='window-data inactive-data'>&nbsp;</td>");
+        }
+        tab.insertRow((_i == 0 || arguments[0] == '__LAST_ROW__') ? tab.rows.length : arguments[0]).innerHTML = HTML.join("");
+
+        this.resize();
+    };
+
+    /**
+     * updates window data
+     * @param d data to be update with window data
+     * @param cf comprator function(to check object equality), for details see Array.add and Array.remove
+     */
+    this.updateData = function(d, cf){
+        var b = this.data.add(d, true, null, cf); //adds to window data
+        if(b && !isUndefined(d.groupRow) && !d.groupRow) this.selectedRows++; //if successfully added then selected rows gets incremented
+
+        //message flushed if data changed
+        //$e('adgw-updation-td', this.win_ref).innerHTML = ( (!isUndefined(this.rowsDiff) && this.rowsDiff != null) ? (',<STRONG>' + this.rowsDiff + '</STRONG> row ' + (this.rowsDiff > 0 ? '<span style="color:green">added</span>' : '<span style="color:red">updated</span>') + '.') : '.');
+    };
+
+    /**
+     * removes window data
+     * @param d data to be update with window data
+     * @param cf comprator function(for addition/removal window data), for details see Array.add and Array.remove
+     */
+    this.removeData = function(d, cf){
+        var data = this.data.remove(d, null, cf); //removes from window data
+        if(data != null) this.selectedRows--; //decrements selected rows
+
+        //$e('adgw-updation-td', this.win_ref).innerHTML = ( (!isUndefined(this.rowsDiff) && this.rowsDiff != null) ? (',<STRONG>' + this.rowsDiff + '</STRONG> row ' + (this.rowsDiff > 0 ? '<span style="color:green">added</span>' : '<span style="color:red">removed</span>') + '.') : '.');
+    };
+
+    /**
+     * gets selected data length
+     * @return returns selected data length
+     */
+    this.getDataLength = function(){
+        return this.selectedRows;
+    };
+
+    /**
+     * deletes from window(inserface) table, for insertnal use
+     */
+    this._deleteRow = function(){
+        var tab = $e('DGWTAB_' + this.id, this.win_ref);
+        this.deleteRow(tab.rows.length); //deletes from window table
+    };
+
+    /**
+     * user may call this function to delete row from window table as well from window data
+     * @param index the index to be deleted
+     */
+    this.deleteRow = function(index){
+        if(index < 1) return;
+        var tab = $e('DGWTAB_' + this.id, this.win_ref);
+        var l = tab.rows.length;
+        if(l == 1) return; //if only no-data-message exists then no operation
+        tab.deleteRow(index); //deletes from window
+        l = tab.rows.length;
+        //if last row deleted then no-data-message flushed
+        if(l == 1){
+            tab.deleteRow(0);
+            tab.insertRow(0).innerHTML = "<td class='window-data no-data' nowrap>" + this.no_data_message + "</td>";
+            this.resize();
+            return;
+        }
+        if(this.serial_no){ //re-puts serial no to make the serial no sequential(in case of middle row removal), if the option is on
+            for(var i=index;i<l;i++){
+                tab.rows[i].cells[0].innerHTML = i + 1;
+            }
+        }
+        //rearranges the table row id, to make proper working the udpate button
+        if(dgw_e){
+            var c_l = !!tab.rows[index] ? tab.rows[index].cells.length : 0; //if no valid index provided then skips removing row from window
+            if(c_l){
+                for(var i=index;i<l;i++){
+                    //rearranges update button ID
+                    var fc = tab.rows[i].cells[c_l - 1].firstChild;
+                    if(!isUndefined(fc.type) && fc.type.toLowerCase() == 'button') fc.id = 'DGWUPDATEBUTTON_' + i + '_' + this.id;
+                }
+            }
+        }
+
+        this.resize();
+    };
+
+    /**
+     * when widow has some data changes then window dimension may get changed, its for internal use
+     */
+    this.resize = function(){
+        var div = $e('AUTOMATEDDGW_' + this.id, this.win_ref);
+        var p = div.parentNode;
+        var fc = div.firstChild;
+        var w = fc.offsetWidth;
+        var _w = div.offsetWidth;
+        //adjusts width and height of the window according to the users requirement
+        div.style.width = (this.width == 'auto' ? (p.offsetWidth > _w ? p.offsetWidth : (w > _w ? w : _w ) ) : (this.width < _w ? _w : this.width) ) + 'px';
+        div.style.height = (this.height == 'auto' ? fc.offsetHeight : this.height) + 'px';
+
+        //if width & height are not auto then additional resize function(user may want to resize top window, in case of top window containing iFrame) comes in
+        if( (this.width == 'auto' || this.height == 'auto') && (!isUndefined(this.additionalResize) && isFunction(this.additionalResize)) ){
+            this.additionalResize();
+        }
+    };
+
+    /**
+     * searchs for a window data index
+     * @param o the data to be searched
+     * @param comparator the comparator function(to check object equality) which helps to check object equality
+     * @return returns index(if found), otherwise -1
+     */
+    this.indexOf = function(o,comparator){
+        return this.data.indexOf(o, null, comparator);
+    };
+
+    /**
+     * window data search function
+     * @param e source element where the search text entered
+     */
+    this.search = function(e){
+        //var grouping = isFunction(this.grouping);
+
+        //browser compatible event object and source element
+        var evt = !!window.event  ? window.event : e;
+        var button = !!evt.srcElement  ? evt.srcElement : evt.target;
+
+        var v = button.value; //value to be searched
+        var s = this.data.length;
+        var l = this.cols.length;
+
+        var tab = $e('DGWTAB_' + this.id, this.win_ref);
+        var found = 0;
+        for(var i=0;i<s;i++){
+            //skips un-neccessary data
+            if(isFunction(this.filter) && !this.filter(this.data[i])) continue;
+            if(!isUndefined(this.data[i].groupRow) && this.data[i].groupRow) continue;
+            if(!isUndefined(this.data[i].totalRow) && this.data[i].totalRow) continue;
+            var row = this.data[i]; //gets the data row
+
+            //data search on every columns unless search option is disabled, by default on every column search option is false
+            for(var j=0;j<l;j++){
+                if(!isUndefined(this.cols[j].search) && !this.cols[j].search) continue; //if search option is off, skips
+                if(isFunction(this.cols[j].match)){ //if user defined match function provided
+                    if(this.cols[j].match(this.data[i],v)) break; //if match found then breaks from loop
+                    else continue;
+                }
+                var row_val = eval("row." + this.cols[j].name); //gets the value by column name
+                var _v = null;
+                if(!isUndefined(row_val) && !isNull(row_val)){ //if value not null, take this
+                    _v = row_val;
+                }else if(isFunction(this.cols[j].searchHTML)){ //if value is null and searchHTML property set against the column then get that value
+                    _v = this.cols[j].searchHTML(row);
+                }
+                else if(isFunction(this.cols[j].generatesHTML)){ //finally looks for generatesHTML function
+                    _v = this.cols[j].generatesHTML(row, i);
+                }
+                if(!isNull(_v)){ //if column value found
+                    _v = new String(_v);
+                    
+                    if(_v.startsWith(v, this.case_sensative_search)) break; //matches the first characters with the given serach string, search may be case-sesnsitive/insensitive
+                }
+            }
+            if(j == l){ //if match not found
+                tab.rows[i+1].style.display = 'none'; //hides that row
+                /*if(grouping){
+                    this.forcefulCollapse(i);
+                }*/
+            }
+            else{ //match found
+                found++;
+                tab.rows[i+1].style.display = Browser.mozilla ? 'table-row' : 'block'; //shows that row
+                /*if(grouping){
+                    var row_data = this.getParentRow(i);
+                    if(row_data){
+                        var groupIndex = row_data.groupIndex;
+                        var groupTD = $e('ADGW_GROUPTD_' + groupIndex + '_' + this.id, this.win_ref);
+                        groupTD.innerHTML = '-';
+                        row_data.collapse = false;
+                    }
+                }*/
+            }
+        }
+
+        //flushes data found message(how many data found)
+        if(this.summary) $e('adgw-summary-td-' + this.id, this.win_ref).innerHTML = !isUndefined(this.summary_msg.found) ? this.summary_msg.found.replace('__TOTAL__','<STRONG>' + this.selectedRows + '</STRONG>').replace('__FOUND__','<STRONG>' + found + '</STRONG>') : 'Total: <STRONG>' + found + '</STRONG> out of <STRONG>' + this.selectedRows + '</STRONG> rows selected';
+
+        this.resize();
+    };
+
+    /**
+     * draws window table header(for internal use)
+     * @return returns header HTML code
+     */
+    this.drawTabHeader = function(){
+        var l = this.cols.length;
+        var HTML = [];
+        if(this.serial_no) HTML.push("<td class='window-data window-header' nowrap>Sl No.</td>"); //serial no
+        for(var j=0;j<l;j++){
+            HTML.push("<td class='window-data window-header' nowrap>" + this.cols[j].display_name + "</td>"); //column label
+        }
+        if(dgw_e){ //if window data edit is allowed
+            //checkbox for multiple delete
+            HTML.push("<td class='window-data window-header'><input type=checkbox onclick='check_uncheck(\"DGWMARKBOX_" + this.id + "\",this.checked); fillElements(\"DGWACTION_" + this.id + "\",this.checked ? \"D\" : \"U\");' /></td>"); //checkbox for multiple delete
+            HTML.push("<td class='window-data window-header'>&nbsp;</td>");
+        }
+
+        return HTML.join("");
+    };
+
+    /**
+     * gets the filtered data array(for calculating total). its for innternal use.
+     */
+    this.getColumnDataArray = function(index){
+        var a = [];
+        var s = this.data.length;
+        for(var i=0;i<s;i++){
+            //filters data
+            if(isFunction(this.filter) && !this.filter(this.data[i])) continue;
+            if(!isUndefined(this.data[i].groupRow) && this.data[i].groupRow) continue;
+            if(!isUndefined(this.data[i].totalRow) && this.data[i].totalRow) continue;
+            
+            a.push(this.data[i]);
+        }
+        return a;
+    };
+
+    /**
+     * actual window data table painter
+     */
+    this.drawGridView = function(){
+        //prepares for total display
+        var totalPosition = isUndefined(this.totalSettings.position) ? 'No' : this.totalSettings.position;
+        var totalFun = isUndefined(this.totalSettings.drawTotal) ? null : function(){return this.totalSettings.drawTotal(this.getColumnDataArray.bind(this))};
+        var totalBgColor = isUndefined(this.totalSettings.bgColor) ? "#557777" : this.totalSettings.bgColor;
+
+        var HTML = [];
+        var s = this.data.length;
+        if(s == 0 ){ //if data not found then no-data-message displayed
+            return "<table id='DGWTAB_" + this.id + "' border=0 cellpadding=1 cellspacing=1 width='100%' ><tbody><tr><td class='window-data no-data' nowrap>" + this.no_data_message + "</td></tr></tbody></table>";
+        }
+        var l = this.cols.length;
+        //if data_separation is cell-wise then table cellspacing is 1 oetherwise(row-wise) 0
+        HTML.push("<table id='DGWTAB_" + this.id + "' border=0 cellpadding=0 cellspacing=" + (this.data_separation == 'row-wise' ? 0 : (this.data_separation == 'cell-wise' ? 1 : -1) ) + " width='100%' ><tbody>");
+
+        //if data separation is row-wise and row border is on then row boder decorated with specified border color, if row border flag is not on then row decorated with rowDecorator function(which returns the background color of the row)
+        var extra_style = (this.data_separation == 'row-wise' ? (this.row_border ? ("style='border-bottom:1px solid " + this.bg_color + ";'") : ("style='background-color: __ROW_COLOR__;'")) : "");
+        HTML.push("<tr>");
+        //HTML.push(this.drawTabHeader(dgw_e,l));
+        HTML.push(this.drawTabHeader()); //draws window table header
+        HTML.push("</tr>");
+        //places total display @ top
+        if(totalPosition == 'top' || totalPosition == 'both'){
+            if(totalFun) HTML.push("<tr class='total-row' style='background-color:" + totalBgColor + "'>" + totalFun.call(this) + "</tr>");
+        }
+
+        var html_l = HTML.length; //this is where the location where the previous group row placed
+
+        this.groupRowIndices = []; //stores group row index information
+        var groupRowsCount = 0; //how many rows under a group
+        var grouping = isFunction(this.grouping); //if grouping is allowed
+        var drawGroupRow = isFunction(this.drawGroupRow); //whether group row function available
+        var groupCount = 0; //how many rows represent group row
+
+        var groupDataArray = []; //array of grouped column value array
+        var groupData = [];
+        if(s){
+            for(var i=0;i<l;i++){
+                //prepares array of group column value array
+                if(!isUndefined(this.cols[i].dataGroupRequired) && this.cols[i].dataGroupRequired){
+                    groupDataArray.push([]);
+                }
+            }
+        }
+        
+        var bk_color = '#ffffff';
+        var _c = getNearestColor(bk_color, false); //gets nearest data row background color in case of no row-border
+        var __c = this.group_row_separation ? getNearestColor(this.bg_color, true) : this.bg_color; //gets nearest color in case of group row separation
+        var rowDecorator = isFunction(this.rowDecorator); //row decorator(row backgroundcolor)
+        var total_row_no = (totalPosition == 'both' || totalPosition == 'top') ? 1 : 0; //if total placed @ bottom only then row indexing is OK but when placed at top then row indexing is one more than actual
+        for(var i=0;i<s;i++){ //iterates row data
+            //if there is no row-border(inspite of having row-separation flag on) then rows gets colored with return value of rowDecorator function. if rowDecorator is not available then rows gets separated with color alternatively.
+            var e_style = extra_style.indexOf("__ROW_COLOR__") != -1 ? extra_style.replace("__ROW_COLOR__", rowDecorator ? this.rowDecorator(this.data[i]) : ((i % 2 == 0) ? bk_color : _c) ) : extra_style;
+
+            /***Grouping**/
+            if(grouping){
+                var group_row = i == 0 ? true : !this.grouping(this.data[i - 1], this.data[i]); //for first row grouping is not called, because its a group row itself. otherwise grouping function gets called.
+                if(group_row && drawGroupRow){ //if new group row found
+
+                    //when a new group row appears then previous group row first drwan
+                    if(i > 0){ //first group row drawn when next group row found
+                        //calls drawGroupRow function to get the group row HTML code
+                        var gData = this.drawGroupRow(this.data[i -1], this.cols, groupDataArray);
+                        var groupRowHTML = !isUndefined(gData.HTML) ? gData.HTML : gData; //saves group row HTML code
+                        groupData.push(isUndefined(gData.data) ? gData.data : null); //if user wants to store any group data against group row
+
+                        var index = this.groupRowIndices.length - 1; //group row index
+                        //prepares collpase expand icon
+                        var ecHTML = groupRowHTML.replace("_COLLAPSE_EXPAND_",this.showGroupedRow ? "" : ("<td style='cursor:pointer' id='ADGW_GROUPTD_" + index + "_" + this.id + "' title='Click to expand'>+</td>"));
+                        //places the new group row when new group row found, if group row separation is ON then group row background color is alternative
+                        HTML.splice(html_l, 0, "<tr class='group-row' style='background-color:" + ((++groupCount % 2 == 0) ? __c : this.bg_color) + "' id='ADGW_GROUPROW_" + index + "_" + this.id + "'>" + ecHTML + "</tr>");
+
+                        //resets individual array of grouped column value for the new group row
+                        var _l = groupDataArray.length;
+                        for(var k=0;k<_l;k++){
+                            groupDataArray[k] = [];
+                        }
+
+                        html_l = HTML.length; //this is where the location where the previous group row placed
+                    }
+
+                    this.groupRowIndices.push(i); //stores group row index
+                    groupRowsCount = 0; //reset group row count, count starts from new grouped data
+                }
+            }
+            /*************/
+
+            var tr_id = "DGWDATAROW_" + (i + this.groupRowIndices.length + total_row_no) + "_" + this.id; //data row
+            var non_filter = isFunction(this.filter) && !this.filter(this.data[i]); //skips the row
+            if(non_filter) this.selectedRows--; //blances selected rows
+            //if its nonfiltered and not in printing mode then row data displayed otheriwse its hidden
+            HTML.push("<tr " + data_row_style.insertBefore("display:" + ( ((grouping && !this.showGroupedRow) || non_filter) ? "none" : (Browser.mozilla ? "table-row" : "block")) + ";" ,1)
+                + " id='" + tr_id + "' " + (!isNull(row_tooltip) ? row_tooltip : "") + " >");
+            //serial no for each grouping starts from 1
+            if(this.serial_no) HTML.push("<td class='window-data inactive-data' " + e_style + " align=center nowrap style='" + this.cellDecorator(this.data[i],j) + "'>" + (grouping ? ++groupRowsCount : (i+1)) + ".</td>");
+            var groupDataCount = 0; //how many grouped columns
+            for(var j=0;j<l;j++){ //iterates column list
+                //column name is the propety name in JSON array list
+                var v = eval("this.data[i]." + this.cols[j].name); //gets the column value
+                var cell_html = null;
+                if(isFunction(this.cols[j].generatesHTML)){ //if generatesHTML function attached with a column then column value not considered(its specially when invalid column name specified)
+                    cell_html = this.cols[j].generatesHTML(this.data[i], i);
+                }else if(isUndefined(v) || isNull(v)){ //if column value is null and generatesHTML not defined then empty value is placed
+                    //cell_html = "&nbsp;";
+                    cell_html = "";
+                }
+                else{ //gets the column value
+                    //cell_html = isString(v) && v.isEmpty() ? "&nbsp;" : v;
+                    cell_html = v;
+                }
+
+                //if column attached with dataGroupRequired flag on then that column value array is prepared for drawGroupRow function
+                if(!isUndefined(this.cols[j].dataGroupRequired) && this.cols[j].dataGroupRequired){
+                    //takes value from groupData function(if exists), otherwise takes from cell HTML
+                    groupDataArray[groupDataCount++].push( (!isUndefined(this.cols[j].groupData) && isFunction(this.cols[j].groupData)) ? this.cols[j].groupData(this.data[i]) : cell_html);
+                }
+
+                //a tooltip can be attached with a specific column
+                var tooltip = isFunction(this.cols[j].tooltip) ? this.cols[j].tooltip(this.data[i]) : '';
+                var cellHandler = this.cols[j].cellHandler;
+                //draws table cell for the row
+                HTML.push(this.drawTabCell(j, i, cell_html,tooltip,e_style + ' style="' + this.cellDecorator(this.data[i],j) + '" ', cellHandler));
+            }
+            if(dgw_e){ //if edit option is available then place update button and checkbox for row-marker which allowes to select for delete
+                //check box for multiple delete
+                HTML.push("<td class='window-data inactive-data' " + e_style + " ><input type=hidden name='DGWACTION_" + this.id + "' value='U' /><input type=checkbox name='DGWMARKBOX_" + this.id + "' onclick=\"this.previousSibling.value = this.checked ? 'D': 'U';\" /></td>");
+                //update button, customized button name can be placed
+                HTML.push("<td class='window-data inactive-data' " + e_style + " ><input type=button id='DGWUPDATEBUTTON_" + (i + this.groupRowIndices.length) + "_" + this.id + "' value=' " + (!isUndefined(this.edit_buttons.update) ? this.edit_buttons.update : "Update") + " ' /></td>");
+            }
+            HTML.push("</tr>");
+        }
+
+        if(isFunction(grouping && this.drawGroupRow)){ //draws the last group row
+            //calls drawGroupRow function to get the group row HTML code
+            var gData = this.drawGroupRow(this.data[i -1], this.cols, groupDataArray);
+            var groupRowHTML = !isUndefined(gData.HTML) ? gData.HTML : gData; //saves group row HTML code
+            groupData.push(isUndefined(gData.data) ? gData.data : null); //if user wants to store any group data against group row
+            var _index = this.groupRowIndices.length - 1; //group row index
+            //prepares collpase expand icon
+            //places the new group row when new group row found, if group row separation is ON then group row background color is alternative
+            HTML.splice(html_l, 0, '<tr class="group-row" id="ADGW_GROUPROW_' + _index + '_' + this.id + '" style="background-color:' + ((++groupCount % 2 == 0) ? __c : this.bg_color) + '" >' + groupRowHTML.replace('_COLLAPSE_EXPAND_','<td style="cursor:pointer" id="ADGW_GROUPTD_' + _index + '_' + this.id + '" title="Click to expand">+</td>') + '</tr>');
+        }
+
+        //place total display @ bottom
+        if(totalPosition == 'bottom' || totalPosition == 'both'){
+            if(totalFun) HTML.push("<tr class='total-row' style='background-color:" + totalBgColor + "'>" + totalFun.call(this) + "</tr>");
+        }
+
+        s = this.groupRowIndices.length;
+        j = 0;
+        for(var i=0;i<s;i++){ //update window data with group row information
+            //var _o = this.data[this.groupRowIndices[i] + i];
+            //if(!isUndefined(_o) && isUndefined(_o.groupRow)){ //if not previously set(in case of reuse)
+                //groupRow is group row marker, index is group row index
+                this.data.splice(this.groupRowIndices[i] + i, 0, {groupRow: true, collapse: true, groupIndex: i, groupData: groupData[j++]});
+            //}
+        }
+        if(totalFun){ //update window data with total display information
+            if(totalPosition == 'top' || totalPosition == 'both') this.data.splice(0, 0, {totalRow: true}); //top row
+            if(totalPosition == 'bottom' || totalPosition == 'both') this.data.splice(this.data.length, 0, {totalRow: true}); //bottom row
+        }
+
+        HTML.push("</tbody></table>");
+        return HTML.join("");
+    };
+
+    /**
+     * refreshes window data to avoid data inconsistency
+     */
+    this.refresh = function(){
+        var s = this.data.length;
+        for(var i=s - 1;i>=0;i--){
+            //removes grouped row and total row
+            if((!isUndefined(this.data[i].groupRow) && this.data[i].groupRow) || (!isUndefined(this.data[i].totalRow) && this.data[i].totalRow)){
+                this.data.splice(i, 1);
+            }
+        }
+        s = this.data.length;
+        this.selectedRows = s;
+        //if(s != this.actualDataSize) this.rowsDiff = s - this.actualDataSize;
+        //else this.rowsDiff = null;
+
+        this.draw(); //re-draw the window
+    };
+
+    /**
+     * prints the data window
+     */
+    this.print = function(){
+        //opens a new window
+         var __ADGWPRINTWIN__ = window.open('','__ADGWPRINTWINNAME__','height=0,width=0');
+         var o = this.clone(); //window object cloning, because window object gets changed before printing the window
+         //o.data = this.originalData;
+         if(!this._showGroupedRow){ //if grouped row is to be shown in printing window
+             o.grouping = null; //normally skip grouping for print out, unless show group row flag is true
+             o.serial_no = true; //forces serial no to be true here
+         }else{
+             o.showGroupedRow = true;
+             //o.serial_no = false;
+             //provided serial no option taken
+         }
+         //nullify some properties(those which helps to make the window interactive) to make the printing OK
+         o.summary = false;
+         o.search_enabled = false;
+         o.buttons = AutomatedDataGridWindow.NO_BUTTON;
+         o.cellDecorator = function(d1,d2){return "";};
+         o.rowDecorator = null;
+         o.actions_block = null;
+
+         var pf = this.print_filter; //if user wants to disable some properties or hides some columns. whatever changes user wants thats mentioned here
+         if(isFunction(pf)) pf(o);
+         var HTML = [];
+         //HTML.push('<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">');
+         HTML.push('<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Printing Window</title><link rel="stylesheet" href="' + GUI_CONSTANTS.__APP_PATH__ + '/css/core/gui.css" /></head>');
+         HTML.push('<body><table border=0 cellpadding=5 cellspacing=0 style="width:auto;"><tbody><tr><td id="__ADGWPRINTWINBODY__"></td></tr></tbody></table></body></html>');
+         var b = __ADGWPRINTWIN__.document.body;
+         b.innerHTML = HTML.join("");
+         o.parent_el_id = "__ADGWPRINTWINBODY__";
+         o.win_ref = __ADGWPRINTWIN__;
+         o.draw(); //draws the window for printing
+         __ADGWPRINTWIN__.print(); //enables print
+         __ADGWPRINTWIN__.close(); //closes after sending request for printing
+    };
+
+    /**Print utility functions*****/
+    /**
+     * get the specified column
+     * @param index column index
+     * @return returns column
+     */
+    this.getColumn = function(index){
+        return this.cols[index];
+    };
+
+    /**
+     * reset a column
+     * @param index where to reset column
+     * @param newCol new column suppopsed to replace the old one
+     */
+    this.setColumn = function(index, newCol){
+        this.cols.splice(index, 1, newCol);
+    };
+
+    /**
+     * removes column from the column list
+     * @param index column index which is to be removed
+     */
+    this.removeColumn = function(index){
+        this.cols.splice(index, 1);
+    };
+
+    /**
+     * adds a column
+     * @param index column index, where to insert new column
+     * @param newCol the new column to be inserted
+     */
+    this.addColumn = function(index, newCol){
+        this.cols.splice(index, 0, newCol);
+    };
+    /***********************/
+
+    /**
+     * gets window table rows
+     * @return returns table rows array
+     */
+    this.getRows = function(){
+        var tab = $e('DGWTAB_' + this.id, this.win_ref);
+        if(tab != null) return tab.rows;
+        else return null;
+    };
+
+    /**
+     * gets action values(in case of window data edit)
+     * @return returns action elements array, from which action value is to be extracted
+     */
+    this.getActions = function(){
+        return $E('N', 'DGWACTION_' + this.id, this.win_ref);
+    };
+
+    /**
+     * gets the window data for a specified index
+     * @param index row index of which data to be extracted
+     * @param clone whether data is to be cloned(in case of changes and that changes should not reflect in window data)
+     * @return returns specified widnow data
+     */
+    this.getData = function(index, clone){
+        if(index < 0) return null;
+        var o = this.data[index];
+        return !isUndefined(clone) && clone ? o.clone() : o;
+    };
+
+    /**
+     * draws each cell of the window table
+     * @param index column index for which the cell is to be drawn
+     * @param rowIndex row index
+     * @param cell_html the HTML code for tat cell
+     * @param tooltip cell tooltip
+     * @param extra_style cell may have extra style
+     * @param ch cell handler
+     */
+    this.drawTabCell = function(index,rowIndex, cell_html,tooltip,extra_style, ch){
+        var text_align = !isUndefined(this.cols[index].align) ? this.cols[index].align : 'left'; //by default text alignment is left
+        var editable = !isUndefined(this.cols[index].editable) ? this.cols[index].editable : false; //column may be editable for updating data into DB
+        var fieldName = null;
+        if(editable) fieldName = !isUndefined(this.cols[index].fieldName) ? this.cols[index].fieldName : '__NO_NAME__'; //column field name for sending parameter data for updating into DB(in case of editable field)
+        var size = !isUndefined(this.cols[index].size) ? this.cols[index].size : 10; //editable field size(in case of input text box)
+        var type = !isUndefined(this.cols[index].type) ? this.cols[index].type : 'plain-text'; //if no type is given then plain text field considered
+        if(editable && cell_html == "&nbsp;") cell_html = ""; //avoid &nbsp; before sending data to server side
+        var ih = editable ? "<input type=text name='" + fieldName + "' size=" + size + " " + (type == 'plain-text' ? "" : "readonly") + " value='" + cell_html + "'  " + (type == 'date' ? "onclick='defaultDatePicker(event,\"" + this.dateFormat + "\");'" : "") + " />" : cell_html;
+        if(isUndefined(this.cellHandlers["ADGWTD-" + index])) this.cellHandlers["ADGWTD-" + index] = ch;
+        //by default cell value is nowrapped
+        return "<td id='ADGWTD-" + rowIndex + "-" + index + "' " + (tooltip ? "title='" + tooltip + "'" : "") + " class='window-data inactive-data' " + extra_style + " align='" + text_align + "' " + ( (!isUndefined(this.cols[index].wrapping) && this.cols[index].wrapping) ? "" : "nowrap") + " >" + ih + "</td>";
+    };
+
+    /*this.filterData = function(filter){
+        var l = this.data.length;
+        for(var i=0;i<l;i++){
+            var row = this.data[i];
+            if(!isUndefined(row.groupRow) && row.groupRow) continue;
+            if(isFunction(filter)){
+                if(filter(row)) 
+            }
+        }
+    };*/
+
+    this.getProccessedData = function(){
+        return this.data;
+    }
+
+    this.setDataList = function(d){
+        this.data = d;
+        this.originalData = this.data.clone();
+    }
+};
+
+//control buttons constant value
+AutomatedDataGridWindow.PRINT_BUTTON = 0x080000; //print button
+AutomatedDataGridWindow.REFRESH_BUTTON = 0x800000; //window refresh button
+AutomatedDataGridWindow.MINIMIZE_BUTTON = 0x400000; //minimize button
+AutomatedDataGridWindow.MAXIMIZE_BUTTON = 0x200000; //maximize button
+AutomatedDataGridWindow.CLOSE_BUTTON = 0x100000; //cross button
+AutomatedDataGridWindow.NO_BUTTON = 0x000000; //no button should appear
+
+//AutomatedDataGridWindow.MINIMIZED = 0x800000;
+//AutomatedDataGridWindow.MAXIMIZED = 0x400000;
+
+/**
+ * this function internally gest called by dialog box. it draws standard buttons, no customized buttons allowed. standard buttons are: OK, YES, NO and CANCEL button.
+ * @param buttons button details, which buttons to be drawn.
+ * @param id the unique ID for dialog box, which attached with each buttons to indentifu them.
+ * @return returns HTML code according to the given button details
+ */
+function drawButtons4DialogBox(buttons, id){
+    var HTML = [];
+    HTML.push("<table border=0 cellspacing=0 cellpadding=3><tbody><tr>");
+    if( (buttons & Message.OK_BUTTON) == Message.OK_BUTTON) HTML.push("<td><input type=button id='DIALOGBOXOKBUTTON_" + id + "' value=' Ok ' /></td>");
+    if( (buttons & Message.YES_BUTTON) == Message.YES_BUTTON) HTML.push("<td><input type=button id='DIALOGBOXYESBUTTON_" + id + "' value=' Yes ' /></td>");
+    if( (buttons & Message.NO_BUTTON) == Message.NO_BUTTON) HTML.push("<td><input type=button id='DIALOGBOXNOBUTTON_" + id + "' value=' No ' /></td>");
+    if( (buttons & Message.CANCEL_BUTTON) == Message.CANCEL_BUTTON) HTML.push("<td><input type=button id='DIALOGBOXCANCELBUTTON_" + id + "' value=' Cancel ' /></td>");
+    HTML.push("</tr></tbody></table>");
+    return HTML.join("");
+};
+
+/**
+ * global object for defining standard and customized message/dialog box.
+ */
+var Message = {
+    /**
+     * simply prompts a OK message box to flush a message only
+     * @param pos to place the message box, it contains left and top property
+     * @param title the title of the message box
+     * @param position 
+     * @param content the message to be flushed
+     */
+    alertBox: function(pos,title,content,position){
+        Message.dialogBox(pos, title, function(id){
+            return content;
+        }, {standardButtons: {buttons: Message.OK_BUTTON, handler: function(button, id){
+                //alert(button + '\t' + id);
+                //nothing to do with the OK button
+        }}}, position);
+    },
+    /**
+     * it prompts a message box for confirmation, it waits for user to click Ok or CANCEL.
+     * @param pos to place the message box, it contains left and top property
+     * @param title the title of the message box
+     * @param props the properties for the fialog box. it conatins content(the message to be flushed for confirmation) and handler(which gets called with no parameter when user confirms) property.
+     */
+    confirmBox: function(pos,title,props){
+        Message.dialogBox(pos, title, function(id){
+            return props.msg;
+        }, {standardButtons: {buttons: Message.OK_BUTTON | Message.CANCEL_BUTTON, handler: function(button, id){
+            //alert(button + '\t' + id);
+            //calls the handler  when user confirms
+            if(button == Message.OK_BUTTON && isFunction(props.handler)) props.handler();
+        }}}, props.position);
+    },
+    /**
+     * prompts a message box for confirmation with a value. it asks for a value, its basiclaly a input box.
+     * @param pos to place the message box, it contains left and top property
+     * @param title the title of the message box
+     * @param props the properties for the fialog box. it conatins content(the message to be flushed for confirmation) and handler(which gets called with user provided value when user clicks on OK button) property.
+     */
+    promptBox: function(pos,title,props){
+        Message.dialogBox(pos, title, function(id){
+            var HTML = [];
+            //places the message and below that an input text box placed
+            HTML.push("<table boder=0 cellpadding=1 cellspacing=1><tbody>");
+            HTML.push("<tr><td>" + props.msg + "</td>");
+            var multiline = isUndefined(props.multiline) ? null : props.multiline;
+            var rows = isUndefined(multiline.rows) ? 3 : multiline.rows;
+            var cols = isUndefined(multiline.cols) ? 17 : multiline.cols;
+            var box_html = multiline != null ? ("<textarea id='PROMPTTEXTBOX_" + id + "' rows=" + rows + " cols=" + cols + "></textarea>") : ("<input id='PROMPTTEXTBOX_" + id + "' type=text size=" + props.size + " />");
+            HTML.push("<td>" + box_html + "</td></tr></tbody></table>");
+            return HTML.join("");
+        }, {standardButtons: {buttons: Message.OK_BUTTON | Message.CANCEL_BUTTON, handler: function(button, id){
+            //calls the handler with user given input value when user confirms
+            if(button == Message.OK_BUTTON && isFunction(props.handler)) props.handler($e('PROMPTTEXTBOX_' + id).value);
+        }}}, props.position);
+    },
+    /**
+     * prompts a user defined message box according to the given parameters. standard message boxes drawn using this function
+     * @param pos to place the message box, it contains left and top property
+     * @param title the title of the message box
+     * @param painter the function(which takes unique ID, which helps to draw unique elements) paints content of the message box
+     * @param buttons its a JSON object which represents button details, it contains standard button details and customized button details. lets discuss a little bit more<br/>
+     * @param position whether dialog box placed @ left or right
+     * <b>standardButtons</b> property contains <b>btutons</b> property which contains the standard buttons to be drawn, <b>handler</b> a function(takes button type and the ID of the message box) property which handles button click. <b>customizedButtons</b> property conatins <b>drawButtons</b> property which is responsible for drawing cuztomized buttons(whose name supposed to be <b>DIALOGBOXBUTTON</b>).<br/>
+     * another property is <b>handler</b> property which takes message box ID and supposed to handle customized button click.
+     */
+    dialogBox: function(pos,title,painter,buttons, position){
+        var p = isUndefined(position) ? 'left' : position;
+        var id = getUniqueID(); //gets unique ID
+
+        var box = document.createElement('DIV');
+        box.id = 'dialogbox_' + id;
+        var HTML = [];
+        HTML.push("<table border=0 cellspacing=0 cellpaddin=0><tbody>");
+        HTML.push("<tr><td class=window-title><table border=0 cellpadding=1 cellspacing=1 width=100% ><tbody><tr><td>" + title + "</td><td align='right'><img id='DIALOGBOXCLOSEBUTTON_" + id + "' src='" + GUI_CONSTANTS.__IMAGE_PATH__ + "/core/close.jpg' alt='close' style='width:15px;height:15px;cursor:pointer;' /></td></tr></tbody></table></tr>");
+        HTML.push("<tr><td class='window-data' style='border-bottom:solid 1px gray'>" + (isFunction(painter) ? painter(id) : "") + "</td>");
+        //buttons painter
+        HTML.push("<tr><td align=center valign=middle>"
+            + (!isUndefined(buttons.standardButtons) ? drawButtons4DialogBox(buttons.standardButtons.buttons, id)
+            : (!isUndefined(buttons.customizedButtons.drawButtons) && isFunction(buttons.customizedButtons.drawButtons)
+            ? buttons.customizedButtons.drawButtons(id) : '&nbsp;'))
+            +  "</td></tr>");
+        HTML.push("</tbody></table>")
+        box.innerHTML = HTML.join("");
+        box.className = 'dialog-box';
+        document.body.appendChild(box); //attaches dialog box to current document
+
+        //internal function to close the dialog box
+        var close = function(id){
+            var d_box = $e('dialogbox_' + id);
+            d_box.parentNode.removeChild(d_box);
+        };
+
+        //here are some handlers for standard buttons
+        //ok button handler
+        var btn = $e('DIALOGBOXOKBUTTON_' + id);
+        if(btn) addEvent('click', btn, function(){
+            if(!isUndefined(buttons.standardButtons.handler) && isFunction(buttons.standardButtons.handler)) buttons.standardButtons.handler(Message.OK_BUTTON, id);
+            close(id);
+        });
+        //cancel button handler
+        btn = $e('DIALOGBOXCANCELBUTTON_' + id);
+        if(btn) addEvent('click', btn, function(){
+            if(!isUndefined(buttons.standardButtons.handler) && isFunction(buttons.standardButtons.handler)) buttons.standardButtons.handler(Message.CANCEL_BUTTON, id);
+            close(id);
+        });
+        //yes button handler
+        btn = $e('DIALOGBOXYESBUTTON_' + id);
+        if(btn) addEvent('click', btn, function(){
+            if(!isUndefined(buttons.standardButtons.handler) && isFunction(buttons.standardButtons.handler)) buttons.standardButtons.handler(Message.YES_BUTTON, id);
+            close(id);
+        });
+        //no button handler
+        btn = $e('DIALOGBOXNOBUTTON_' + id);
+        if(btn) addEvent('click', btn, function(){
+            if(!isUndefined(buttons.standardButtons.handler) && isFunction(buttons.standardButtons.handler)) buttons.standardButtons.handler(Message.NO_BUTTON, id);
+            close(id);
+        });
+        //close button handler
+        btn = $e('DIALOGBOXCLOSEBUTTON_' + id);
+        if(btn) addEvent('click', btn, function(){
+            close(id);
+        });
+
+        //attaches event handler to cutomized buttons
+        var _buttons = $E('N', 'DIALOGBOXBUTTON');
+        var _l = _buttons.length;
+        for(var i=0;i<_l;i++){
+            btn = _buttons[i];
+            addEvent('click', btn, function(){
+                buttons.customizedButtons.handler(id);
+            });
+        }
+
+        //posotions the message box according to user given position
+        if(p == 'left') box.style.left = pos.left + 'px';
+        else if(p == 'right') box.style.left = (pos.left - (box.offsetWidth + 5)) + 'px';
+        box.style.top = pos.top + 'px';
+    },
+
+    //standard buttons
+    OK_BUTTON: 0x800000,
+    YES_BUTTON: 0x400000,
+    NO_BUTTON: 0x200000,
+    CANCEL_BUTTON: 0x100000
+};
+
+/**
+ * draws a loading icon which tells user, something is getting loaded
+ * @param parent_el parent element ID under which the loading icon to be drawn
+ * @param loading_text text to be placed beside the loading icon
+ * @param win_ref loading icon to be placed in current window or in any different window, by default the window is current window reference
+ */
+function drawLoading(parent_el,loading_text,win_ref){
+    if(isString(parent_el)) parent_el = $e(parent_el,isUndefined(win_ref) ? window: win_ref);
+    var HTML = [];
+    HTML.push("<table border=0 cellpadding=1 cellspacing=1><tbody><tr>");
+    HTML.push("<td><img src='" + GUI_CONSTANTS.__IMAGE_PATH__ + "/core/loading_animation.gif' alt='loading' /></td>");
+    HTML.push("<td style='padding-left:15px;'>" + (isUndefined(loading_text) ? "Please wait ... Data gets populated !!!" : loading_text) + "</td>")
+    HTML.push("</tr></tbody></table>");
+    parent_el.innerHTML = HTML.join(""); ;
+};
+
+/*function advancedLoading(parent_el, loading_text, win_ref){
+    
+};
+
+
+function remstoreLoadingNode(parent_el, win_ref){
+
+};*/
+
+/**
+ * alternative to drawLoading function, the function is deprecated(use <b>drawLoading</b> instead)
+ * @param props the properties to draw loading icon, the properties are given below ... <br/>
+ * left: the left co-ordinate to place loading icon, top: top co-ordinate to place loading icon, win_ref: the window reference where the loading icon to be placed<br/>
+ * image_path: the image path from where standard loading image to be loaded
+ */
+function drawLoadingDiv(props){
+    var w = props.win_ref;
+    var l = props.left;
+    var t = props.top;
+    var path = props.image_path;
+    
+    var div = w.document.createElement('DIV');
+    w.document.body.appendChild(div);
+    div.className = 'loading-win';
+    var loading_HTML = [];
+    loading_HTML.push("<table border=0 cellpadding=5 cellspacing=0 width=100%><tbody><tr>");
+    loading_HTML.push("<td><img src='" + path + "/core/loading.gif' alt='loading-image' /></td>");
+    loading_HTML.push("<td class='window-data'>Loading ........ </td>");
+    loading_HTML.push("</tr></tbody></table>");
+    div.innerHTML = loading_HTML.join("");
+
+    div.style.left = l + 'px';
+    div.style.top = t + 'px';
+
+    return div;
+};
+
+/**
+ * draws rounded table, supposed to be changed, its not running properly
+ */
+function drawRoundedTable(props,img_props,innerHTML){
+    var w = props.width;
+    var h = props.height;
+    var bgColor = props.bgColor;
+
+    var img_path = img_props.img_path;
+    var left_top_img = img_props.left_top_img;
+    var right_top_img = img_props.right_top_img;
+    var right_bottom_img = img_props.right_bottom_img;
+    var left_bottom_img = img_props.left_bottom_img;
+    var img_w = img_props.img_w;
+    var img_h = img_props.img_h;
+
+    var box_style = "style='width:" + img_w + "px;height:" + img_h + "px;margin:0px;padding:0px;'";
+
+    var HTML = [];
+    HTML.push("<table border=0 cellpadding=0 cellspacing=0><tbody>");
+    HTML.push("<tr><td style='background-color:" + bgColor + ";" + (!!w ? ("width:" + w + "px;") : "") + (!!h ? ("height:" + h + "px;") : "") + "'>");
+    HTML.push("<table border=0 cellpadding=0 cellspacing=0 ><tbody>");
+    HTML.push("<tr><td align=left valign=top " + box_style + "><img src='" + img_path + "/" + left_top_img + "' " + box_style + " alt='' /></td>");
+    HTML.push("<td align=center valign=top style='border-top:1px solid #e6ebef;'>&nbsp;</td>");
+    HTML.push("<td align=right valign=top " + box_style + "><img src='" + img_path + "/" + right_top_img + "' " + box_style + " alt='' /></td></tr>");
+    HTML.push("<tr><td colspan=3 align=left valign=top style='border-left:1px solid #e6ebef;border-right:1px solid #e6ebef;padding:0px;' align=left valign=middle>" + innerHTML + "</td></tr>");
+    HTML.push("<tr><td align=left valign=bottom " + box_style + "><img src='" + img_path + "/" + left_bottom_img + "' " + box_style + " alt='' /></td>");
+    HTML.push("<td align=center valign=bottom style='border-bottom:1px solid #e6ebef;'>&nbsp;</td>");
+    HTML.push("<td align=right valign=bottom " + box_style + "><img src='" + img_path + "/" + right_bottom_img + "' " + box_style + " alt='' /></td></tr>");
+    HTML.push("</tbody></table>");
+    HTML.push("</td></tr>");
+    HTML.push("</tbody></table>");
+
+    return HTML.join("");
+};
+
+/**
+ * colors a row with a specified color
+ * @tr row refrence
+ * @color hex code or constant color code
+ */
+function colorRow(tr, color){
+    var cells = tr.cells;
+    var l = cells.length;
+    //colors a row means colors each cells of that row
+    for(var i=0;i<l;i++) cells[i].style.backgroundColor = color;
+};
+
+/**
+ * styles a row with specified style class name
+ * @param tr row reference
+ * @param cls class name which contains styles
+ */
+function styleRow(tr, cls){
+    var cells = tr.cells;
+    var l = cells.length;
+    //styles a row means styles cells of that row
+    for(var i=0;i<l;i++) cells[i].className = cls;
+};
+
+/**
+ * a button simulated to be waiting, function assumes that <b>simulate-wait</b> class should be design in that document
+ * @param b button reference
+ */
+function simulateWait(b){
+    b.value = 'Wait please .....   ';
+    b.className = 'simulate-wait';
+    b.disabled = true; //disables button as it pretends to be waiting
+};
+
+/**
+ * a button releases simulation of waiting state, function assumes that <b>reset-simulation</b> class should be design in that document
+ * @param o button details object, it contains <b>b</b> property which is button reference and <b>n</b> property which is previous name of the button to release wait simulation
+ */
+function resetSimulationWait(o){
+    var b = o.b, n = o.n;
+    b.value = n;
+    b.className = 'reset-simulation';
+    b.disabled = false; //enables again to be look like normal as before
+};
+
+function breakWords(v, s){
+    var a = v.split(/ +/);
+    var l = a.length;
+    var html = [];
+    for(var i=1;i<=l;i++){
+        if(i % s == 0) html.push("<br/>");
+        var t = getEscapedHTMLText(a[i - 1]);
+        html.push(t + " ");
+    }
+    var _v = html.join("");
+    return _v;
+};
+
+function LazyLOV(props){
+    var self = this;
+
+    this.id = getUniqueID();
+    this.alreadyLoaded = false;
+    this.dataLoadingStart = false;
+
+    //this.inMemoryLimit = props.inMemoryLimit;
+    this.listingLimit = isUndefined(props.listingLimit) ? -1 : props.listingLimit;
+    this.workBreakingLimit = isUndefined(props.workBreakingLimit) ? 3 : props.workBreakingLimit;
+    this.extendedListingLimit = this.listingLimit;
+    this.fullListLoaded = false;
+    //this.listHeight = props.height;
+    //this.multipleSelection = props.multipleSelection;
+    this.caseSensitiveSearch = props.caseSensitiveSearch;
+    this.customSearch = props.customSearch;
+    this.lovURL = props.lovURL;
+    this.initParams = props.initParams;
+    this.params = props.params;
+    this.columnList = props.columnList;
+
+    this.errorFlushFn = props.errorFlushFn;
+    this.clearDataFn = props.clearDataFn;
+    this.activeBkgColor = "#d5e2ff";
+
+    this.attachedTextBox = null;
+    this.currentActiveRow = null;
+    this.strictValueEnabled = isUndefined(props.strictValueEnabled) ? true : props.strictValueEnabled;
+    this.closed = false;
+    this.shouldClose = false;
+
+    var _p = this.params;
+    var ip = this.initParams;
+    var p = [{name: 'json-object-name', value: '__LAZY_LOV_DATA__' + this.id}];
+    var ofs = ip.objectFromSession;
+    if(isUndefined(ofs)){
+        p.add([
+            {name: 'query-code', value: ip.lovCode},
+            {name: 'adm-ds-name', value: ip.admDsName},
+            {name: 'required-ds-name', value: ip.requiredDsName}
+        ]);
+    }else p.add({name: 'object-from-session', value: ofs});
+    var uc = ip.userCredential;
+    if(!isUndefined(uc)) p.add({name: 'user-credential', value: 'yes'});
+    p.add(isUndefined(_p) ? [] : _p);
+
+    this.startListing = function(search_str){
+        if(this.dataLoadingStart && !this.alreadyLoaded) return "";
+        
+        if(this.alreadyLoaded){
+            return this.listingWindow(search_str);
+        }else{
+            Ajax.call(new Ajax.Initiate(this.lovURL, "GET", p, {
+                success: function(response){
+                    //$e("test-box").value = response;
+                    eval(response);
+                    self.data = eval('__LAZY_LOV_DATA__' + self.id);
+                    //var l = d.length;
+                    //if(isUndefined(self.inMemoryLimit) || l <= self.inMemoryLimit) self.alreadyLoaded = true;
+                    self.alreadyLoaded = true;
+
+                    var tb = self.attachedTextBox;
+                    var pn = tb.pn;
+                    pn.removeChild(pn.firstChild);
+                    pn.appendChild(tb.textbox);
+                }, error: function(code){
+                    var ef = self.errorFlushFn;
+                    if(isFunction(ef)) ef(code);
+                    else alert("Error loading page!!");
+                }
+            }, true));
+            this.dataLoadingStart = true;
+            return "";
+        }
+    };
+
+    this.listingWindow = function(search_str, extended){
+        var listHTML = [];
+        
+        var cs = isFunction(this.customSearch);
+        var css = isUndefined(this.caseSensitiveSearch) ? false : this.caseSensitiveSearch;
+        var d = this.data;
+        var l = d.length;
+        var cl = this.columnList;
+        var _l = cl.length;
+
+        var dc = 0;
+
+        var ll = this.listingLimit;
+        var wbl = this.workBreakingLimit;
+        if(!isUndefined(extended) && extended && ll != -1){
+            ll = this.extendedListingLimit + this.listingLimit;
+            this.extendedListingLimit = ll;
+        }else this.extendedListingLimit = this.listingLimit;
+
+        outer:
+        for(var i = 0; i < l; i++){
+            var o = d[i];
+            var found = false;
+            if(cs) found = this.customSearch(o);
+            else{
+                for(var j = 0; j < _l; j++){
+                    var c = cl[j];
+                    var se = c.searchEnabled;
+                    se = isUndefined(se) ? true : se;
+                    if(!se) continue;
+                    var ff = c.find;
+                    ff = isFunction(ff) ? ff : null;
+                    var cn = c.name;
+                    var _d = eval("o." + cn);
+                    _d = isUndefined(_d) ? "" : _d;
+                    if((ff && ff(_d, search_str)) || _d.startsWith(search_str, css)){
+                        found = true;
+                        break;
+                    }
+                }
+            }
+
+            if(found){
+                if(ll != -1 && ++dc > ll) break outer;
+                listHTML.push("<tr id='LAZY-LOV-TR" + dc + "' class='lazy-LOV-data' dataindex = '" + i+ "'>");
+                for(j = 0; j < _l; j++){
+                    c = cl[j];
+                    cn = c.name;
+                   _d = eval("o." + cn);
+                    _d = isUndefined(_d) ? "" : _d;
+                    _d = breakWords(_d, wbl);
+
+                    listHTML.push("<td style='padding:3px;' nowrap>" + _d + "</td>");
+                }
+                listHTML.push("</tr>");
+            }
+        }
+        this.fullListLoaded = i == l;
+
+        if(listHTML.length > 0){
+            this.closed = false;
+            var optionsHTML = "<tr><td colspan=" + _l + " align=right style='padding: 2px;'><table border=0 cellpadding=0 cellspacing=0><tr><!--<td class=window-data><span style='color:green'></span></td>-->" + (this.fullListLoaded? "" : ("<td valign=top><a href='javascript:void(0);' id='lazy-LOV-more" + this.id + "' >More data?</a></td>")) + "<!--<td style='padding-left:15px;' valign=top><img src='" + GUI_CONSTANTS.__IMAGE_PATH__ + "/core/close.jpg' style='width:17px;width:15px;cursor:pointer;' title='Click to close' id='lazy-LOV-close" + this.id + "' /></td>--></tr></table></td></tr>";
+            return "<div class=lazy-LOV-win id='LAZY-LOV-DIV-" + this.id + "'><table border=0 cellpadding=0 cellspacing=0>" + optionsHTML + listHTML.join("") + "</table></div>";
+        }else{
+            this.closed = true;
+            return "";
+        }
+    };
+
+    this.setAttachedTextBox = function(el){
+        this.attachedTextBox = el;
+    };
+
+    this.getData = function(){
+        return this.data;
+    };
+
+    this.setData = function(d){
+        this.data = d;
+    }
+
+    this.getDataAt = function(index){
+        if(index < 0 || index >= this.data.length) return null;
+        return this.data[index];
+    }
+};
+
+function registerAutoSearch(el, lov_props, dropvalue, comp, win_ref){
+    if(isString(el)) el = $e(el, win_ref);
+    if(el.tagName != 'INPUT' || el.type != 'text') return; //skip if source is not text
+
+    var uf = dropvalue;
+    uf = isFunction(uf) ? uf : null;
+
+    if(isUndefined(win_ref)) win_ref = window;
+    if(el){
+        //var lastKeyPressed = 0;
+        
+        el.className = "auto-search";
+        el.title = "Ttype for search";
+        //el.style.color = 'gray';
+        //el.value = "Ttype for search";
+        
+        //el.addEvent("focus", el, function(){el.className = "auto-search-active";});
+        //el.addEvent("blur", el, function(){el.className = "auto-search";});
+
+        el.setAttribute("autocomplete", "off");
+        if(el.nextSibling != null) return;
+        var pn = el.parentNode;
+        drawLoading(pn, "<strong style='color:green'>Loading data....</strong>", win_ref)
+
+        if(!isFunction(comp)) comp = function(o1, o2){
+            o1.initParams.lovCode = o2.initParams.lovCode;
+        };
+
+        if(el.tagName.toUpperCase() != 'INPUT') return;
+        var container = $e('__LAZY_LOV_CONTAINER__');
+
+        var temp_lov = new LazyLOV(lov_props);
+        var lov = PoolManager.getObject("--LAZY-LOV-POOL--", temp_lov, comp);
+        if(lov != temp_lov){ //found
+            var d = lov.getData();
+            lov = temp_lov;
+            lov.setData(d);
+        }
+        lov.setAttachedTextBox({textbox: el, pn: pn});
+
+        lov.startListing();
+
+        var closeLov = function(){
+            if(container){
+                container.innerHTML = '';
+                container.style.display = 'none';
+            }
+            lov.extendedListingLimit = lov.listingLimit;
+            lov.closed = true;
+            lov.shouldClose = false;
+            lov.currentActiveRow = null;
+        };
+        var _cfn = isFunction(lov.clearDataFn) ? lov.clearDataFn : function(el){
+            el.value = '';
+        };
+        var cfn = function(el){
+            //el.style.color = 'gray';
+            //el.value = 'Type for search';
+            //lastKeyPressed = 0;
+            _cfn(el);
+        };
+
+        var box = null, boxrows = null, lr = null;
+
+        addEvent("keyup", el, function(e){
+            if(!lov.closed){
+                var evt = e || window.Event;
+                var kc = evt.which || e.keyCode;
+
+                var ctr = lov.currentActiveRow;
+                if(kc == 38 || kc == 40){
+                    if(ctr) ctr.style.backgroundColor = "#ffffff";
+                    if(kc == 38){ //up
+                        if(ctr){
+                            ctr = ctr.previousSibling;
+                            if(ctr == boxrows[0]) ctr = lr;
+                        }else ctr = lr;
+                    }else if(kc == 40){ //down
+                        if(ctr){
+                            ctr = ctr.nextSibling;
+                            if(!ctr) ctr = boxrows[1]; //skip first row
+                        }else ctr = boxrows[1]; //skip first row
+                    }
+                    ctr.style.backgroundColor = lov.activeBkgColor;
+                    lov.currentActiveRow = ctr;
+                    //lastKeyPressed = 0;
+                    return;
+                }else if(kc == 13){ //enter
+                    if(uf){
+                        if(ctr){
+                            var idx = ctr.getAttribute("dataindex");
+                            uf(lov.getDataAt(idx), el);
+                            closeLov();
+                        }
+                    }
+                    //lastKeyPressed = 0;
+                    return;
+                }else if(kc == 27){ //escape
+                    closeLov();
+                    if(lov.strictValueEnabled) cfn(el);
+                    return;
+                }
+            }
+
+            //var nw = new Date().getTime();
+            //if(lastKeyPressed != 0 && (nw - lastKeyPressed) )
+            //lastKeyPressed = nw;
+
+            if(!container){
+                var doc = win_ref.document;
+                container = doc.createElement("div");
+                container.style.position = 'absolute';
+                container.style.display = 'none';
+                doc.body.appendChild(container);
+            }
+
+            var v = el.value;
+            if(v){
+                var html = lov.startListing(v);
+                if(!html){
+                    closeLov();
+                    if(lov.strictValueEnabled) cfn(el);
+                    return;
+                }
+
+                var getBoxInfo = function(){
+                    box = $e("LAZY-LOV-DIV-" + lov.id).firstChild;
+                    boxrows = box.rows;
+                    lr = boxrows[boxrows.length - 1];
+                };
+
+                var attachEvents = function(){                  
+                    if(uf){
+                        var c = 0;
+                        while(true){
+                            var tr = $e('LAZY-LOV-TR' + ++c);
+                            if(tr){
+                                addEvent("click", tr, (function(){
+                                    var idx = tr.getAttribute("dataindex");
+                                    return function(){
+                                        uf(lov.getDataAt(idx), el);
+                                        closeLov();
+                                    };
+                                })());
+
+                                addEvent("mouseover", tr, (function(){
+                                    var _tr = tr;
+                                    return function(){
+                                        var ctr = lov.currentActiveRow;
+                                        if(ctr) ctr.style.backgroundColor = "#ffffff";
+                                        lov.currentActiveRow = _tr;
+                                        _tr.style.backgroundColor = lov.activeBkgColor;
+                                    };
+                                })());
+
+                                addEvent("mouseout", tr, (function(){
+                                    var _tr = tr;
+                                    return function(){
+                                        if(_tr == lov.currentActiveRow){
+                                            lov.currentActiveRow = null;
+                                            _tr.style.backgroundColor = "#ffffff";
+                                        }
+                                    };
+                                })());
+                            }else break;
+                        }
+                    }
+                    /*addEvent("click", $e('lazy-LOV-close' + lov.id), function(){
+                        closeLov();
+                        if(lov.strictValueEnabled) el.value = '';
+                    });*/
+                    var more_el = $e('lazy-LOV-more' + lov.id);
+                    if(more_el){
+                        addEvent("click", more_el, function(){
+                            lov.shouldClose = false;
+                            if(lov.fullListLoaded) return;
+                            lov.currentActiveRow = null; //reset
+                            container.innerHTML = lov.listingWindow(v, true);
+
+                            getBoxInfo();
+                            attachEvents();
+                            el.focus();
+                        });
+                    }
+                };
+
+                var p = getElementPosition(el, win_ref);
+                container.innerHTML = html;
+                container.style.left = p.left + 'px';
+                container.style.top = (p.top + el.offsetHeight) + 'px';
+                container.style.display = 'block';
+
+                getBoxInfo();
+                attachEvents();
+            }else{
+                closeLov();
+                if(lov.strictValueEnabled) cfn(el);
+            }
+        });
+
+        addEvent("blur", el, function(){
+            lov.shouldClose = true;
+            var timer = win_ref.setTimeout(function(){
+                var sc = lov.shouldClose;
+                var c = lov.closed;
+                if(sc && !c){
+                    closeLov();
+                    if(lov.strictValueEnabled) cfn(el);
+                }
+                clearTimeout(timer);
+            }, 700); //temporary solution
+        });
+    }
+};

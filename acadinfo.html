@@ -1,0 +1,202 @@
+
+<!-- saved from url=(0055)https://erp.iitkgp.ac.in/Acad/yourAcademicInfo_UGPG.jsp -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+        
+        <title>JSP Page</title>
+        <link rel="StyleSheet" href="./acadinfo_files/style1.css">
+        <script>
+            function retreiveData(showLocation, page, params) {
+                showLocation.innerHTML = "<font color='maroon'>Please wait...</font>";
+                var xmlHttp = null;
+                try
+                {  // Firefox, Opera 8.0+, Safari
+                    xmlHttp = new XMLHttpRequest();
+                } catch (e)
+                {  // Internet Explorer
+                    try
+                    {
+                        xmlHttp = null
+                        xmlHttp = new ActiveXObject("Msxml2.XMLHTTP");
+                    } catch (e)
+                    {
+                        try
+                        {
+                            xmlHttp = null;
+                            xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+                        } catch (e)
+                        {
+                            alert("Your browser does not support AJAX!");
+                            return false;
+                        }
+                    }
+                }
+
+                xmlHttp.onreadystatechange = function ()
+                {
+                    if (xmlHttp.readyState == 4)
+                    {
+                        if (xmlHttp.status == 200) {
+                            showLocation.innerHTML = xmlHttp.responseText;
+                            showLocation.style.display = '';
+                            hideElements('input');
+                            //hideElements('BUTTON');
+                            if (typeof parent.setFrameWH != 'undefined' && parent.setFrameWH != null)
+                                parent.setFrameWH();
+                        } else if (xmlHttp.status == 500) {
+                            alert('Please press reset button');
+                        }
+                    }
+                }
+                xmlHttp.open("POST", page, true);
+                xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xmlHttp.setRequestHeader("Content-length", params.length);
+                xmlHttp.setRequestHeader("Connection", "close");
+                xmlHttp.send(params);
+
+            }
+            function hideElements(tagName) {
+                var elList = document.getElementsByTagName(tagName);
+                for (var i = 0; i < elList.length; i++) {
+                    elList[i].style.display = 'none';
+                }
+            }
+
+
+        </script>
+    </head>
+    <body>
+        
+
+        <fieldset>
+            <table align="left">
+                <tbody><tr>
+                    <td>
+                        <font size="3">Your Academic Information</font>
+                    </td>
+                </tr>
+            </tbody></table><br>
+
+            <table align="center" id="searchResultTable" width="100%">
+                <tbody><tr>
+                    <td>
+                        <font color="maroon">*Please click on the links to get details(Links : Photo, Profile, Performance, Reg. Card, De-reg. Info).</font>
+                    </td>
+                </tr>
+                <tr id="s_result">
+                    <td width="100%">
+                        <table align="center" width="100%">
+                            <tbody><tr bgcolor="skyblue">
+                                <td>Roll No</td>
+                                <td>Name</td>
+                                <td>Photo</td>
+                                <td>Biodata</td>
+                                <td>Performance</td>
+                                <td>Reg. Card</td>
+                                <td>Personal File</td>
+                                <td>Class Attendance</td>
+                                <td>Exam. Attendance</td>
+                                <td>De-Reg. Card</td>
+                                <td>Faculty Advisor</td>
+                            </tr>
+                            
+                            <tr bgcolor="#E5E5E9" onmouseover="this.style.backgroundColor = &#39;#C1C1C3&#39;" onmouseout="this.style.backgroundColor = &#39;#E5E5E9&#39;">
+                                <td>22ME10087</td>
+                                <td>Swapneel Layek</td>
+                                <td>
+                                    
+                                    <a onclick="retreiveData(document.getElementById(&#39;showDetails&#39;), &#39;showPhoto.jsp&#39;, &#39;name=Swapneel Layek&amp;user_code=22ME10087&amp;filename=PJEE5039091.jpg&amp;filepath=/DATA/IMAGE_TRANSITION/STUDENT/20221/JEE5039091&amp;dataSource=datasource_admin&#39;);"><b>Photo</b></a>
+                                </td>
+                                
+                                
+                                <td><a onclick="window.open(&#39;https://erp.iitkgp.ac.in/Acad/biodataUgView.jsp?ssoToken=09F725803492CAD7910086C7DF9E819F.worker21A8D64C1949E8C3CDBDE3401ECF9384C.worker13VRMVODHK73PBEIVBSHX36T0QR2U90H7XH05RN8J2QAR506FA9STVYGB751793Z5&amp;rollno=22ME10087&#39;, &#39;biodata&#39;, &#39;width=720,height=820,scrollbars=1&#39;)"><b>Profile</b></a></td>
+                                            
+                                <td>
+                                    
+
+                                    <a onclick="window.open('Student Performance UG.html', '_blank')"><b>Performance New</b></a>&nbsp;
+                                            
+                                            
+
+                                </td>
+                                
+                                <td><a onclick="window.open(&#39;studentRegCardMain.jsp?rollno=22ME10087&#39;, &#39;reg_card&#39;, &#39;width=920,height=800,scrollbars=1&#39;)"><b> Reg. Card </b></a></td>
+                                <td><a onclick="window.open(&#39;https://erp.iitkgp.ac.in/Acad/personalFile/personalFileList.jsp?ssoToken=09F725803492CAD7910086C7DF9E819F.worker21A8D64C1949E8C3CDBDE3401ECF9384C.worker13VRMVODHK73PBEIVBSHX36T0QR2U90H7XH05RN8J2QAR506FA9STVYGB751793Z5&amp;code=22ME10087&amp;name=Swapneel Layek&#39;, &#39;Personal Files&#39;, &#39;width=920,height=800,scrollbars=1&#39;)"><b> Personal Files </b></a>     </td>
+                                <td><a onclick="window.open(&#39;https://erp.iitkgp.ac.in/Academic/studentAttendanceReport.htm?ssoToken=09F725803492CAD7910086C7DF9E819F.worker21A8D64C1949E8C3CDBDE3401ECF9384C.worker13VRMVODHK73PBEIVBSHX36T0QR2U90H7XH05RN8J2QAR506FA9STVYGB751793Z5&amp;rollno=22ME10087&#39;, &#39;class attd&#39;)"><b>Class Attendance</b></a>&nbsp;   </td>
+                                <td><a onclick="window.open(&#39;studentsExamAttandenceMain.jsp?rollno=22ME10087&#39;, &#39;reg_card&#39;, &#39;width=920,height=800,scrollbars=1&#39;)"><b> Exam. Attendance </b></a></td>
+                                <td><a onclick="retreiveData(document.getElementById(&#39;showDetails&#39;), &#39;yourDeRegInfo.jsp&#39;, &#39;rollno=22ME10087&#39;);"><b> De-reg. Info </b></a>     </td>
+                                            
+                                <td><div><table border="0" cellspacing="1" cellpadding="2"><tbody><tr><td style="BORDER-BOTTOM: #c2c2c2 1px solid" nowrap="">Poonam Sundriyal</td></tr></tbody></table></div></td>
+                            </tr>
+                            
+                            <tr bgcolor="#E5E5E9" onmouseover="this.style.backgroundColor = &#39;#C1C1C3&#39;" onmouseout="this.style.backgroundColor = &#39;#E5E5E9&#39;">
+                                <td>22ME10087</td>
+                                <td>Swapneel Layek</td>
+                                <td>
+                                    
+                                    <a onclick="retreiveData(document.getElementById(&#39;showDetails&#39;), &#39;showPhoto.jsp&#39;, &#39;name=Swapneel Layek&amp;user_code=22ME10087&amp;filename=PJEE5039091.jpg&amp;filepath=/DATA/IMAGE_TRANSITION/STUDENT/20221/JEE5039091&amp;dataSource=datasource_admin&#39;);"><b>Photo</b></a>
+                                </td>
+                                
+                                
+                                <td><a onclick="window.open(&#39;https://erp.iitkgp.ac.in/Acad/biodataUgView.jsp?ssoToken=09F725803492CAD7910086C7DF9E819F.worker21A8D64C1949E8C3CDBDE3401ECF9384C.worker13VRMVODHK73PBEIVBSHX36T0QR2U90H7XH05RN8J2QAR506FA9STVYGB751793Z5&amp;rollno=22ME10087&#39;, &#39;biodata&#39;, &#39;width=720,height=820,scrollbars=1&#39;)"><b>Profile</b></a></td>
+                                            
+                                <td>
+                                    
+
+                                    <a onclick="window.open('Student Performance UG.html', '_blank')"><b>Performance New</b></a>&nbsp;
+                                            
+                                            
+
+                                </td>
+                                
+                                <td><a onclick="window.open(&#39;studentRegCardMain.jsp?rollno=22ME10087&#39;, &#39;reg_card&#39;, &#39;width=920,height=800,scrollbars=1&#39;)"><b> Reg. Card </b></a></td>
+                                <td><a onclick="window.open(&#39;https://erp.iitkgp.ac.in/Acad/personalFile/personalFileList.jsp?ssoToken=09F725803492CAD7910086C7DF9E819F.worker21A8D64C1949E8C3CDBDE3401ECF9384C.worker13VRMVODHK73PBEIVBSHX36T0QR2U90H7XH05RN8J2QAR506FA9STVYGB751793Z5&amp;code=22ME10087&amp;name=Swapneel Layek&#39;, &#39;Personal Files&#39;, &#39;width=920,height=800,scrollbars=1&#39;)"><b> Personal Files </b></a>     </td>
+                                <td><a onclick="window.open(&#39;https://erp.iitkgp.ac.in/Academic/studentAttendanceReport.htm?ssoToken=09F725803492CAD7910086C7DF9E819F.worker21A8D64C1949E8C3CDBDE3401ECF9384C.worker13VRMVODHK73PBEIVBSHX36T0QR2U90H7XH05RN8J2QAR506FA9STVYGB751793Z5&amp;rollno=22ME10087&#39;, &#39;class attd&#39;)"><b>Class Attendance</b></a>&nbsp;   </td>
+                                <td><a onclick="window.open(&#39;studentsExamAttandenceMain.jsp?rollno=22ME10087&#39;, &#39;reg_card&#39;, &#39;width=920,height=800,scrollbars=1&#39;)"><b> Exam. Attendance </b></a></td>
+                                <td><a onclick="retreiveData(document.getElementById(&#39;showDetails&#39;), &#39;yourDeRegInfo.jsp&#39;, &#39;rollno=22ME10087&#39;);"><b> De-reg. Info </b></a>     </td>
+                                            
+                                <td><div><table border="0" cellspacing="1" cellpadding="2"><tbody><tr><td style="BORDER-BOTTOM: #c2c2c2 1px solid" nowrap="">Korak Sarkar</td></tr></tbody></table></div></td>
+                            </tr>
+                            
+                            <tr bgcolor="#E5E5E9" onmouseover="this.style.backgroundColor = &#39;#C1C1C3&#39;" onmouseout="this.style.backgroundColor = &#39;#E5E5E9&#39;">
+                                <td>22ME10087</td>
+                                <td>Swapneel Layek</td>
+                                <td>
+                                    
+                                    <a onclick="retreiveData(document.getElementById(&#39;showDetails&#39;), &#39;showPhoto.jsp&#39;, &#39;name=Swapneel Layek&amp;user_code=22ME10087&amp;filename=PJEE5039091.jpg&amp;filepath=/DATA/IMAGE_TRANSITION/STUDENT/20221/JEE5039091&amp;dataSource=datasource_admin&#39;);"><b>Photo</b></a>
+                                </td>
+                                
+                                
+                                <td><a onclick="window.open(&#39;https://erp.iitkgp.ac.in/Acad/biodataUgView.jsp?ssoToken=09F725803492CAD7910086C7DF9E819F.worker21A8D64C1949E8C3CDBDE3401ECF9384C.worker13VRMVODHK73PBEIVBSHX36T0QR2U90H7XH05RN8J2QAR506FA9STVYGB751793Z5&amp;rollno=22ME10087&#39;, &#39;biodata&#39;, &#39;width=720,height=820,scrollbars=1&#39;)"><b>Profile</b></a></td>
+                                            
+                                <td>
+                                    
+
+                                    <a onclick="window.open('Student Performance UG.html', '_blank')"><b>Performance New</b></a>&nbsp;
+                                            
+                                            
+
+                                </td>
+                                
+                                <td><a onclick="window.open(&#39;studentRegCardMain.jsp?rollno=22ME10087&#39;, &#39;reg_card&#39;, &#39;width=920,height=800,scrollbars=1&#39;)"><b> Reg. Card </b></a></td>
+                                <td><a onclick="window.open(&#39;https://erp.iitkgp.ac.in/Acad/personalFile/personalFileList.jsp?ssoToken=09F725803492CAD7910086C7DF9E819F.worker21A8D64C1949E8C3CDBDE3401ECF9384C.worker13VRMVODHK73PBEIVBSHX36T0QR2U90H7XH05RN8J2QAR506FA9STVYGB751793Z5&amp;code=22ME10087&amp;name=Swapneel Layek&#39;, &#39;Personal Files&#39;, &#39;width=920,height=800,scrollbars=1&#39;)"><b> Personal Files </b></a>     </td>
+                                <td><a onclick="window.open(&#39;https://erp.iitkgp.ac.in/Academic/studentAttendanceReport.htm?ssoToken=09F725803492CAD7910086C7DF9E819F.worker21A8D64C1949E8C3CDBDE3401ECF9384C.worker13VRMVODHK73PBEIVBSHX36T0QR2U90H7XH05RN8J2QAR506FA9STVYGB751793Z5&amp;rollno=22ME10087&#39;, &#39;class attd&#39;)"><b>Class Attendance</b></a>&nbsp;   </td>
+                                <td><a onclick="window.open(&#39;studentsExamAttandenceMain.jsp?rollno=22ME10087&#39;, &#39;reg_card&#39;, &#39;width=920,height=800,scrollbars=1&#39;)"><b> Exam. Attendance </b></a></td>
+                                <td><a onclick="retreiveData(document.getElementById(&#39;showDetails&#39;), &#39;yourDeRegInfo.jsp&#39;, &#39;rollno=22ME10087&#39;);"><b> De-reg. Info </b></a>     </td>
+                                            
+                                <td><div><table border="0" cellspacing="1" cellpadding="2"><tbody><tr><td style="BORDER-BOTTOM: #c2c2c2 1px solid" nowrap="">Nilanjan Das Chakladar</td></tr></tbody></table></div></td>
+                            </tr>
+                            
+                        </tbody></table>
+                    </td>
+                </tr>
+            </tbody></table>
+            
+            <hr>
+            <table width="100%" align="center">
+                <tbody><tr>
+                    <td id="showDetails" width="100%" align="center"></td>
+                </tr>
+            </tbody></table>
+        </fieldset>
+    
+</body></html>

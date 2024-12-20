@@ -1,0 +1,329 @@
+
+<!-- saved from url=(0064)https://erp.iitkgp.ac.in/Acad/view/view_dept_tt.jsp?action=first -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script language="JavaScript" type="text/javascript" src="./dept_files/common.js.download"></script>
+
+
+
+<script>
+     
+    function increaseDecreaseSession(obj){
+        //alert('11111111111 '+obj.value);
+        if(obj.value=='>>'){
+            var acad_ses=obj.previousSibling.value;
+            var year=acad_ses.split('-');
+            acad_ses=year[1]+'-'+(parseInt(year[1])+1);
+            obj.previousSibling.value=acad_ses;
+            //alert(acad_ses);
+        }
+        if(obj.value=='<<'){
+            var acad_ses=obj.nextSibling.value;
+            var year=acad_ses.split('-');
+            acad_ses=(parseInt(year[0])-1)+'-'+year[0];
+            obj.nextSibling.value=acad_ses;
+            //alert(acad_ses);
+        }
+    }
+     
+    var prev_button_index = null;
+    function getSub()
+    {
+     
+        if(document.frm.session.value==''){alert("PLease Enter The Session");
+            document.getElementById('course').value='0';
+            return false;}
+        else if(document.frm.semester.value=='0'){alert("PLease Select Semester");
+            document.getElementById('course').value='0';return false;}
+        else{
+            document.frm.method="POST"    ;
+            document.frm.action="dept_tt1.jsp?session="+document.getElementById('session').value+"&semester="+document.getElementById('semester').value+"&course="+document.getElementById('course').value+"&role="+document.getElementById('dept').value;
+            document.frm.submit();
+        }
+    }
+   
+    function save(){
+        prev_button_index = 0;
+    }
+    function loadFrame(src,index,course,session,semester){
+        //alert(index);
+        var load_frame = window.frames['load_frame'];
+        //if(prev_button_index!=index){
+        var cur_button = document.getElementById('tab'+index);
+        cur_button.className = 'active';
+        load_frame.location.href = src+'&course='+course+'&session='+session+'&index='+index+'&semester='+semester;
+        var prev_button = document.getElementById('tab'+prev_button_index);
+        prev_button_index = index;
+        if(prev_button) prev_button.className = 'inactive';
+        //}else load_frame.location.reload(true);
+    }
+    function getDept()
+    {
+    
+        document.frm.method="POST"    ;
+        document.frm.action="view_dept_tt.jsp?action=second&dept="+document.getElementById('dept').value;
+        document.frm.submit();
+    }
+</script>
+
+
+    
+
+        <style type="text/css">
+            TD.inactive{
+                border-style:solid;
+                border-width:1px;
+                border-color:#000000;
+                background-color: #3BB9FF;
+                height:20px;
+                width:10px;
+                cursor:pointer;
+            }
+
+            TD.active{
+                border-style:solid;
+                border-width:1px;
+                border-color:#000000;
+                background-color:#ADDFFF;
+                height:20px;
+                width:10px;
+                cursor:pointer;
+            }
+
+            TABLE.tabs{
+                width:250px;
+            }
+
+            TD.none{
+                background-color:#FFFFFF;
+            }
+        </style>
+        <link rel="StyleSheet" href="./dept_files/style1.css">
+        
+        <title>JSP Page</title>
+    </head>
+    <body onload="save()">
+        <form name="frm" action="https://erp.iitkgp.ac.in/Acad/view/view_dept_tt.jsp?action=first" method="post">
+            <center><font color="#000099"><b>Please Select The Department For The Timetable <br>
+                    </b></font></center> <br><br>
+            <table align="center"><tbody><tr>
+                    <td>Department</td><td>
+                        <select id="dept" name="dept" onchange="getDept()" style="width:100px">
+                            <option id="0" value="0">--Select--</option>   
+
+                            <option id="AF" value="AF">Academy of Classical and Folk Arts</option>
+                            
+
+                            <option id="RW" value="RW">Aditya Choubey Center for Re-Water Research</option>
+                            
+
+                            <option id="AT" value="AT">ADVANCED TECHNOLOGY DEVELOPMENT CENTRE</option>
+                            
+
+                            <option id="AE" value="AE">AEROSPACE ENGINEERING</option>
+                            
+
+                            <option id="AG" value="AG">AGRICULTURAL AND FOOD ENGINEERING</option>
+                            
+
+                            <option id="AR" value="AR">ARCHITECTURE AND REGIONAL PLANNING</option>
+                            
+
+                            <option id="BS" value="BS">BIO SCIENCE</option>
+                            
+
+                            <option id="BT  " value="BT">BIOTECHNOLOGY</option>
+                            
+
+                            <option id="CD" value="CD">CENTRE FOR COMPUTATIONAL AND DATA SCIENCES</option>
+                            
+
+                            <option id="ET  " value="ET">CENTRE FOR EDUCATIONAL TECHNOLOGY</option>
+                            
+
+                            <option id="CL  " value="CL">Centre for Ocean, River, Atmosphere and Land Sciences (CORAL)</option>
+                            
+
+                            <option id="RD  " value="RD">Centre for Rural Development and Innovative Sustainable Technology</option>
+                            
+
+                            <option id="TV" value="TV">Centre for Teaching Learning and Virtual Skilling</option>
+                            
+
+                            <option id="TS" value="TS">CENTRE FOR THEORETICAL STUDIES</option>
+                            
+
+                            <option id="KS" value="KS">Centre of Excellence for Indian Knowledge Systems</option>
+                            
+
+                            <option id="DH" value="DH">Centre of Excellence in Advanced Manufacturing Technology</option>
+                            
+
+                            <option id="FH" value="FH">Centre of Excellence in Affordable Healthcare</option>
+                            
+
+                            <option id="AI" value="AI">Centre of Excellence in Artificial Intelligence (AI)</option>
+                            
+
+                            <option id="FN" value="FN">Centre of Excellence in Precision Agriculture &amp; Food Nutrition</option>
+                            
+
+                            <option id="CP" value="CP">Centre of Excellence in Public Policy, Law and Governance</option>
+                            
+
+                            <option id="UP" value="UP">Centre of Excellence in Urban Planning and Design</option>
+                            
+
+                            <option id="SE" value="SE">Centre of Excellence on Safety Engineering &amp; Analytics (COE-SEA)</option>
+                            
+
+                            <option id="TL" value="TL">Centre of Teaching Learning and Educational Technology (CTLET)</option>
+                            
+
+                            <option id="CH  " value="CH">CHEMICAL ENGINEERING</option>
+                            
+
+                            <option id="CY  " value="CY">CHEMISTRY</option>
+                            
+
+                            <option id="CE  " value="CE">CIVIL ENGINEERING</option>
+                            
+
+                            <option id="CS  " value="CS">COMPUTER SCIENCE &amp; ENGINEERING</option>
+                            
+
+                            <option id="CR  " value="CR">CRYOGENIC  ENGINEERING</option>
+                            
+
+                            <option id="DE" value="DE">DEYSARKAR CENTRE OF EXCELLENCE IN PETROLEUM ENGINEERING</option>
+                            
+
+                            <option id="SH" value="SH">Dr B C Roy Multi Speciality Medical Research Centre</option>
+                            
+
+                            <option id="SD" value="SD">Education</option>
+                            
+
+                            <option id="EE  " value="EE">ELECTRICAL ENGINEERING</option>
+                            
+
+                            <option id="EC  " value="EC">ELECTRONICS &amp; ELECTRICAL COMMUNICATION ENGG.</option>
+                            
+
+                            <option id="EG  " value="EG">ENERGY ENGINEERING                                </option>
+                            
+
+                            <option id="ES" value="ES">ENERGY SCIENCE AND ENGINEERING</option>
+                            
+
+                            <option id="EF" value="EF">ENVIRONMENTAL SCIENCE AND ENGINEERING</option>
+                            
+
+                            <option id="EX  " value="EX">EXPLORATION GEOPHYSICS              </option>
+                            
+
+                            <option id="EA  " value="EA">EXTRA ACADEMIC(NCC,NSS,NSO)                   </option>
+                            
+
+                            <option id="GG  " value="GG">GEOLOGY &amp; GEOPHYSICS</option>
+                            
+
+                            <option id="TE" value="TE">GS SANNYAL SCHOOL OF TELECOMMUNICATION</option>
+                            
+
+                            <option id="GS  " value="GS">G S SANYAL SCHOOL OF TELECOMMUNICATIONS</option>
+                            
+
+                            <option id="HS  " value="HS">HUMANITIES &amp; SOCIAL SCIENCES</option>
+                            
+
+                            <option id="IM  " value="IM">INDUSTRIAL AND SYSTEMS ENGINEERING</option>
+                            
+
+                            <option id="IE  " value="IE">INSTRUMENTATION ENGINEERING                       </option>
+                            
+
+                            <option id="MF  " value="MF">MANUFACTURING ENGINEERING                         </option>
+                            
+
+                            <option id="MS  " value="MS">MATERIALS SCIENCE CENTRE</option>
+                            
+
+                            <option id="MA  " value="MA">MATHEMATICS</option>
+                            
+
+                            <option id="ME  " value="ME">MECHANICAL ENGINEERING</option>
+                            
+
+                            <option id="MT  " value="MT">METALLURGICAL &amp; MATERIALS ENGINEERING</option>
+                            
+
+                            <option id="MI  " value="MI">MINING ENGINEERING</option>
+                            
+
+                            <option id="FA" value="FA">M. N. Faruqi Centre for Innovation</option>
+                            
+
+                            <option id="NT" value="NT">NANO SCIENCE AND TECHNOLOGY</option>
+                            
+
+                            <option id="NA  " value="NA">Ocean Engg and Naval Architecture</option>
+                            
+
+                            <option id="AP" value="AP">Partha Ghosh Academy of Leadership</option>
+                            
+
+                            <option id="PH  " value="PH">PHYSICS</option>
+                            
+
+                            <option id="BE" value="BE">P.K. Sinha Centre for Bioenergy and Renewables</option>
+                            
+
+                            <option id="PP" value="PP">PREPARATORY</option>
+                            
+
+                            <option id="QD" value="QD">QUALITY ENGINEERING DESIGN AND MANUFACTURING</option>
+                            
+
+                            <option id="QE" value="QE">QUALITY ENGINEERING DESIGN AND MANUFACTURING - INDUSTRIAL ELECTRONICS VERTICAL</option>
+                            
+
+                            <option id="QM" value="QM">QUALITY ENGINEERING DESIGN AND MANUFACTURING - MECHANICAL ENGINEERING VERTICAL</option>
+                            
+
+                            <option id="RJ" value="RJ">RAJENDRA MISHRA SCHOOL OF ENGG ENTREPRENEURSHIP</option>
+                            
+
+                            <option id="IP" value="IP">RAJIV GANDHI SCHOOL OF INTELLECTUAL PROPERTY LAW</option>
+                            
+
+                            <option id="ID" value="ID">RANBIR &amp; CHITRA GUPTA SCHOOL OF INFRASTRUCTURE DESIGN &amp; MANAGEMENT</option>
+                            
+
+                            <option id="RX" value="RX">Rekhi Centre of Excellence for the Science of Happiness</option>
+                            
+
+                            <option id="RT  " value="RT">RUBBER TECHNOLOGY</option>
+                            
+
+                            <option id="IT  " value="IT">SCHOOL OF INFORMATION TECHNOLOGY</option>
+                            
+
+                            <option id="MM  " value="MM">SCHOOL OF MEDICAL SCIENCE &amp; TECHNOLOGY</option>
+                            
+
+                            <option id="WM" value="WM">SCHOOL OF WATER RESOURCES</option>
+                            
+
+                            <option id="SI  " value="SI">STATISTICS AND INFORMATICS                        </option>
+                            
+
+                            <option id="SL" value="SL">STEEL TECHNOLOGY CENTRE</option>
+                            
+
+                            <option id="RE  " value="RE">Subir Chowdhury School of Quality and Reliability</option>
+                            
+
+                            <option id="BM  " value="BM">VINOD GUPTA SCHOOL OF MANAGEMENT</option>
+                            
+                            
+                            
+</select></td></tr></tbody></table></form></body></html>

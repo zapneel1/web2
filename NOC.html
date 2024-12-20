@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<!-- saved from url=(0058)https://erp.iitkgp.ac.in/TrainingPlacementSSO/NOCApply.jsp -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+        
+        <title>NOC</title>
+        <link rel="stylesheet" href="./NOC_files/jquery-ui-1.10.3.custom.css">
+        <link href="./NOC_files/style1_1.css" rel="stylesheet" type="text/css">
+        <script src="./NOC_files/jquery-1.9.1.js.download" type="text/javascript"></script>
+        <script src="./NOC_files/jquery-ui.js.download" type="text/javascript"></script>
+        <script src="./NOC_files/jquery.ui.datepicker.js.download" type="text/javascript"></script>
+        <script>
+            $(function()
+            {
+                var yr = new Date().getFullYear();
+                $('#start_dt').datepicker({
+                        dateFormat: 'dd-mm-yy',
+                        changeMonth: true,
+                        changeYear: true,
+                        minDate: new Date(yr, 0, 3),
+                        maxDate: new Date(yr+1, 06, 15)
+                });
+            });
+            $(function()
+            {
+                var yr = new Date().getFullYear();
+                $('#end_dt').datepicker({
+                        dateFormat: 'dd-mm-yy',
+                        changeMonth: true,
+                        changeYear: true,
+                        minDate: new Date(yr, 0, 3),
+                        maxDate: new Date(yr+1, 06, 12)
+                });
+            });
+            $(function()
+            {
+                var yr = new Date().getFullYear();
+                $('#come_dt').datepicker({
+                        dateFormat: 'dd-mm-yy',
+                        changeMonth: true,
+                        changeYear: true,
+                        minDate: new Date(yr, 0, 3),
+                        maxDate: new Date(yr+1, 06, 12)
+                });
+            });
+            function savenoc()
+            {
+                if($("#rollno").val()=='')
+                {
+                    alert("Please enter rollno");
+                    return false;
+                }
+                else if($("#start_dt").val()=='')
+                {
+                    alert("Please enter Start Date");
+                    return false;
+                }
+                else if($("#end_dt").val()=='')
+                {
+                    alert("Please enter End Date");
+                    return false;
+                }
+                else if($("#come_dt").val()=='')
+                {
+                    alert("Please enter Return Date");
+                    return false;
+                }
+                else if($("#int_at").val()=='')
+                {
+                    alert("Please enter Internship At");
+                    return false;
+                }
+                else if($("#noc_name").val()=='')
+                {
+                    alert("Please enter NOC name");
+                    return false;
+                }
+                else if($("#noc_type").val()=='')
+                {
+                    alert("Please enter Internship type");
+                    return false;
+                }
+                else if($("#noc_addr").val()=='')
+                {
+                    alert("Please enter NOC Address");
+                    return false;
+                }
+                else if($("#noc_email").val()=='')
+                {
+                    alert("Please enter NOC Email");
+                    return false;
+                }
+                else if($("#noc_position").val()=='')
+                {
+                    alert("Please enter NOC Position/Responsibility");
+                    return false;
+                }
+                else if($("#noc_objective").val()=='')
+                {
+                    alert("Please enter NOC Task Topic");
+                    return false;
+                }
+                else if(confirm("Are you sure?"))
+                {
+                    $('#mode').val('savenoc');
+                    $('#from_noc').submit();
+                }
+            }
+            function appfornoc()
+            {
+                if(confirm("Are you sure to apply? You can not edit this form after that."))
+                {
+                    $('#mode').val('appfornoc');
+                    $('#from_noc').submit();
+                }
+            }
+        </script>
+    </head>
+    <body>        
+        <br><center><b>There is no pending NOC request. Fill this form to request one.</b></center>
+
+        <form name="from_noc" id="from_noc" method="post" action="https://erp.iitkgp.ac.in/TrainingPlacementSSO/NOCApply.jsp">
+        <input type="hidden" name="mode" id="mode">
+        <input type="hidden" name="rollno" id="rollno" value="22ME10087">
+        <table id="tab1" style="padding-left: 20px;">  
+            <tbody><tr>
+                <td colspan="2"><br><center><b>NOC Application </b></center><br></td>
+            </tr>
+            <tr>
+                <td style="vertical-align: right;">Internship Type</td>
+                <td><select name="noc_compulsory" id="noc_compulsory" style=" width: 200px;">
+                        <option value="Y">Compulsory</option>
+                        <option value="N" selected="">Other</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td style="vertical-align: right;">NOC For</td>
+                <td><select name="noc_type" id="noc_type" style=" width: 200px;">
+                        <option value="" selected="">Select</option>
+                        <option value="NOC for Abroad">NOC for Abroad</option>
+                        <option value="NOC for India">NOC for India</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td style="vertical-align: right;">Start Date</td>
+                <td><input style="width: 200px;" type="text" id="start_dt" name="start_dt" value="" readonly="readonly" class="hasDatepicker"></td>
+            </tr>
+            <tr>
+                <td style="vertical-align: right;">End Date</td>
+                <td><input style="width: 200px;" type="text" id="end_dt" name="end_dt" value="" readonly="readonly" class="hasDatepicker"></td>
+            </tr>
+            <tr>
+                <td style="vertical-align: right;">Date of Returning to Institute (12 th July Max)</td>
+                <td><input style="width: 200px;" type="text" id="come_dt" name="come_dt" value="" readonly="readonly" class="hasDatepicker"></td>
+            </tr>
+            <tr>
+                <td style="vertical-align: right;">Internship At (Name of the Company/Institute etc.)</td>
+                <td><input style="width: 200px;" type="text" id="int_at" name="int_at" value=""></td>
+            </tr>
+            <tr>
+                <td style="vertical-align: right;">Name of NOC/ REF letter  Addressed to</td>
+                <td><input style="width: 200px;" type="text" id="noc_name" name="noc_name" value=""></td>
+            </tr>
+            <tr>
+                <td style="vertical-align: right;">Address of NOC/ REF letter  Addressed to</td>
+                <td><textarea style="width: 200px;height: 40px;" name="noc_addr" id="noc_addr"></textarea></td>
+            </tr>
+            <tr>
+                <td style="vertical-align: right;">Email of NOC/ REF letter  Addressed to</td>
+                <td><input style="width: 200px;" type="text" id="noc_email" name="noc_email" value=""></td>
+            </tr>
+            <tr>
+                <td style="vertical-align: right;">Position/Responsibility</td>
+                <td><input style="width: 200px;" type="text" id="noc_position" name="noc_position" value=""></td>
+            </tr>
+            <tr>
+                <td style="vertical-align: right;">Tentative Task Topic</td>
+                <td><textarea id="noc_objective" name="noc_objective" style="width: 400px; height: 160px;"></textarea></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input class="button" type="button" name="save_noc" id="save_noc" value="Save" onclick="savenoc();">
+                    
+                </td>
+            </tr>
+        </tbody></table>
+        </form>       
+            
+    <br><br><br>
+
+<div id="ui-datepicker-div" class="ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all"></div></body></html>

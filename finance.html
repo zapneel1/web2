@@ -1,0 +1,811 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!-- saved from url=(0067)https://erp.iitkgp.ac.in/AcadMSRS/rs_financial_assistance_apply.jsp -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+        <link rel="StyleSheet" href="./finance_files/style1.css">
+        
+        <title>Application for Financial Assistance for Conferences/Workshops/Seminars</title>
+
+        <link rel="stylesheet" href="./finance_files/gui.css">
+        <script language="JavaScript" type="text/javascript" src="./finance_files/common.js.download"></script>
+        <script type="text/javascript" src="./finance_files/util.js.download"></script>
+        <script type="text/javascript" src="./finance_files/gui.js.download"></script>
+        <link rel="StyleSheet" href="./finance_files/style1.css">
+        <link rel="StyleSheet" href="./finance_files/demos.css">
+        <link rel="StyleSheet" href="./finance_files/jquery-ui-1.8.4.custom.css">
+        <script language="javascript" type="text/javascript" src="./finance_files/jquery-1.4.2.min.js.download"></script>
+        <script language="javascript" type="text/javascript" src="./finance_files/jquery.ui.core.js.download"></script>
+        <script language="javascript" type="text/javascript" src="./finance_files/jquery.ui.datepicker.js.download"></script>
+        <!--<script type="text/javascript" src="js_jquery/js/jquery-1.2.1.pack.js"></script>-->
+
+
+        <script>
+            $(function ()
+            {
+                $('#dateto').datepicker({
+                    changeMonth: true,
+                    changeYear: true,
+                    yearRange: 'c:c'
+                });
+            });
+            function digits_count(n) {
+                var count = 0;
+                if (n >= 1)
+                    ++count;
+
+                while (n / 10 >= 1) {
+                    n /= 10;
+                    ++count;
+                }
+                return count;
+            }
+            function confirmSave() {
+                var c = "true";
+                var fromdate = document.getElementById('datefrom').value.trim() == null ? "" : document.getElementById('datefrom').value.trim();
+                var todate = document.getElementById('dateto').value.trim() == null ? "" : document.getElementById('dateto').value.trim();
+
+                //alert(" fromdate: " + fromdate + " todate: " + todate);
+                if (fromdate != '' && todate != '') {
+                    var myArray = fromdate.split("-");
+                    var from_dt1 = myArray[0];
+                    var from_mon1 = myArray[1];
+                    var from_yr1 = myArray[2];
+
+                    var myArray = todate.split("-");
+                    var to_dt1 = myArray[0];
+                    var to_mon1 = myArray[1];
+                    var to_yr1 = myArray[2];
+
+                    var dt1 = parseInt(from_dt1, 10);
+                    var mon1 = parseInt(from_mon1, 10);
+                    var yr1 = parseInt(from_yr1, 10);
+                    var dt2 = parseInt(to_dt1, 10);
+                    var mon2 = parseInt(to_mon1, 10);
+                    var yr2 = parseInt(to_yr1, 10);
+
+                    //alert('dt1: ' + dt1 + ' mon1: ' + mon1 + ' yr1: ' + yr1 + ' dt2: ' + dt2 + ' mon2: ' + mon2 + ' yr2: ' + yr2);
+
+                    if (yr1 > yr2) {
+                        alert('Todate must be greater than equal Fromdate');
+                        return false;
+                    } else if (yr1 === yr2 && mon1 > mon2) {
+                        alert('Todate must be greater than equal Fromdate');
+                        return false;
+                    } else if (yr1 === yr2 && mon1 == mon2 && dt1 > dt2) {
+                        alert('Todate must be greater than equal Fromdate');
+                        return false;
+                    }
+                }
+                if (document.getElementById("conference").value == '')
+                {
+                    alert("Please Enter the name of Conference");
+                    return false;
+                }
+                if (document.getElementById("conference_type").value == '')
+                {
+                    alert("Please Enter the name of Type of the Conference");
+                    return false;
+                }
+                if (document.getElementById("place").value == '')
+                {
+                    alert("Please Enter the place of Conference");
+                    return false;
+                }
+                if (document.getElementById("country_type").value === 'FN' && document.getElementById("country").value == '')
+                {
+                    alert("Please Enter the country of Conference");
+                    return false;
+                }
+
+                if (document.getElementById("country").value != '')
+                {
+                    var country = document.getElementById("country").value.toUpperCase();
+                    if (country == 'INDIA' || country == 'AFGHANISTAN' || country == 'BANGLADES' || country == 'BHUTAN' || country == 'MALDIVE' || country == 'NEPAL' || country == 'PAKIST' || country == 'SRILANKA')
+                    {
+                        if (document.getElementById("conference_type").value == 'OTHER THAN SAARC COUNTRIES')
+                        {
+                            alert(country + " is a SAARC country");
+                            c = "false";
+                            return false;
+                        }
+                    }
+                    //if(country!='INDIA'||country!='AFGHANISTAN'||country!='BANGLADES'||country!='BHUTAN'||country!='MALDIVE'||country!='NEPAL'||country!='PAKIST'||country!='SRI')
+                    if (country != 'INDIA' && country != 'AFGHANISTAN' && country != 'BANGLADES' && country != 'BHUTAN' && country != 'MALDIVE' && country != 'NEPAL' && country != 'PAKIST' && country != 'SRILANKA')
+                    {
+                        if (document.getElementById("conference_type").value == 'INDIA/SAARC COUNTRIES')
+                        {
+                            alert(country + " is not a SAARC country");
+                            c = "false";
+                            return false;
+                        }
+                    }
+                    c = "true";
+                }
+
+
+                if (document.getElementById("mode_of_paper").value == '')
+                {
+                    alert("Please Enter the mode of paper");
+                    return false;
+                }
+                if (document.getElementById("datefrom").value == '')
+                {
+                    alert("Please Enter the starting date of conference");
+                    return false;
+                }
+                if (document.getElementById("dateto").value == '')
+                {
+                    alert("Please Enter the ending date of conference");
+                    return false;
+                }
+
+                if (document.getElementById("reg_fee").value == '')
+                {
+                    alert("Please Enter the amount of Registration Fee");
+                    return false;
+                }
+                if (document.getElementById("paper_coauthored").value == '')
+                {
+                    alert("Please select if the paper is coauthored or not");
+                    return false;
+                }
+                if (document.getElementById("nol_coauthor").value == '')
+                {
+                    alert("Please select if no objection letter from coauthor is attached");
+                    return false;
+                }
+                if (document.getElementById("attendance_of_coauthor").value == '')
+                {
+                    alert("Please select If any of your coauthors attending the conference to present the paper");
+                    return false;
+                }
+                if (document.getElementById("finace_assist").value == '')
+                {
+                    alert("Please select If you have attended any conference in the past with financial assistance from the institute");
+                    return false;
+                }
+                if (document.getElementById("publication_flag").value == '')
+                {
+                    alert("Please select If you have any publication in a national or an international journal");
+                    return false;
+                }
+                if (document.getElementById("registration_fee_waiver").value == '')
+                {
+                    alert("Please select If you have got any waiver of registration fee");
+                    return false;
+                }
+                if (document.getElementById("finace_assist_travel").value == '')
+                {
+                    alert("Please select If you have got any financial assistance towards travel");
+                    return false;
+                }
+                if (document.getElementById("finace_assist_hospitality").value == '')
+                {
+                    alert("Please select If you have got any financial assistance towards hospitality");
+                    return false;
+                }
+
+                if (document.getElementById("announcement_flag").value == '')
+                {
+                    alert("Please select If you have enclosed the Announcement");
+                    return false;
+                }
+                if (document.getElementById("acceptance_flag").value == '')
+                {
+                    alert("Please select If you have enclosed Acceptance of the Paper");
+                    return false;
+                }
+                if (document.getElementById("manuscript_flag").value == '')
+                {
+                    alert("Please select If you have enclosed the Manuscript of the Paper");
+                    return false;
+                }
+
+                if (document.getElementById("journal_copy_flag").value == '')
+                {
+                    alert("Please select If you have enclosed the Copies of Papers Published in International/National Journals");
+                    return false;
+                }
+                if (document.getElementById("financial_relief_flag").value == '')
+                {
+                    alert("Please select If you have enclosed the Letter with respect to Financial Relief/Assistance");
+                    return false;
+                }
+
+                if (document.getElementById("nol_flag").value == '')
+                {
+                    alert("Please select If you have enclosed the No Objection Letter from the Coauthor(s)");
+                    return false;
+                } else
+                {
+                    var a = confirm('I have read the rules and instruction and check the workflow diagram carefully');
+                    if (a == true) {
+                        document.getElementById("action").value = 'SAVE';
+                        //  alert(document.getElementById("action").value);
+                        document.form1.submit();
+                        return true;
+                    } else
+                        return false;
+                }
+                //alert("hi");
+                // return true; 
+            }
+            function resetpage1() {
+                var apply_no = document.getElementById("apply_no").value;
+                var conference_type = document.getElementById("conference_type").value;
+                var f = $e('temp-form');
+                f.innerHTML = "<input type=hidden id=apply_no name=apply_no value='" + apply_no + "' readonly><input type=hidden name=conference_type value='" + conference_type + "'/>";
+                f.action = "rs_financial_assistance_apply.jsp";
+                f.submit();
+                // window.location.href='rs_financial_assistance_apply.jsp?apply_no='+apply_no;
+                // document.form1.submit();
+                //window.parent.frames['user'].location.href='draftUserListMultiple.jsp?s_dept='+p_dept;
+            }
+            function print1() {
+                var obj = "FA";
+                var f = $e('temp-form');
+                var apply_no = document.getElementById("apply_no").value;
+                f.innerHTML = "<input type=hidden id=apply_no name=apply_no value='" + apply_no + "' readonly><input type=hidden id=event name=event value='" + obj + "' readonly><input type=hidden name=rollnolusercode value='22ME10087'/>";
+                f.action = "rs_dsc_formation_pdf.jsp";
+                f.submit();
+                //   window.open('rs_dsc_formation_pdf.jsp?rollno=22ME10087&event='+obj);
+                //window.parent.frames['user'].location.href='draftUserListMultiple.jsp?s_dept='+p_dept;
+            }
+            function IsDouble(obj)
+            {
+                var strString = obj.value;
+                var prvstrString = strString.substring(0, strString.length - 1);
+                var strValidChars = "0123456789.";
+                var strChar;
+
+                if (strString.length == 0)
+                    return;
+
+                // test strString consists of valid characters listed above
+                for (var i = 0; i < strString.length; i++)
+                {
+                    strChar = strString.charAt(i);
+                    if (strValidChars.indexOf(strChar) == -1)
+                    {
+                        obj.value = prvstrString;
+                        return;
+                    }
+                }
+            }
+            function getConferenceDetail(o)
+            {
+
+                var l = 5, t = 10;
+                o.nextSibling.style.display = 'inline-table';
+
+                var lov = new LOV({
+                    image_path: 'images', //path of image folder
+                    url: 'jsp/lov.jsp', //path of lov.jsp
+                    title: 'Conference List', //title that should appear in LOV
+                    //query_code: 'ACAD-MSRS-RECOMMENDED-STUDENTS',//code of LOV lov_query
+                    query_code: 'CONFERENCE_DETAIL', //code of LOV lov_query
+                    cols: [
+                        //Specify selected columns and its alias, display status
+                        // {name: 'sl_no',display_name: 'Serial No', display: true},
+                        {name: 'conferences', display_name: 'Conference Title', display: true},
+                                // {name: 'ltp',display_name: 'L-T-P', display: true},
+                                // {name: 'credit',display_name: 'Credit', display: true}
+                    ],
+                    params: [
+                        //system and query parameter name and value.
+                        //System Parameter(mandatory) : adm-ds-name, required-ds-name. Ex: {name:'adm-ds-name',value:'datasource'}
+                        //System Parameter(optional) : order-by-string Ex: {name:'order-by-string',value:'dept,vactype,name'}
+                        {name: 'adm-ds-name', value: 'admindatasource'},
+                        {name: 'required-ds-name', value: 'datasource'},
+                        {name: 'order-by-string', value: 'conferences'}
+                    ],
+                    multiple_selection: false,
+                    height: 350,
+                    left: l,
+                    top: t,
+
+                    handler: function () {
+                        o.nextSibling.style.display = 'none';
+                        var data = this.selected_rows;
+
+                        var l = data.length;
+                        if (l == 1)
+                        {   // alert("hi");
+                            var a = data[0].conferences;
+                            //var credit = data[0].credit;
+                            document.getElementById('conference').value = a;
+                            // resetpage1();
+                            // document.getElementById('hucredit').value = credit;
+                        }
+                    }
+                });
+                lov.pop();
+            }
+
+            function setCountryDiv() {
+                var country_type = $('#country_type').val();
+                var ele = document.getElementById('fn_country_div');
+                //alert("ele: " + ele.id);
+                if (country_type === 'FN') {
+                    $('#country').val('');
+                    ele.style.display = 'block';                    
+                } else {
+                    $('#country').val('INDIA');
+                    ele.style.display = 'none';                    
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <form id="form1" name="form1" method="post" action="https://erp.iitkgp.ac.in/AcadMSRS/rs_financial_assistance_apply.jsp" onsubmit="return verify();">
+            <table align="center" style="background-color:white">
+                <tbody><tr align="center"><td colspan="2"><h2><b style="color:maroon">FINANCIAL ASSISTANCE TO STUDENTS FOR PAPER PRESENTATION AT NATIONAL/INTERNATIONAL CONFERENCES/WORKSHOPS/SEMINARS ABROAD</b></h2></td></tr>
+                <tr align="right">
+                    <td align="left">
+                        <u><a onclick="window.open(&#39;FinancialAssistRule.pdf&#39;, &#39;Candidate Info&#39;, &#39;width=600,height=500,scrollbars=yes&#39;)" style="font:"><b style="color:red">Rules and Informations on Financial Assistance</b></a></u>
+                        &nbsp;&nbsp; &nbsp;&nbsp;
+                        <u><a onclick="window.open(&#39;financial_assistance_workflow.pdf&#39;, &#39;Candidate Info&#39;, &#39;width=600,height=500,scrollbars=yes&#39;)" style="font:"><b style="color:red">Please check the work flow</b></a></u>
+                    </td>   
+                    <td align="left">
+                        <u><a onclick="window.open(&#39;Best Academic International Conferences_BOG approval.pdf&#39;, &#39;Candidate Info&#39;, &#39;width=600,height=500,scrollbars=yes&#39;)" style="font:"><b style="color:red">Rules for Best Academic International Conference</b></a></u>
+                    </td>
+                </tr>
+                <tr style="background-color:pink;"><td colspan="2"><b><u>Details</u></b></td></tr>
+                <tr>
+                    <td>
+                        &gt;
+                                <table>
+                            <tbody><tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;" bgcolor="white">
+                                <td>
+                                    Roll No.
+                                </td>
+                                <td>
+                                    22ME10087
+                                </td> 
+                            </tr>
+
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>
+                                    Name
+                                </td>                  
+                                <td>
+                                    Swapneel Layek
+                                </td>
+                            </tr>
+
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                
+
+                                <td>No of times applying</td>
+                                <td>
+                                    <select name="apply_no" id="apply_no" onchange="resetpage1();" style=" width:140px;">
+                                        
+                                        
+                                        <option value="1">New</option>
+                                        
+                                        <option value="1">New</option>
+                                        </select>
+                                </td>
+                            </tr>
+
+
+                            
+
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>
+                                    Type of Conference
+                                </td>
+                                <td>
+                                    <select name="conference_type" id="conference_type" style=" width:140px;" onchange="resetpage1();">
+                                        <option value="" selected="">Select</option>
+                                        <option value="INDIA/SAARC COUNTRIES">INDIA/SAARC COUNTRIES  </option>
+                                        <option value="OTHER THAN SAARC COUNTRIES">OTHER THAN SAARC COUNTRIES</option>
+                                        <option value="BEST">BEST ACADEMIC INTERNATIONAL CONFERENCE</option>
+                                    </select>
+                                </td>
+                            </tr>
+
+                            
+
+                            
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>
+                                    Name of the Conference 
+                                </td>
+                                <td>
+                                    <input type="text" id="conference" name="conference" value="">
+                                </td>
+                            </tr>
+                            
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;" bgcolor="white">
+                                <td>
+                                    Status
+                                </td>
+                                <td>
+                                    <select name="withdrawal_type" id="withdrawal_type" style=" width:140px;">
+                                        <option value="" selected="">Select</option>
+                                        <option value="FULL TIME">FULL TIME</option>
+                                        <option value="NON RESIDENT">NON RESIDENT</option>
+                                        <option value="TEMPORARY WITHDRAWN">TEMPORARY WITHDRAWN</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>
+                                    Have you completed your registration seminar(for MS-Ph.D. Students):
+                                </td>
+                                <td>
+                                    <select name="reg_sem_flag" id="reg_sem_flag" style=" width:140px;">
+                                        <option value="" selected="">Select</option>
+                                        <option value="YES">YES</option>
+                                        <option value="NO">No</option>
+                                    </select>  </td>
+                            </tr>
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>
+                                    Date of Registration Seminar (for MS-Ph.D. Students):
+                                </td>
+                                <td>
+                                    <input type="text" id="date_of_reg_sem" name="date_of_reg_sem" value="" readonly=""><img src="./finance_files/calendar.gif" style="width:20px;height:15px;cursor:pointer" onclick="getDate(&#39;hidden_date&#39;, this.previousSibling)">
+                                </td>
+                            </tr>
+
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>
+                                    Venue of the Conference
+                                </td>
+                                <td>
+                                    <input type="text" id="place" name="place" value="">
+                                </td>
+                            </tr>
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;" bgcolor="white">
+                                <td>
+                                    Country of the Conference
+                                </td>
+                                <td>
+                                    <select name="country_type" id="country_type" style=" width:140px;" onchange="setCountryDiv()">
+                                        <option value="" selected="">Select</option>
+                                        <option value="IN">INDIA</option>
+                                        <option value="FN" selected="">FOREIGN</option>
+                                    </select>  
+                                </td>
+                            </tr>
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;" id="fn_country_div"><td>
+                                    Country Name
+                                </td>                                
+                                <td>
+                                    <input type="text" id="country" name="country" value="">
+                                </td>
+                            </tr>
+
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>
+                                    Mode_of_paper
+                                </td>
+                                <td>
+                                    <select name="mode_of_paper" id="mode_of_paper" style=" width:140px;">
+                                        <option value="" selected="">Select</option>
+                                        <option value="ORAL">ORAL</option>
+                                        <option value="POSTER">POSTER</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>
+                                    Title of the paper
+                                </td>
+                                <td>
+                                    <input type="text" id="paper_title" name="paper_title" value="">
+                                </td>
+                            </tr>
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;" bgcolor="white">
+                                <td>
+                                    Date From:
+                                </td>
+                                <td>
+                                    <input type="text" id="datefrom" name="datefrom" value="" readonly=""><img src="./finance_files/calendar.gif" style="width:20px;height:15px;cursor:pointer" valign="middle" onclick="getDate(&#39;hidden_date&#39;, this.previousSibling)">
+                                </td>
+                            </tr>
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>
+                                    Date To:
+                                </td>
+                                <td>
+                                    <input type="text" id="dateto" name="dateto" value="" readonly="" class="hasDatepicker"><img src="./finance_files/calendar.gif" style="width:20px;height:15px;cursor:pointer" valign="middle" onclick="getDate(&#39;hidden_date&#39;, this.previousSibling)">
+                                </td>
+                            </tr>
+
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>
+                                    Registration Fee (i.e. Rs.100, $100 etc.)
+                                </td>
+                                <td>
+                                    <input type="text" id="reg_fee" name="reg_fee" value="">
+                                </td>
+                            </tr>
+
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>
+                                    Is the accepted paper an outcome of your thesis/project work at the Institute?
+                                </td>
+                                <td>
+                                    <select name="accepted_paper_outcome_flag" id="accepted_paper_outcome_flag" style=" width:140px;">
+                                        <option value="" selected="">Select</option>
+                                        <option value="YES">YES</option>
+                                        <option value="NO">No</option>
+                                    </select>
+                                </td>
+                            </tr> 
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;" bgcolor="white">
+                                <td>
+                                    Paper Acceptance date:
+                                </td>
+                                <td>
+                                    <input type="text" id="paper_acceptance_date" name="paper_acceptance_date" value="" readonly=""><img src="./finance_files/calendar.gif" style="width:20px;height:15px;cursor:pointer" valign="middle" onclick="getDate(&#39;hidden_date&#39;, this.previousSibling)">
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </td>                    
+                    <td>
+                        <table>
+                            <tbody><tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>
+                                    Is the Paper co authored
+                                </td>
+                                <td valign="top" width="45%" align="left">
+                                    <select name="paper_coauthored" id="paper_coauthored" style=" width:140px;">
+                                        <option value="" selected="">Select</option>
+                                        <option value="YES">YES</option>
+                                        <option value="NO">No</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>
+                                    Is a no-objection letter attached from each coauthor?
+                                </td>
+                                <td valign="top" width="45%" align="left"><select name="nol_coauthor" id="nol_coauthor" style=" width:140px;">
+                                        <option value="" selected="">Select</option>
+                                        <option value="YES">YES</option>
+                                        <option value="NO">No</option>
+                                        <option value="NOT APPLICABLE">NOT APPLICABLE</option>
+                                    </select>
+
+                                </td>
+                            </tr>
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>
+                                    Will any of your co authors present the paper?
+                                </td>
+                                <td valign="top" width="45%" align="left"><select name="attendance_of_coauthor" id="attendance_of_coauthor" style=" width:140px;">
+                                        <option value="" selected="">Select</option>
+                                        <option value="YES">YES</option>
+                                        <option value="NO">No</option>
+                                        <option value="NOT APPLICABLE">NOT APPLICABLE</option>
+                                    </select>
+
+                                </td>
+                            </tr>
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>
+                                    Is the paper based on the work done by you during your stay in the Institute?
+                                </td>
+                                <td valign="top" width="45%" align="left"><select name="paper_duration_flag" id="paper_duration_flag" style=" width:140px;">
+                                        <option value="" selected="">Select</option>
+                                        <option value="YES">YES</option>
+                                        <option value="NO">No</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>
+                                    Have you attended any conference in the past with financial assistance from the Institute?
+                                </td>
+                                <td valign="top" width="45%" align="left">
+                                    
+                                    <select name="finace_assist" id="finace_assist" style=" width:140px;">
+                                        <option value="" selected="">Select</option>
+                                        <option value="YES">YES</option>
+                                        <option value="NO">No</option>
+                                    </select>
+                                    
+                                </td>
+                            </tr>
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>If yes, How many Conferences at India/SAARC countries</td>
+                                <td><input type="text" id="national_conference_count" name="national_conference_count" value="0" readonly="">
+                                    
+                                    
+                                </td>
+                            </tr>
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>How many Conferences at NON-SAARC countries</td>
+                                <td>
+                                    <input type="text" id="international_conference_count" name="international_conference_count" value="0" readonly="">
+                                    
+                                </td>
+                            </tr>
+
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>
+                                    Have you any publication in a national or an international journal (in case of PhD/PDF students)?
+                                </td>
+                                <td valign="top" width="45%" align="left"><select name="publication_flag" id="publication_flag" style=" width:140px;">
+                                        <option value="" selected="">Select</option>
+                                        <option value="YES">YES</option>
+                                        <option value="NO">No</option>
+                                    </select>
+
+                                </td>
+                            </tr>
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>(if yes) No. of publications in reputed journals</td>
+                                <td><input type="text" id="total_journal_count" name="total_journal_count" value=""></td>
+                            </tr>
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>Publications' DOI No. (comma separated)</td>
+                                <td><input type="text" id="doi_no" name="doi_no" value="" style="width: 150px"></td>
+                            </tr>
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>
+                                    Are all papers published an outcome of your thesis/project work at the Institute
+                                </td>
+                                <td>
+                                    <select name="published_paper_outcome_flag" id="published_paper_outcome_flag" style=" width:140px;">
+                                        <option value="" selected="">Select</option>
+                                        <option value="YES">YES</option>
+                                        <option value="NO">No</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>
+                                    Have you got any waiver of registration fee?
+                                </td>
+                                <td valign="top" width="45%" align="left"><select name="registration_fee_waiver" id="registration_fee_waiver" style=" width:140px;">
+                                        <option value="" selected="">Select</option>
+                                        <option value="YES">YES</option>
+                                        <option value="NO">No</option>
+                                    </select>
+
+                                </td>
+                            </tr>
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>
+                                    Have you got any financial assistance towards travel?
+                                </td>
+                                <td valign="top" width="45%" align="left"><select name="finace_assist_travel" id="finace_assist_travel" style=" width:140px;">
+                                        <option value="" selected="">Select</option>
+                                        <option value="YES">YES</option>
+                                        <option value="NO">No</option>
+                                    </select>
+
+                                </td>
+                            </tr>
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>
+                                    Have you got any financial assistance towards hospitality?
+                                </td>
+                                <td valign="top" width="45%" align="left">
+                                    <select name="finace_assist_hospitality" id="finace_assist_hospitality" style=" width:140px;">
+                                        <option value="" selected="">Select</option>
+                                        <option value="YES">YES</option>
+                                        <option value="NO">No</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>Additional Remarks (if any)</td>
+                                <td>
+                                    <textarea id="addl_remarks" name="addl_remarks">                                        
+                                    </textarea>
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                </tr>
+                <tr><td colspan="2"></td></tr>
+                <tr><td colspan="2"></td></tr>
+                <tr style="background-color:pink;"><td colspan="2"><b><u>Checklist of Enclosures</u></b></td></tr>
+                <tr><td colspan="2"></td></tr>    
+
+                <tr>
+                    <td>
+                        <table>
+                            <tbody><tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>Announcement</td>
+                                <td valign="top" width="57%" align="left">
+                                    <select name="announcement_flag" id="announcement_flag" style=" width:140px;">
+                                        <option value="" selected="">Select</option>
+                                        <option value="YES">YES</option>
+                                        <option value="NO">No</option>
+                                    </select>
+
+                                </td>
+                            </tr>
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>Manuscript of the Paper</td>
+                                <td valign="top" width="57%" align="left">
+                                    <select name="manuscript_flag" id="manuscript_flag" style=" width:140px;">
+                                        <option value="" selected="">Select</option>
+                                        <option value="YES">YES</option>
+                                        <option value="NO">No</option>
+                                    </select>
+
+                                </td>
+                            </tr>
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>Letter with respect to Financial Relief/Assistance:</td>
+                                <td valign="top" width="57%" align="left"><select name="financial_relief_flag" id="financial_relief_flag" style=" width:140px;">
+                                        <option value="" selected="">Select</option>
+                                        <option value="YES">YES</option>
+                                        <option value="NO">No</option>
+                                    </select>
+
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                    <td>
+                        <table>
+                            <tbody><tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>Letter of Acceptance of the Paper</td>
+                                <td valign="top" width="45%" align="left">
+                                    <select name="acceptance_flag" id="acceptance_flag" style=" width:140px;">
+                                        <option value="" selected="">Select</option>
+                                        <option value="YES">YES</option>
+                                        <option value="NO">No</option>
+                                    </select>
+
+                                </td>
+                            </tr> 
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>Copies of Papers Published in International/National Journals:</td>
+                                <td valign="top" width="45%" align="left"><select name="journal_copy_flag" id="journal_copy_flag" style=" width:140px;">
+                                        <option value="" selected="">Select</option>
+                                        <option value="YES">YES</option>
+                                        <option value="NO">NO</option>
+                                        <option value="NOT APPLICABLE">NOT APPLICABLE</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                                <td>NOC from the Coauthor(s) stating that he/she will not attending conference with the fund from the Institute:</td>
+                                <td valign="top" width="45%" align="left"><select name="nol_flag" id="nol_flag" style=" width:140px;">
+                                        <option value="" selected="">Select</option>
+                                        <option value="YES">YES</option>
+                                        <option value="NO">NO</option>
+                                    </select>
+
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                </tr>        
+
+                <tr><td colspan="2"></td></tr>
+                <tr><td colspan="2"></td></tr>
+                <tr style="background-color:pink;"><td colspan="2" align="center"><b>***********</b></td></tr>
+                <tr><td colspan="2"></td></tr>   
+
+                <tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+                    
+                </tr><tr onmouseover="this.bgColor = &#39;lightgreen&#39;" onmouseout="this.bgColor = &#39;white&#39;">
+
+                    
+                </tr><tr><td align="center" colspan="2">
+                        
+                    </td></tr>
+                <tr><td align="center" colspan="2">
+                        <b style="color:red"></b>
+                    </td></tr>
+                <tr><td align="center" colspan="2">
+                        <input type="button" value="PRINT" name="print" id="print" class="button" onclick="print1();">
+                    </td></tr>
+
+            </tbody></table>
+        </form>
+
+        <form name="temp-form" id="temp-form" action="https://erp.iitkgp.ac.in/AcadMSRS/rs_financial_assistance_apply.jsp" method="POST"></form>
+    
+
+<div id="ui-datepicker-div" class="ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all ui-helper-hidden-accessible"></div></body></html>

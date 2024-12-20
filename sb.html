@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<!-- saved from url=(0050)https://erp.iitkgp.ac.in/GH/studentBookingPage.htm -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="theme-color" content="#721c24">
+		<link href="./sb_files/bootstrap.css" rel="stylesheet" type="text/css">
+		<link href="./sb_files/datetimepicker.css" rel="stylesheet" type="text/css">
+		<link href="./sb_files/font-awesome.css" rel="stylesheet" type="text/css">
+		<link href="./sb_files/bootstrap-table.css" rel="stylesheet" type="text/css">
+		<link href="./sb_files/select2.css" rel="stylesheet" type="text/css">
+		<link href="./sb_files/gh.css" rel="stylesheet" type="text/css">
+		<title>Student Booking | GH</title>
+	</head>
+	<body>
+		<header>
+			<h2>Room Booking</h2>
+			<hr>
+		</header>
+	
+		<section class="container mt-3">
+		<form id="bookingForm" class="ajax-form-booking" action="https://erp.iitkgp.ac.in/GH/studentBooking.htm" method="POST">
+			<div class="text-center">For booking policy please visit <a href="http://www.tgh.iitkgp.ac.in/" target="_blank">TGH website</a></div>
+			<div class="card mb-3">
+				<div class="card-body">
+					<div class="row">
+						<div class="col-md-3">
+							<div class="form-group">
+								<label for="bookingApprover">Approver<span class="text-danger">*</span>:</label> 
+								<select class="form-control bookingApprover select2-hidden-accessible" name="bookingApprover" id="bf" data-url="getStudentBookingApproverListForDD.htm" dd-auto-width="true" required="" data-select2-id="bf" tabindex="-1" aria-hidden="true">
+								<option value="" data-select2-id="26">Select</option><option value="U-09049" data-select2-id="27">[ 09049 ] Abhijit Guha</option><option value="U-18107" data-select2-id="28">[ 18107 ] Aditya Bandopadhyay</option><option value="U-16008" data-select2-id="29">[ 16008 ] Ajay Muljibhai Sidpara</option><option value="U-96005" data-select2-id="30">[ 96005 ] Amiya Ranjan Mohanty</option><option value="U-15022" data-select2-id="31">[ 15022 ] Anandaroop Bhattacharya</option><option value="U-99040" data-select2-id="32">[ 99040 ] Anirvan Dasgupta</option><option value="U-21010" data-select2-id="33">[ 21010 ] Archana Arbind</option><option value="U-04047" data-select2-id="34">[ 04047 ] Arun Kumar Samantaray</option><option value="U-88044" data-select2-id="35">[ 88044 ] Asimava Roy Choudhury</option><option value="U-17076" data-select2-id="36">[ 17076 ] Atul Jain</option><option value="U-T0683" data-select2-id="37">[ T0683 ] Biswajit Bharat</option><option value="U-95005" data-select2-id="38">[ 95005 ] Cheruvu Siva Kumar</option><option value="U-13007" data-select2-id="39">[ 13007 ] Chirag Deepak Kalelkar</option><option value="U-16115" data-select2-id="40">[ 16115 ] Dhananjay Kumar Srivastava</option><option value="U-03001" data-select2-id="41">[ 03001 ] Dilip Kumar Pratihar</option><option value="U-03004" data-select2-id="42">[ 03004 ] Goutam Chakraborty</option><option value="U-16089" data-select2-id="43">[ 16089 ] Jeevanjyoti Chakraborty</option><option value="U-04032" data-select2-id="44">[ 04032 ] Kingshook Bhattacharyya</option><option value="U-21011" data-select2-id="45">[ 21011 ] Korak Sarkar</option><option value="U-00099" data-select2-id="46">[ 00099 ] Maddali Ramgopal</option><option value="U-19011" data-select2-id="47">[ 19011 ] Mahendra Reddy Vanteru</option><option value="U-07050" data-select2-id="48">[ 07050 ] Manab Kumar Das</option><option value="U-00098" data-select2-id="49">[ 00098 ] Manas Chandra Ray</option><option value="U-06052" data-select2-id="50">[ 06052 ] Mihir Sarangi</option><option value="U-19006" data-select2-id="51">[ 19006 ] Nilanjan Das Chakladar</option><option value="U-05015" data-select2-id="52">[ 05015 ] Partha Pratim Bandyopadhyay</option><option value="U-02010" data-select2-id="53">[ 02010 ] Partha Saha</option><option value="U-18090" data-select2-id="54">[ 18090 ] Peeyush Soni</option><option value="U-23007" data-select2-id="55">[ 23007 ] Poonam Sundriyal</option><option value="U-87034" data-select2-id="56">[ 87034 ] Prasanta Kumar Das</option><option value="U-19032" data-select2-id="57">[ 19032 ] Purbarun Dhar</option><option value="U-16096" data-select2-id="58">[ 16096 ] Rajaram Lakkaraju</option><option value="U-90067" data-select2-id="59">[ 90067 ] Ranjan Bhattacharyya</option><option value="U-00100" data-select2-id="60">[ 00100 ] Sandipan Ghosh Moulic</option><option value="U-06011" data-select2-id="61">[ 06011 ] Sanjay Gupta</option><option value="U-08040" data-select2-id="62">[ 08040 ] Sankha Deb</option><option value="U-00093" data-select2-id="63">[ 00093 ] Sati Nath Bhattacharyya</option><option value="U-T0663" data-select2-id="64">[ T0663 ] Siddharth Tamang</option><option value="U-16105" data-select2-id="65">[ 16105 ] Somnath Roy</option><option value="U-95025" data-select2-id="66">[ 95025 ] Soumitra Paul</option><option value="U-17137" data-select2-id="67">[ 17137 ] Sourav Mitra</option><option value="U-94014" data-select2-id="68">[ 94014 ] Subhransu Roy</option><option value="U-98027" data-select2-id="69">[ 98027 ] Sukanta Kumar Dash</option><option value="U-02027" data-select2-id="70">[ 02027 ] Suman Chakraborty</option><option value="U-18052" data-select2-id="71">[ 18052 ] Sunil Manohar Dash</option><option value="U-04060" data-select2-id="72">[ 04060 ] Surjya Kanta Pal</option><option value="U-09051" data-select2-id="73">[ 09051 ] Sushanta Kumar Panda</option><option value="U-23008" data-select2-id="74">[ 23008 ] Venkata Naga Vamsi Munagala</option><option value="U-09003" data-select2-id="75">[ 09003 ] Vikranth Racherla</option></select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="76" style="width: 199.5px;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-bf-container"><span class="select2-selection__rendered" id="select2-bf-container" role="textbox" aria-readonly="true" title="Select">Select</span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+								<div class="invalid-feedback"></div>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label for="fromDate">From Date<span class="text-danger">*</span>:
+								</label>
+								<div class="input-group">
+									<input type="text" class="form-control datetime-without-minute-picker fromDate" name="fromDate" placeholder="Click Here" readonly="">
+									<div class="input-group-append calendartime-without-minute-picker">
+										<span class="input-group-text"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+									</div>
+									<div class="invalid-feedback"></div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label for="toDate">To Date<span class="text-danger">*</span>:
+								</label>
+								<div class="input-group">
+
+									<input type="text" class="form-control datetime-without-minute-picker toDate" name="toDate" placeholder="Click Here" readonly="">
+									<div class="input-group-append calendartime-without-minute-picker">
+										<span class="input-group-text"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+									</div>
+									<div class="invalid-feedback"></div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label for="purposeOfVisit">Purpose of visit<span class="text-danger">*</span>:</label>
+								<select class="form-control purposeOfVisit select2-hidden-accessible" name="purposeOfVisit" data-url="getStudentPurposeOfVisitForDD.htm" dd-auto-width="true" required="" data-select2-id="1" tabindex="-1" aria-hidden="true"><option value="" data-select2-id="2">Select</option><option value="C1" data-select2-id="3">[ C1 ] Parents/Guardian of Students</option><option value="C7" data-select2-id="4">[ C7 ] Self</option></select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="5" style="width: 199.5px;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-purposeOfVisit-uu-container"><span class="select2-selection__rendered" id="select2-purposeOfVisit-uu-container" role="textbox" aria-readonly="true" title="Select">Select</span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+								<div class="invalid-feedback"></div>
+							</div>
+						</div>
+
+					</div>
+					<div class="row">
+						<div class="col-md-2">
+							<div class="form-group">
+								<label for="ghCode">Guest House <span class="text-danger information" id="information" data-original-title="" title=""><i class="fa fa-info-circle text-primary" style="cursor: pointer"></i> *</span>:
+								</label> <select class="form-control ghCode select2-hidden-accessible" name="ghCode" data-url="getAllGuestHouseForDD.htm" required="" data-select2-id="6" tabindex="-1" aria-hidden="true"><option value="VGH" data-select2-id="7">VGH</option><option value="TGH" data-select2-id="8">TGH</option><option value="NTGH" data-select2-id="9">NTGH</option><option value="SLGH" data-select2-id="10">SLGH</option><option value="Heritage" data-select2-id="11">Heritage</option><option value="AGH" data-select2-id="12">AGH</option><option value="IGH" data-select2-id="13">IGH</option></select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="14" style="width: 123px;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-ghCode-m1-container"><span class="select2-selection__rendered" id="select2-ghCode-m1-container" role="textbox" aria-readonly="true" title="VGH">VGH</span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+								<div class="invalid-feedback"></div>
+							</div>
+						</div>
+
+						<div class="col-md-2">
+							<div class="form-group">
+								<label for="rtCode">Room Type<span class="text-danger">*</span>:
+								</label> <select class="form-control rtCode select2-hidden-accessible" name="rtCode" data-url="getRoomTypesForDD.htm?ghCode=VGH" required="" data-select2-id="15" tabindex="-1" aria-hidden="true"><option value="Dormitory" data-select2-id="18">Dormitory</option><option value="Double AC" data-select2-id="19">Double AC</option><option value="Double NAC" data-select2-id="20">Double NAC</option><option value="Single NAC" data-select2-id="21">Single NAC</option><option value="Suite" data-select2-id="22">Suite</option><option value="C Hall" data-select2-id="23">C Hall</option><option value="Cl Room(W)" data-select2-id="24">Cl Room(W)</option></select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="25" style="width: 123px;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-rtCode-0f-container"><span class="select2-selection__rendered" id="select2-rtCode-0f-container" role="textbox" aria-readonly="true" title="Dormitory">Dormitory</span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+								<div class="invalid-feedback"></div>
+							</div>
+						</div>
+						<!-- <div class="col-md-2">
+							<div class="form-group">
+								<label for="rt">Acc Type<i class="fa fa-question-circle" data-toggle='tooltip' data-placement='top' title='Non-shared accomodation will be charged on per room basis'></i>:<span class="text-danger">*</span>:
+								</label> <select class="form-control accType" name="accType" required>
+									<option value="NON-SHARED">Non-Shared</option>
+									<option value="SHARED">Shared</option>
+								</select>
+								<div class="invalid-feedback"></div>
+							</div>
+						</div> -->
+						<div class="col-md-2">
+							<div class="form-group">
+								<label for="numberOfRooms"><span class="label-room">No. of Rooms</span><span class="text-danger">*</span>:
+									<span class="badge badge-success availableRooms" data-toggle="tooltip" data-placement="top" title="Available Rooms">0</span>
+								</label>
+								<div class="input-group">
+									<input type="text" class="form-control numberOfRooms" name="numberOfRooms" value="1">
+									<div class="input-group-append gh-plus">
+										<span class="input-group-text" id="basic-addon2"><i class="fa fa-plus" aria-hidden="true"></i></span>
+									</div>
+									<div class="invalid-feedback"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<hr>
+					<div class="row">
+						<table class="table student guest-details-table">
+							<thead>
+								<tr>
+									<th scope="col">#</th>
+									<th scope="col">Name</th>
+									<th scope="col">Mobile No.</th>
+									<th scope="col">Relation</th>
+									<th scope="col">Nationality</th>
+									<th scope="col">Address</th>
+									<th scope="col" style="padding:0px; width:1%">Food on arrival</th>
+									<th scope="col" style="padding:0px; width:1%" class="text-center">
+										No. of Persons
+										<input type="checkbox" class="select-all-guest" data-toggle="tooltip" data-placement="top" title="Select All">
+										<span class="badge badge-success person-count" data-toggle="tooltip" data-placement="top" title="No. of Persons">0</span>
+										</th>
+									<th scope="col" style="padding-right:2px; width:1%">Remove</th>
+								</tr>
+							</thead>
+							<tbody>
+
+							<tr class="guest-details-row bookings0"><th scope="row" rowspan="1">1</th><td><div class="form-group"><input type="text" class="form-control name bookings0 guestDetailsForm0" placeholder="Name" name="bookings[0].guestDetailsForm[0].name"><div class="invalid-feedback"></div></div></td><td><div class="form-group"><input type="text" class="form-control mobileNumber bookings0 guestDetailsForm0" placeholder="Mobile No." name="bookings[0].guestDetailsForm[0].mobileNumber"><div class="invalid-feedback"></div></div></td><td><div class="form-group"><select class="form-control relation bookings0 guestDetailsForm0" name="bookings[0].guestDetailsForm[0].relation"><option value="">Select</option><option value="SELF">Self</option><option value="MOTHER">Mother</option><option value="FATHER">Father</option><option value="OTHERS">Others</option></select><div class="invalid-feedback"></div><small class="form-text text-muted others d-none">For Others book offline</small></div></td><td><div class="form-group"><select class="form-control nationality bookings0 guestDetailsForm0" name="bookings[0].guestDetailsForm[0].nationality"><option value="INDIAN">Indian</option><option value="FOREIGN">Foreign</option></select><div class="invalid-feedback"></div></div></td><td><div class="form-group"><textarea class="form-control address bookings0 guestDetailsForm0" placeholder="Address" name="bookings[0].guestDetailsForm[0].address"></textarea><div class="invalid-feedback"></div></div></td><td><div class="form-group"><div class="text-center"><input type="checkbox" name="bookings[0].guestDetailsForm[0].foodOnArrival" class="foodOnArrival bookings0 guestDetailsForm0"></div><div class="invalid-feedback"></div></div></td><td><div class="form-group"><div class="text-center"><input type="checkbox" name="bookings[0].guestDetailsForm[0].guestSelected" class="form-control guestSelected bookings0 guestDetailsForm0"><div class="invalid-feedback"></div></div></div></td><th scope="row" rowspan="1"><span class="fa-stack fa-lg delete-room" data-id="bookings0"> <i class="fa fa-circle fa-stack-2x"></i> <i class="fa fa-trash fa-stack-1x fa-inverse"></i> </span></th></tr></tbody>
+						</table>
+					</div>
+
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-3 offset-9 mt-4">
+					<button type="submit" class="btn btn-primary btn-shadow form-control" value="Search">BOOK</button>
+				</div>
+			</div>
+		<div>
+</div></form>
+		<hr>
+		<div class="mb-3 booking-details mt-3">
+			<div class="">
+				<div class="row">
+					<div class="col-md-3">
+						<div class="btn-group btn-group-toggle" data-toggle="buttons">
+							<label class="btn btn-secondary active" data-toggle="tooltip" data-placement="top" title="Todays booking"> <input type="radio" name="bookingDaysBefore" autocomplete="off" value="today" checked="checked"> Today
+							</label> <label class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="All booking"> <input type="radio" name="bookingDaysBefore" autocomplete="off" value="all_std"> All 
+							</label>
+						</div>
+					</div>
+					<div class="col-md-7">
+						<h2>Booking List</h2>
+					</div>
+
+
+				</div>
+			</div>
+		</div>
+		<div class="bootstrap-table"><div class="fixed-table-toolbar"><div class="columns columns-right btn-group pull-right"><button class="btn btn-default" type="button" name="refresh" aria-label="refresh" title="Refresh"><i class="fa fa-refresh"></i></button><button class="btn btn-default" type="button" name="toggle" aria-label="toggle" title="Toggle"><i class="fa fa-list-alt"></i></button><div class="keep-open btn-group" title="Columns"><button type="button" aria-label="columns" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-th"></i> <span class="caret"></span></button><ul class="dropdown-menu" role="menu"><li role="menuitem"><label><input type="checkbox" data-field="bookingNumber" value="0" checked="checked"> ID</label></li><li role="menuitem"><label><input type="checkbox" data-field="bookingType" value="1" checked="checked"> Type</label></li><li role="menuitem"><label><input type="checkbox" data-field="ghCode" value="2" checked="checked"> GH Code</label></li><li role="menuitem"><label><input type="checkbox" data-field="no_of_room" value="3" checked="checked"> No. of Room/s</label></li><li role="menuitem"><label><input type="checkbox" data-field="rtCode" value="4" checked="checked"> RT Code</label></li><li role="menuitem"><label><input type="checkbox" data-field="fromDate" value="5" checked="checked"> From Date</label></li><li role="menuitem"><label><input type="checkbox" data-field="toDate" value="6" checked="checked"> To Date</label></li><li role="menuitem"><label><input type="checkbox" data-field="status" value="7" checked="checked"> Status</label></li><li role="menuitem"><label><input type="checkbox" data-field="8" value="8" checked="checked"> Guest Name</label></li><li role="menuitem"><label><input type="checkbox" data-field="9" value="9" checked="checked"> Actions</label></li></ul></div></div><div class="pull-left search"><input class="form-control" type="text" placeholder="Search"></div></div><div class="fixed-table-container" style="padding-bottom: 0px;"><div class="fixed-table-header" style="display: none;"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 42px; display: none;">Loading, please wait...</div><table id="bookingDetails" data-toggle="table" data-method="post" data-url="getMyBookingList.htm?bookingDaysBefore=today" data-cache="false" data-sort-order="asc" data-show-refresh="true" data-show-columns="true" data-show-toggle="true" data-show-export="true" data-search="true" data-search-align="left" class="table table-bordered table-condensed table-hover bootstrap-table">
+			<thead class="bg-info"><tr><th style="" data-field="bookingNumber"><div class="th-inner sortable both">ID</div><div class="fht-cell"></div></th><th style="" data-field="bookingType"><div class="th-inner sortable both">Type</div><div class="fht-cell"></div></th><th style="" data-field="ghCode"><div class="th-inner sortable both">GH Code</div><div class="fht-cell"></div></th><th style="text-align: center; " data-field="no_of_room"><div class="th-inner ">No. of Room/s</div><div class="fht-cell"></div></th><th style="" data-field="rtCode"><div class="th-inner ">RT Code</div><div class="fht-cell"></div></th><th style="" data-field="fromDate"><div class="th-inner ">From Date</div><div class="fht-cell"></div></th><th style="" data-field="toDate"><div class="th-inner ">To Date</div><div class="fht-cell"></div></th><th style="" data-field="status"><div class="th-inner ">Status</div><div class="fht-cell"></div></th><th style="text-align: left; " data-field="8"><div class="th-inner ">Guest Name</div><div class="fht-cell"></div></th><th style="text-align: left; " data-field="9"><div class="th-inner ">Actions</div><div class="fht-cell"></div></th></tr></thead>
+		<tbody><tr class="no-records-found"><td colspan="10">No matching records found</td></tr></tbody></table></div><div class="fixed-table-footer" style="display: none;"><table><tbody><tr></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div>
+
+
+	</section>
+		<footer>
+			<div class="text-center mt-3 mb-3">
+				
+			</div>
+		 </footer>
+	
+		<script src="./sb_files/jquery-3.2.1.min.js.download" type="text/javascript"></script>
+		<script src="./sb_files/popper.min.js.download" type="text/javascript"></script>
+		<script src="./sb_files/bootstrap.min.js.download" type="text/javascript"></script>
+		<script src="./sb_files/bootstrap-datetimepicker.js.download" type="text/javascript"></script>
+		<script src="./sb_files/bootstrap-table.js.download" type="text/javascript"></script>
+		<script src="./sb_files/select2.js.download" type="text/javascript"></script>
+		<script src="./sb_files/gh.js.download" type="text/javascript"></script><div class="datetimepicker datetimepicker-dropdown-bottom-right dropdown-menu" style="left: 294px; z-index: 1010;"><div class="datetimepicker-minutes" style="display: none;"><table class=" table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="fa fa-arrow-left"></span> </th><th colspan="5" class="switch">23 June 2024</th><th class="next" style="visibility: visible;"><span class="fa fa-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="minute">11:00</span><span class="minute">11:05</span><span class="minute">11:10</span><span class="minute">11:15</span><span class="minute">11:20</span><span class="minute">11:25</span><span class="minute">11:30</span><span class="minute">11:35</span><span class="minute active">11:40</span><span class="minute">11:45</span><span class="minute">11:50</span><span class="minute">11:55</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr><tr><th colspan="7" class="clear" style="display: none;">Clear</th></tr></tfoot></table></div><div class="datetimepicker-hours" style="display: none;"><table class=" table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="fa fa-arrow-left"></span> </th><th colspan="5" class="switch">23 June 2024</th><th class="next" style="visibility: visible;"><span class="fa fa-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="hour">0:00</span><span class="hour">1:00</span><span class="hour">2:00</span><span class="hour">3:00</span><span class="hour">4:00</span><span class="hour">5:00</span><span class="hour">6:00</span><span class="hour">7:00</span><span class="hour">8:00</span><span class="hour">9:00</span><span class="hour">10:00</span><span class="hour active">11:00</span><span class="hour">12:00</span><span class="hour">13:00</span><span class="hour">14:00</span><span class="hour">15:00</span><span class="hour">16:00</span><span class="hour">17:00</span><span class="hour">18:00</span><span class="hour">19:00</span><span class="hour">20:00</span><span class="hour">21:00</span><span class="hour">22:00</span><span class="hour">23:00</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr><tr><th colspan="7" class="clear" style="display: none;">Clear</th></tr></tfoot></table></div><div class="datetimepicker-days" style="display: block;"><table class=" table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="fa fa-arrow-left"></span> </th><th colspan="5" class="switch">June 2024</th><th class="next" style="visibility: visible;"><span class="fa fa-arrow-right"></span> </th></tr><tr><th class="dow">Su</th><th class="dow">Mo</th><th class="dow">Tu</th><th class="dow">We</th><th class="dow">Th</th><th class="dow">Fr</th><th class="dow">Sa</th></tr></thead><tbody><tr><td class="day old">26</td><td class="day old">27</td><td class="day old">28</td><td class="day old">29</td><td class="day old">30</td><td class="day old">31</td><td class="day">1</td></tr><tr><td class="day">2</td><td class="day">3</td><td class="day">4</td><td class="day">5</td><td class="day">6</td><td class="day">7</td><td class="day">8</td></tr><tr><td class="day">9</td><td class="day">10</td><td class="day">11</td><td class="day">12</td><td class="day">13</td><td class="day">14</td><td class="day">15</td></tr><tr><td class="day">16</td><td class="day">17</td><td class="day">18</td><td class="day">19</td><td class="day">20</td><td class="day">21</td><td class="day">22</td></tr><tr><td class="day active">23</td><td class="day">24</td><td class="day">25</td><td class="day">26</td><td class="day">27</td><td class="day">28</td><td class="day">29</td></tr><tr><td class="day">30</td><td class="day new">1</td><td class="day new">2</td><td class="day new">3</td><td class="day new">4</td><td class="day new">5</td><td class="day new">6</td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr><tr><th colspan="7" class="clear" style="display: none;">Clear</th></tr></tfoot></table></div><div class="datetimepicker-months" style="display: none;"><table class="table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="fa fa-arrow-left"></span> </th><th colspan="5" class="switch">2024</th><th class="next" style="visibility: visible;"><span class="fa fa-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="month">Jan</span><span class="month">Feb</span><span class="month">Mar</span><span class="month">Apr</span><span class="month">May</span><span class="month active">Jun</span><span class="month">Jul</span><span class="month">Aug</span><span class="month">Sep</span><span class="month">Oct</span><span class="month">Nov</span><span class="month">Dec</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr><tr><th colspan="7" class="clear" style="display: none;">Clear</th></tr></tfoot></table></div><div class="datetimepicker-years" style="display: none;"><table class="table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="fa fa-arrow-left"></span> </th><th colspan="5" class="switch">2020-2029</th><th class="next" style="visibility: visible;"><span class="fa fa-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="year ">2019</span><span class="year">2020</span><span class="year">2021</span><span class="year">2022</span><span class="year">2023</span><span class="year active">2024</span><span class="year">2025</span><span class="year">2026</span><span class="year">2027</span><span class="year">2028</span><span class="year">2029</span><span class="year ">2030</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr><tr><th colspan="7" class="clear" style="display: none;">Clear</th></tr></tfoot></table></div></div><div class="datetimepicker datetimepicker-dropdown-bottom-right dropdown-menu" style="left: 523.5px; z-index: 1020;"><div class="datetimepicker-minutes" style="display: none;"><table class=" table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="fa fa-arrow-left"></span> </th><th colspan="5" class="switch">23 June 2024</th><th class="next" style="visibility: visible;"><span class="fa fa-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="minute">11:00</span><span class="minute">11:05</span><span class="minute">11:10</span><span class="minute">11:15</span><span class="minute">11:20</span><span class="minute">11:25</span><span class="minute">11:30</span><span class="minute">11:35</span><span class="minute active">11:40</span><span class="minute">11:45</span><span class="minute">11:50</span><span class="minute">11:55</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr><tr><th colspan="7" class="clear" style="display: none;">Clear</th></tr></tfoot></table></div><div class="datetimepicker-hours" style="display: none;"><table class=" table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="fa fa-arrow-left"></span> </th><th colspan="5" class="switch">23 June 2024</th><th class="next" style="visibility: visible;"><span class="fa fa-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="hour">0:00</span><span class="hour">1:00</span><span class="hour">2:00</span><span class="hour">3:00</span><span class="hour">4:00</span><span class="hour">5:00</span><span class="hour">6:00</span><span class="hour">7:00</span><span class="hour">8:00</span><span class="hour">9:00</span><span class="hour">10:00</span><span class="hour active">11:00</span><span class="hour">12:00</span><span class="hour">13:00</span><span class="hour">14:00</span><span class="hour">15:00</span><span class="hour">16:00</span><span class="hour">17:00</span><span class="hour">18:00</span><span class="hour">19:00</span><span class="hour">20:00</span><span class="hour">21:00</span><span class="hour">22:00</span><span class="hour">23:00</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr><tr><th colspan="7" class="clear" style="display: none;">Clear</th></tr></tfoot></table></div><div class="datetimepicker-days" style="display: block;"><table class=" table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="fa fa-arrow-left"></span> </th><th colspan="5" class="switch">June 2024</th><th class="next" style="visibility: visible;"><span class="fa fa-arrow-right"></span> </th></tr><tr><th class="dow">Su</th><th class="dow">Mo</th><th class="dow">Tu</th><th class="dow">We</th><th class="dow">Th</th><th class="dow">Fr</th><th class="dow">Sa</th></tr></thead><tbody><tr><td class="day old">26</td><td class="day old">27</td><td class="day old">28</td><td class="day old">29</td><td class="day old">30</td><td class="day old">31</td><td class="day">1</td></tr><tr><td class="day">2</td><td class="day">3</td><td class="day">4</td><td class="day">5</td><td class="day">6</td><td class="day">7</td><td class="day">8</td></tr><tr><td class="day">9</td><td class="day">10</td><td class="day">11</td><td class="day">12</td><td class="day">13</td><td class="day">14</td><td class="day">15</td></tr><tr><td class="day">16</td><td class="day">17</td><td class="day">18</td><td class="day">19</td><td class="day">20</td><td class="day">21</td><td class="day">22</td></tr><tr><td class="day active">23</td><td class="day">24</td><td class="day">25</td><td class="day">26</td><td class="day">27</td><td class="day">28</td><td class="day">29</td></tr><tr><td class="day">30</td><td class="day new">1</td><td class="day new">2</td><td class="day new">3</td><td class="day new">4</td><td class="day new">5</td><td class="day new">6</td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr><tr><th colspan="7" class="clear" style="display: none;">Clear</th></tr></tfoot></table></div><div class="datetimepicker-months" style="display: none;"><table class="table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="fa fa-arrow-left"></span> </th><th colspan="5" class="switch">2024</th><th class="next" style="visibility: visible;"><span class="fa fa-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="month">Jan</span><span class="month">Feb</span><span class="month">Mar</span><span class="month">Apr</span><span class="month">May</span><span class="month active">Jun</span><span class="month">Jul</span><span class="month">Aug</span><span class="month">Sep</span><span class="month">Oct</span><span class="month">Nov</span><span class="month">Dec</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr><tr><th colspan="7" class="clear" style="display: none;">Clear</th></tr></tfoot></table></div><div class="datetimepicker-years" style="display: none;"><table class="table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="fa fa-arrow-left"></span> </th><th colspan="5" class="switch">2020-2029</th><th class="next" style="visibility: visible;"><span class="fa fa-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="year ">2019</span><span class="year">2020</span><span class="year">2021</span><span class="year">2022</span><span class="year">2023</span><span class="year active">2024</span><span class="year">2025</span><span class="year">2026</span><span class="year">2027</span><span class="year">2028</span><span class="year">2029</span><span class="year ">2030</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr><tr><th colspan="7" class="clear" style="display: none;">Clear</th></tr></tfoot></table></div></div>
+		<script src="./sb_files/booking.js.download" type="text/javascript"></script>
+                <script>
+                    $(document).ready(function(){
+                        var content = '<div class="text-left">'+
+                            '<span class="badge badge-info">VGH = Visveswaraya Guest House</span>'+
+                            '<span class="badge badge-info">TGH = Technology Guest House</span>'+
+                            '<span class="badge badge-info">NTGH = New Technology Guest House</span>'+
+                            '<span class="badge badge-info">NTGH = New Technology Guest House</span>'+
+                            '<span class="badge badge-info">Heritage = Heritage Guest House</span>'+
+                            '<span class="badge badge-info">SLGH = Salt Lake Guest House (Kolkata)</span>'+
+                        '</div>';
+                        $('.information').popover({title: "<h5><strong>Guest House List</strong></h5>", content: content, html: true, placement: "auto", trigger: "hover"});
+                    });
+                </script>
+		
+	
+</body></html>

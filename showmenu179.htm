@@ -1,0 +1,638 @@
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+    
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Welcome Swapneel Layek to ERP, IIT Kharagpur</title>
+        <meta charset="windows-1252">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+        <script src="jquery/jquery-2.1.1.js"></script>
+        <script src="bootstrap/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+        <div id="headerDIV">
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <title>Welcome Swapneel Layek to ERP, IIT Kharagpur</title>
+        <script>
+            $(function () {
+            
+
+                var request = $.ajax({
+                    url: "getModules.htm",
+                    type: "POST",
+                    cache: false
+                });
+                request.done(function (json) {
+                    var inhtml = "";
+
+                    json.sort(function (a, b) {
+                        return (a.display_order - b.display_order);
+                    });
+
+                    $.each(json, function (index, item) {
+                        if (index === 9) {
+                            inhtml += "<li class='dropdown'> " +
+                                    "<a aria-expanded='true' href='#' class='dropdown-toggle' data-toggle='dropdown'><i class='fa fa-bars fa-lg fa-border'></i> More <b class='caret'></b></a> " +
+                                    "<ul class='dropdown-menu'>";
+                        }
+                        inhtml += "<li><a href='menulist.htm?module_id=" + item.module_id + "'><i class='fa " + item.fa_icon + " fa-lg'></i> <strong>" + item.module_short_desc + "</strong></a></li>";
+                    });
+                    if (json.length > 7) {
+                        inhtml += "</ul></li>";
+                    }
+                    $("#moduleUL").html(inhtml);
+                });
+            });
+
+            function showSwitch() {
+                var request = $.ajax({
+                    url: "getSwitchableUsers.htm",
+                    type: "POST",
+                    cache: false
+                });
+                request.done(function (json) {
+                    $('#switchModalLabel').html('List of account available for switching');
+                    var cnt = 0;
+                    $('#switchModalBody').html("");
+                    if (json.length > 0) {
+                        $.each(json, function (index, item) {
+                            $('#switchModalBody').append("<div class='row'>");
+                            $('#switchModalBody').append("<div class='well well-sm col-lg-4' style='margin-bottom: 0px;'><a href='#' onclick='switchUser(\"" + item.switch_code + "\")'>" + item.switch_code + "</a></div><div class='well well-sm col-lg-8' style='margin-bottom: 0px;'>" + item.switch_name + "</div>");
+                            $('#switchModalBody').append("</div>");
+                        });
+                    } else {
+                        $('#switchModalBody').append("<div class='row'>");
+                        $('#switchModalBody').append("<div class='well well-sm' style='margin-bottom: 0px;'>No account available for switching</div>");
+                        $('#switchModalBody').append("</div>");
+                    }
+
+                    $('#switchModalFooter').html('<button type="button" class="btn btn-primary" ');
+                    $('#switchModal').modal('show');
+                });
+            }
+
+            function switchUser(switch_code) {
+                var f = document.createElement("form");
+                f.setAttribute('method', "post");
+                f.setAttribute('action', "switchacc.htm");
+
+                var switch_code_el = document.createElement("input"); //input element, text
+                switch_code_el.setAttribute('type', "text");
+                switch_code_el.setAttribute('name', "switch_code");
+                switch_code_el.setAttribute('value', switch_code);
+                f.appendChild(switch_code_el);
+
+                document.getElementsByTagName('body')[0].appendChild(f);
+                f.submit();
+            }
+
+            var xmlHttp;
+            function GetXmlHttpObject()
+            {
+                var xmlHttp = null;
+                try
+                {
+                    // Firefox, Opera 8.0+, Safari
+                    xmlHttp = new XMLHttpRequest();
+                } catch (e)
+                {
+                    // Internet Explorer
+                    try
+                    {
+                        xmlHttp = new ActiveXObject("Msxml2.XMLHTTP");
+                    } catch (e)
+                    {
+                        xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+                    }
+                }
+                return xmlHttp;
+            }
+
+            function autoRunHoldSession() {
+                setTimeout("autoRunCallHoldSession()", 27 * 60 * 1000);
+            }
+            function autoRunCallHoldSession() {
+                holdSessionAjax();
+                setTimeout("autoRunCallHoldSession()", 27 * 60 * 1000);
+            }
+            function holdSessionAjax() {
+                xmlHttp = GetXmlHttpObject();
+                if (xmlHttp == null)
+                {
+                    alert("Your browser does not support AJAX! Please install latest version of browsing software.");
+                    return;
+                }
+                //var url="./holdSession.jsp?rand_id="+Math.round(Math.random()*100000);
+                var url = "./holdSession.htm?rand_id=" + Math.round(Math.random() * 1000000000000000);
+                xmlHttp.onreadystatechange = holdSession;
+                xmlHttp.open("GET", url, true);
+                xmlHttp.send(null);
+                //alert("here11");
+                //setTimeout(getPendingCAS(ca_user_code),100000);
+                return true;
+            }
+            function holdSession()
+            {
+                var temp_html = "";
+                if (xmlHttp.readyState == 4)
+                {
+                    temp_html = xmlHttp.responseText;
+                    //alert(temp_html);
+                }
+            }
+            function showComplaintSelection() {
+                $('#complaintSelectionModal').modal('show');
+//                $('#complaintSelectionModal').modal({
+//                    backdrop: 'static',
+//                    keyboard: false
+//                });
+            }
+            function redirectComplaint(val) {
+                var url = "showext.htm?link=other_complaint";
+                if (val === "ERP") {
+                    url = "complaint.htm";
+                }
+                window.location.href = url;
+            }
+            /*
+             $(function(){
+             $.ajax({
+             type: "POST",
+             url: 'getOtherInstComplaintList.htm',
+             cache: false,
+             //                    data:{"complaint_id":complaint_id},
+             datatype: 'json',
+             success: function (data) {
+             //                        alert(JSON.stringify(data));
+             
+             if(data.length>0){
+             //                            alert(data.length);
+             $("#other_com").empty();
+             var html_txt = '';
+             $.each(data, function (key, val) {
+             html_txt+='<div class="col-sm-4">'+
+             '<div class="form-group">'+
+             '<button type="button" class="btn btn-primary btn-sm" onclick="redirectComplaint()">'+val.desc+'</button>'+
+             '</div>'+
+             '</div>';
+             });
+             //                            $("#other_com").html(html_txt);
+             }                                              
+             }
+             });
+             });*/
+
+            $(function () {
+                //verifyInfo();
+            });
+
+            $(function () {
+                $('#save_info_btn').click(function () {
+                    saveInfo();
+                });
+
+                $('#close_modal_btn').click(function () {
+                    $('#data_correction_modal').modal('hide');
+                });
+            });
+
+            function verifyInfo() {
+                //alert("https://erp.iitkgp.ac.in");
+                $.ajax({
+                    url: "https://erp.iitkgp.ac.in/ERPAccounts/verifyInfo.htm",
+                    type: "POST",
+                    cache: false,
+                    dataType: "json",
+                    success: function (json)
+                    {
+                        if (json.status === "invalid") {
+                            var bank_msg = "";
+                            var email_error = false;
+                            for (var i = 0; i < json.data.length; i++) {
+                                var obj = json.data[i];
+                                if (obj.hasOwnProperty("ifsc_code")) {
+                                    //$('#ifsc_code').val(obj.ifsc_code);
+                                    if (obj.flag === "false") {
+                                        //$('#ifsc_code_label').prop('hidden', false);
+                                        bank_msg = bank_msg + " IFSC Code,";
+                                    }
+                                } else if (obj.hasOwnProperty("account_no")) {
+                                    //$('#account_no').val(obj.account_no);
+                                    if (obj.flag === "false") {
+                                        //$('#account_no_label').prop('hidden', false);
+                                        bank_msg = bank_msg + " Bank Account No,";
+                                    }
+                                } else if (obj.hasOwnProperty("email")) {
+                                    $('#email').val(obj.email);
+                                    if (obj.flag === "false") {
+                                        $('#email_label').prop('hidden', false);
+                                        email_error = true;
+                                    }
+                                } else if (obj.hasOwnProperty("pan")) {
+                                    //$('#pan').val(obj.pan);
+                                    if (obj.flag === "false") {
+                                        //$('#pan_label').prop('hidden', false);
+                                        bank_msg = bank_msg + " PAN No,";
+                                    }
+                                }
+                            }
+                            bank_msg = bank_msg.substring(0, bank_msg.length - 1);
+                            if (bank_msg.length > 0) {
+                                $('.bank_data').text(bank_msg);
+                                $('.incorrect_info_msg').prop('hidden', false);
+                            }
+                            if (email_error === false) {
+                                $('#close_button_row').prop('hidden', false);
+                            }
+                            $('#data_correction_modal').modal('show');
+                        } else if (json.status === "error") {
+                            alert(json.msg);
+                            $('#data_correction_modal').modal('hide');
+                        } else {
+                            $('#data_correction_modal').modal('hide');
+                        }
+                    }
+                });
+            }
+
+            function saveInfo() {
+                var email = $('#email').val();
+                $.ajax({
+                    url: "https://erp.iitkgp.ac.in/ERPAccounts/saveCorrectedInfo.htm",
+                    type: "POST",
+                    cache: false,
+                    dataType: "json",
+                    data: {email: email},
+                    success: function (json)
+                    {
+                        if (json.status === "success") {
+                            $('#data_correction_modal').modal('hide');
+                            alert("Thank You! Saved Successfully!")
+                        } else {
+                            alert(json.msg);
+                            $('#data_correction_modal').modal('show');
+                        }
+                    }
+                });
+            }
+        </script>
+
+        <style>
+            .glyphicon { margin-right:10px; }
+            .panel-body { padding:0px; }
+            .panel-body table tr td { padding-left: 15px }
+            .panel-body .table {margin-bottom: 0px; }
+            .navbar {margin-bottom: 0px; }
+        </style>
+
+    </head>
+    <!--<body onload="autoRunHoldSession()">-->
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="navbar navbar-inverse">
+                    
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-inverse-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#"><label>ERP System, IITKGP</label></a>
+                    </div>
+                    <div class="navbar-collapse collapse navbar-inverse-collapse">
+                        <ul class="nav navbar-nav">
+                            <li><a href="home.htm"><i class="fa fa-home fa-lg"></i> Home</a></li>
+                            <li>
+                                <a href="#" onclick="showComplaintSelection()">
+                                    <i class="fa fa-pencil-square-o fa-lg"></i> Feature requests / Complaints 
+                                    <span class="badge" style="background-color: lightgray; color: white">0</span>
+                                </a>
+                            </li>
+                            <li><a href="forgotpassphrase.htm"><i class="fa fa-key fa-lg"></i> Retrieve Passphrase</a></li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a href="#"><label>Welcome Swapneel Layek (22ME10087)</label></a></li>
+                            <li><a href="#" onclick="showSwitch()"><i class="fa fa-exchange fa-lg"></i> Switch Login</a></li>
+                            <li><a href="logout.htm"><i class="fa fa-sign-out fa-lg"></i> Logout</a></li>
+                        </ul>
+                    </div>
+                    <div class="incorrect_info_msg" hidden="true">
+                        <p class="alert-danger"> **Please make correction of following info in your profile page: <span class="alert-info bank_data" id="bank_data2"></span>. Salary may be stopped if not corrected.** </p>
+                    </div>
+                </div>  
+            </div>
+
+            <div class="row">
+                <div class="navbar navbar-default">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand hidden-lg hidden-md" href="#"><label>Modules</label></a>
+                    </div>
+                    <div style="height: 1px;" aria-expanded="false" class="navbar-collapse navbar-responsive-collapse collapse">
+                        <ul id="moduleUL" class="nav navbar-nav" style="margin-top: 5px; margin-bottom: 5px;"><li><a href="menulistmodule_id16.htm"><i class="fa fa-graduation-cap fa-lg"></i> <strong>Academic</strong></a></li><li><a href="menulistmodule_id30.htm"><i class="fa fa-building fa-lg"></i> <strong>Guest House</strong></a></li><li><a href="menulistmodule_id26.htm"><i class="fa fa-industry fa-lg"></i> <strong>CDC</strong></a></li></ul>
+                        <ul class="nav navbar-nav navbar-right" style="margin-top: 5px; margin-bottom: 5px;">
+                            <li>
+                                <form class="navbar-form navbar-left" method="post" action="searchmenu.htm">
+                                    <input class="form-control col-lg-8" placeholder="Search Menu" name="s_string" type="text">
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>                
+            </div>
+        </div>
+        <div class="modal fade" id="switchModal" tabindex="-1" role="dialog" aria-labelledby="switchModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="switchModalLabel"></h4>
+                    </div>
+                    <div class="modal-body">
+                        <div id="switchModalBody" class="container-fluid"></div>
+                    </div>
+                    <div class="modal-footer" id="switchModalFooter"></div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="mandatoryModal" tabindex="-1" role="dialog" aria-labelledby="mandatoryModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="mandatoryModalLabel"></h4>
+                    </div>
+                    <div class="modal-body">
+                        <div id="mandatoryModalBody" class="container-fluid"></div>
+                    </div>
+                    <div class="modal-footer" id="mandatoryModalFooter"></div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="complaintSelectionModal">
+            <div class="modal-dialog" style="width: 50%">
+                <div class="modal-content">
+                    <div class="modal-header bg-info">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h3 class="modal-title" id="">Complaint / Feature Request Type Selection</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h4 class="">Feature requests / complaints to administrative sections</h4>
+                                <hr />
+                            </div>
+                            <div class="col-sm-12" id="other_com">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-primary btn-sm" onclick="redirectComplaint('')">Administrative feature requests / complaints</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <br />
+                                <br />
+                                <h4 class="">Feature requests / complaints to ERP section</h4>                                
+                                <span class="text-danger small"> In case of data related issues, please contact respective sections. For technical difficulties in ERP, please lodge a complaint here.</span>
+                                <hr style="margin-top: 8px;" />
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-info btn-sm" onclick="redirectComplaint('ERP')">ERP feature requests / complaints <span class="badge" style="background-color: lightgray; color: white">0</span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--                        <button type="button" class="btn btn-primary" onclick="redirectComplaint('ERP')">ERP Related Complaints / Requests</button>&nbsp;&nbsp;
+                                                <button type="button" class="btn btn-primary" onclick="redirectComplaint('OTH')">Other Institute Related Complaints / Requests</button>-->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal" id="data_correction_modal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="bankInfoCollectionLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
+                        <h4 class="modal-title" id="title_id">Incorrect Data. Please make correction immediately.</h4>
+                        <h5 class="modal-title" id="title_id">**Payment may not be processed without correct information**</h5>                    
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" modelAttribute="dataInfo" id="data_correction_info">   
+                            <div class="row" id="email_label" hidden="true">
+                                <div class="col-sm-12 form-group">
+                                    <label for="email">Email: (hint: name@gmail.com)</label>
+                                    <input type="text" class="form-control" name="email" id="email" placeholder="Enter email" autocomplete="off"/>
+                                    <button type="button" class="btn btn-primary m-1" id="save_info_btn">Save</button>
+                                </div>
+                            </div>                                                         
+                        </form>
+                        <div class="row">
+                            <div class="col-sm-12 form-group">
+                                <div class="incorrect_info_msg" hidden="true">
+                                    <p class="alert-danger"> ** Please make correction of following info in your profile page: <span class="alert-info bank_data" id="bank_data2"></span>. Salary may be stopped if not corrected. ** </p>
+                                </div>
+                            </div>                            
+                        </div>
+                        <div class="row" id="close_button_row" hidden="true">
+                            <div class="col-sm-12">
+                                <button type="button" class="btn btn-primary m-1" id="close_modal_btn">Close</button>
+                            </div>
+                        </div>                     
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+</div>
+        <div class="cointainer-fluid" style="min-height: 550px">
+
+            <ul class="breadcrumb" style="margin-bottom: 0px">
+                You are in: 
+                <li><a href="menulistmodule_id16.htm">Academic</a></li>
+                <li>Students</li>
+                <li><a href="javascript:void(0)" onclick="window.location.href = 'showmenu179.htm';">Your Academic Information</a></li>
+            </ul>
+
+            
+            <iframe src="acadinfo.html" id="myframe" name="myframe" width="100%" style="border: 0px; height: 1000px; width: 1366px; display: block;" scrolling="no"></iframe>
+
+            <div id="menuform" name="menuform" method="POST" action="https://erp.iitkgp.ac.in/TrainingPlacementSSO/TPStudent.jsp" target="myframe">
+                <input type="hidden" id="ssoToken" name="ssoToken" value="51C4CD2063E68AEFE4B3DBE4DCE2C0F0.worker3DF4A1E70C35683AE43D08AA19A655B6A.worker2U6O6AJ1VRA6PQZYT4DK44M1SBDTHZ0UCGTLHCDX6172OOWZADNDOM4WFRA76WTZY" />
+                <input type="hidden" id="module_id" name="module_id" value="26" />
+                <input type="hidden" id="menu_id" name="menu_id" value="11" />
+                
+            </div>
+            
+            
+        </div>
+        
+    </body>
+
+    <!--script src="../jquery/iframeResizer/iframeResizer.min.js"></script-->
+    <script type="text/javascript">
+
+        $(function () {
+            var myform = document.getElementById('menuform');
+            myform.action = 'https://erp.iitkgp.ac.in/TrainingPlacementSSO/TPStudent.jsp';
+            myform.elements['ssoToken'].value = '51C4CD2063E68AEFE4B3DBE4DCE2C0F0.worker3DF4A1E70C35683AE43D08AA19A655B6A.worker2U6O6AJ1VRA6PQZYT4DK44M1SBDTHZ0UCGTLHCDX6172OOWZADNDOM4WFRA76WTZY';
+            myform.elements['menu_id'].value = '11';
+            myform.elements['module_id'].value = '26';
+        
+            myform.submit();
+        })
+
+        document.getElementById('myframe').addEventListener('load', loadFrame, true);
+
+        function loadFrame() {
+            var myframe = document.getElementById('myframe');
+            var children = myframe.contentDocument.body.getElementsByTagName('IFRAME');
+            for (var i = 0; i < children.length; i++) {
+                children[i].addEventListener("load", setFrameWH, true);
+            }
+            setFrameWH();
+        }
+
+        function getDocWidth(id) {
+            var iFrame = document.getElementById(id);
+            var maxWidth = 0;
+            var children = iFrame.contentDocument.body.childNodes;
+            for (var i = 0; i < children.length; i++) {
+                if (children[i].offsetWidth && children[i].offsetWidth > maxWidth)
+                {
+                    maxWidth = children[i].offsetWidth;
+                }
+            }
+            //alert("maxWidth : "  +maxWidth);
+            return maxWidth;
+        }
+
+        function getDocHeight(id) {
+            var iFrame = document.getElementById(id);
+            var children = iFrame.contentDocument.body.childNodes;
+            var totHeight = 0;
+            for (var i = 0; i < children.length; i++) {
+                totHeight += children[i].offsetHeight ? children[i].offsetHeight : 0;
+            }
+            return totHeight;
+        }
+
+        function setFrameWH() {
+            var myframe = document.getElementById('myframe');
+            var w = getDocWidth('myframe');
+            var h = getDocHeight('myframe');
+            var getFFVersion = navigator.userAgent.substring(navigator.userAgent.indexOf("Firefox")).split("/")[1]
+            var FFextraHeight = parseFloat(getFFVersion) >= 0.1 ? 1000 : 0 //extra height in px to add to iframe in FireFox 1.0+ browsers
+            var FFextraWidth = parseFloat(getFFVersion) >= 0.1 ? 10 : 0 //extra height in px to add to iframe in FireFox 1.0+ browsers
+            //alert(h + "\t" + w);
+            //Setting the width
+            var screen_w = screen.width; //- 40;
+            if (screen_w >= w)
+                myframe.style.width = (screen_w) + 'px';
+            else if (screen_w < w)
+                myframe.style.width = (w + FFextraWidth) + 'px';
+            //Setting the height
+            //var screen_h = screen.height - 50;
+            //if (screen_h >= h)
+            //    myframe.style.height = (screen_h) + 'px';
+            //else if (screen_h < h)
+            //    myframe.style.height = (h + FFextraHeight) + 'px';
+
+            //myframe.style.width = (w + FFextraWidth) + 'px';
+
+            var header_h = document.getElementById("headerDIV").offsetHeight;
+            //myframe.style.width = (w + FFextraWidth) + 'px';
+            var screen_h = screen.height - header_h;
+            var ext_h = h * 1.007;
+            if (ext_h > screen_h)
+                myframe.style.height = (ext_h) + 'px';
+            else
+                myframe.style.height = (screen_h) + 'px';
+
+            myframe.style.display = "block";
+        }
+
+        function forwardToShowmenu(p_module_id, p_menu_id, p_link, p_delegated_by, p_module_name, p_parent_display_name, p_display_name) {
+            var f = document.createElement("form");
+            f.setAttribute('method', "post");
+            f.setAttribute('action', "showmenu.htm");
+
+            var module_id = document.createElement("input"); //input element, text
+            module_id.setAttribute('type', "text");
+            module_id.setAttribute('name', "module_id");
+            module_id.setAttribute('value', p_module_id);
+            f.appendChild(module_id);
+
+            var menu_id = document.createElement("input"); //input element, text
+            menu_id.setAttribute('type', "text");
+            menu_id.setAttribute('name', "menu_id");
+            menu_id.setAttribute('value', p_menu_id);
+            f.appendChild(menu_id);
+
+            var link = document.createElement("input"); //input element, text
+            link.setAttribute('type', "text");
+            link.setAttribute('name', "link");
+            link.setAttribute('value', p_link);
+            f.appendChild(link);
+
+            if (delegated_by !== '') {
+                var delegated_by = document.createElement("input"); //input element, text
+                delegated_by.setAttribute('type', "text");
+                delegated_by.setAttribute('name', "delegated_by");
+                delegated_by.setAttribute('value', p_delegated_by);
+                f.appendChild(delegated_by);
+            }
+
+            var module_name = document.createElement("input"); //input element, text
+            module_name.setAttribute('type', "text");
+            module_name.setAttribute('name', "module_name");
+            module_name.setAttribute('value', p_module_name);
+            f.appendChild(module_name);
+
+            var parent_display_name = document.createElement("input"); //input element, text
+            parent_display_name.setAttribute('type', "text");
+            parent_display_name.setAttribute('name', "parent_display_name");
+            parent_display_name.setAttribute('value', p_parent_display_name);
+            f.appendChild(parent_display_name);
+
+            var display_name = document.createElement("input"); //input element, text
+            display_name.setAttribute('type', "text");
+            display_name.setAttribute('name', "display_name");
+            display_name.setAttribute('value', p_display_name);
+            f.appendChild(display_name);
+
+            document.getElementsByTagName('body')[0].appendChild(f);
+            f.submit();
+        }
+    </script>
+</html>

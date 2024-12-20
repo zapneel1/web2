@@ -1,0 +1,239 @@
+var cal_window = null;
+var actualTargetByref = null;
+function getDate(hiddenTargetByName,actualTargetByref)
+{
+         self.actualTargetByref = actualTargetByref;
+         var url = "./calendar.jsp?target=" + hiddenTargetByName;
+         cal_window=window.open(url ,"Calender","height=270,width=240,addressbar=no,statusbar=no,toolbar=no,menubar=no,left=500px,top=100px");
+         if(typeof cal_window.attachEvent!='undefined') cal_window.attachEvent('onbeforeunload',closeCalWindow);
+         else if(typeof cal_window.addEventListener!='undefined') cal_window.addEventListener('beforeunload',closeCalWindow,false);
+}
+
+function closeCalWindow(){
+    actualTargetByref.value=!(typeof cal_window.returnDate)?actualTargetByref.value:cal_window.returnDate;
+    cal_window = null;
+}
+
+function getDate1(src_img,target)
+//function getDate(target)
+{
+         myCalender.date="";
+         oldDate=document.getElementsByName(target)[0].value;
+         //alert('Hi1: ' + src_img.previousSibling);
+         //oldDate=src_img.previousSibling.value;
+		 var url = "./calendar.jsp?target=" + target;
+         var result=window.open(url ,"Calender","height=260,width=240,addressbar=no,statusbar=no,toolbar=no,menubar=no,left=500px,top=100px");
+         date = myCalender.date;
+         //alert('Hi2: ' + document.getElementsByName('__temp_date__')[0].value);
+         //src_img.previousSibling.value = document.getElementsByName('__temp_date__')[0].value;
+         /*if (date == "null") 
+                document.getElementsByName(target)[0].value='';
+         else if (date != "")
+                document.getElementsByName(target)[0].value=date;
+         else
+                document.getElementsByName(target)[0].value=oldDate;
+                document.getElementsByName(target)[0].value=document.getElementsByName(target)[0].value;*/
+}
+//c_name,c_no,s_stmt, s_label, s_title,sfeature,tergetField,caption,"getstuDtls()"
+function search(column_name, no_of_columns, sql_stmt, col_labels, title, sfeature, tergetField,a,b,callback_func)
+{
+    //alert(callback_func);
+      if (sfeature == null)
+          sfeature = "left=300px,top=120px,width=" + 400 + "px," + "height=" + 500 + "px";
+
+      var pop = "|";
+      var l_start_char;
+      ss = "|" + sql_stmt;
+
+        while(typeof pop.substring != 'undefined')
+          {
+            if (parseInt(pop.length) == 1)
+            {
+               ss = ss.substring(1, (parseInt(ss.length)));
+               l_start_char = "s";
+            }
+            else
+            {
+               ss = pop.substring(1, (parseInt(pop.length)));
+               l_start_char = "p";
+               ss = escape(ss);
+            }
+
+            // Replace the + signs with '%2B', otherwise the + s will be converted to 
+            // spaces while decoding
+            var result = "";
+            for (var i = 0; i < ss.length; i++) 
+	      {
+               if (ss.charAt(i) == "+") 
+	         {
+			result += "%2B";
+               }
+               else 
+	         {
+			result += ss.charAt(i);
+	         }
+	      }
+	      ss=result;
+            // End of replacement for + signs.
+
+            poparg = l_start_char + "|" + sql_stmt + "|" + no_of_columns + "|" + column_name + "|" + col_labels + "|" + title + "|" + tergetField;
+
+            if (arguments.length > 7)
+            {
+               // AutoDisplay argument is appended
+               poparg = poparg + "|" + arguments[7];
+      
+               if (arguments.length > 8)
+               {
+                   // Search Criteria Field Label argument is appended
+                   poparg = poparg + "|" + arguments[8];
+
+                   if (arguments.length > 9)
+                   {
+                       // No Data Found Message argument is appended
+                       poparg = poparg + "|" + arguments[9];
+                   }
+               }
+            }
+
+            popname = "./listvalues.jsp?str=" + poparg + "&ss=" + ss + (typeof callback_func != "undefined" ? ("&callback_func=" + callback_func) : "");
+            pop = window.open(popname,'ListValues', sfeature);
+            
+	   // if (!pop) pop="";
+          }
+
+    /*  if (!pop) pop="";
+      if ((pop != null) && (pop != "") && (pop.substring(0,1) != "|"))
+      {
+        if (no_of_columns>1)
+        {
+          var arysz = customSplit(pop, "|", "popary");
+          return popary;
+        }
+        else
+        {
+          return pop;
+        }
+      }
+      else
+        return;*/
+ }
+
+function customSplit(strvalue, separator, arrayName) {
+  var n = 0;
+
+  if (separator.length != 0) {
+    while (strvalue.indexOf(separator) != -1) {
+      eval("arr"+n+" = strvalue.substring(0, strvalue.indexOf(separator));");
+      strvalue = strvalue.substring(strvalue.indexOf(separator)+separator.length,
+          strvalue.length+1);
+      n++;
+    }
+    eval("arr" + n + " = strvalue;");
+    arraySize = n+1;
+  }
+  else {
+    for (var x = 0; x < strvalue.length; x++) {
+      eval("arr"+n+" = \"" + strvalue.substring(x, x+1) + "\";");
+      n++;
+    }
+    arraySize = n;
+  }
+
+  eval(arrayName + " = new makeArray(arraySize);");
+
+  for (var i = 0; i < arraySize; i++)
+    eval(arrayName + "[" + i + "] = arr" + i + ";");
+
+  return arraySize;
+}
+function makeArray(IntarrSize)
+  {
+    for (var n = 0; n < IntarrSize; n++)
+      this[n] = "";
+    return this;
+  } 
+function getUserType()
+{
+               
+    var c_name = "user_type_code";
+  	var sql="select \"user_type_code\",\"user_type_description\",\"user_detail_table_name\" from \"user_type_master\"";
+	var s_stmt = escape(sql);  
+	var c_no = 3;
+	var s_label = "User Type Code" + ":" +"User Type Description" + ":" + "H_detail_table_name";
+	var s_title = "List of User Type";
+	var iHeight = 500;
+	var iWidth = 400;
+	var sfeature = "left=300px,top=120px,height=" + iHeight + "px," + "width=" + iWidth + "px";
+	var tergetField = "user_type:NR:detail_table";
+	search(c_name,c_no,s_stmt, s_label, s_title,sfeature,tergetField,true,"User Type Code:");		
+}
+
+function selectOK(e)
+{
+        selectRow(e);
+        if(index==0||isNaN(index))
+        {
+            return;
+        }
+        document.URSFormSearch.submit();
+}
+function selectRow(e)
+{
+  if(checked_row_prev != null) {
+    for(var i=0;i<checked_row_prev.cells.length;i++ )
+        checked_row_prev.cells[i].style.backgroundColor=prev_bgcol;
+  }
+  var src_el = typeof e.srcElement!='undefined'?e.srcElement:e.target;
+
+  if(src_el.tagName.toLowerCase()=="tr")
+  {
+        checked_row=src_el;
+  }
+  else
+  {
+        checked_row=src_el.parentNode;
+  }
+  index=checked_row.rowIndex;
+  if(index==0||isNaN(index)) 
+  {
+        document.URSFormSearch.urs_id.value="";
+        document.URSFormSearch.issue_date.value="";
+        document.URSFormSearch.division_id.value="";
+        document.URSFormSearch.division_name.value="";
+        document.URSFormSearch.department_id.value="";
+        document.URSFormSearch.department_name.value="";
+        document.URSFormSearch.sub_sec_id.value="";
+        document.URSFormSearch.sub_sec.value=""; 
+        document.URSFormSearch.processing_node.value="";
+        document.URSFormSearch.emp_id.value="";
+        document.URSFormSearch.emp_code.value="";
+        document.URSFormSearch.emp_name.value="";
+        document.URSFormSearch.emp_desig_code.value="";
+        document.URSFormSearch.suggestion.value="";
+        return;
+  }
+  
+        document.URSFormSearch.urs_id.value=checked_row.cells[0].innerHTML;
+        document.URSFormSearch.issue_date.value=checked_row.cells[1].innerHTML;
+        document.URSFormSearch.division_id.value=checked_row.cells[2].innerHTML;
+        document.URSFormSearch.division_name.value=checked_row.cells[3].innerHTML;
+        document.URSFormSearch.department_id.value=checked_row.cells[4].innerHTML;
+        document.URSFormSearch.department_name.value=checked_row.cells[5].innerHTML;
+        document.URSFormSearch.sub_sec_id.value=checked_row.cells[6].innerHTML;
+        document.URSFormSearch.sub_sec.value=checked_row.cells[7].innerHTML;
+        document.URSFormSearch.processing_node.value=checked_row.cells[8].innerHTML;
+        document.URSFormSearch.emp_id.value=checked_row.cells[9].innerHTML;
+        document.URSFormSearch.emp_code.value=checked_row.cells[10].innerHTML;
+        document.URSFormSearch.emp_name.value=checked_row.cells[11].innerHTML;
+        document.URSFormSearch.emp_desig_code.value=checked_row.cells[12].innerHTML;
+        document.URSFormSearch.suggestion.value=checked_row.cells[13].innerHTML;
+
+  
+
+        document.URSFormSearch.rowInd.value=index;//This is the index of the row on which mouse is clicked
+    	for(var i=0;i<checked_row.cells.length;i++ )
+            checked_row.cells[i].style.backgroundColor=sel_bgcol;
+        document.URSFormSearch.ok.disabled=false;
+        checked_row_prev=checked_row;
+}

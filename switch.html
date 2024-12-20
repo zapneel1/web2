@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!-- saved from url=(0059)https://erp.iitkgp.ac.in/Acad/Bra_Swi_Vert/switch_inter.jsp -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><script language="JavaScript" type="text/javascript" src="./switch_files/common.js.download"></script>
+<script>
+    var printWindow = null;
+    function submit1(action)
+    {
+        var chk = document.getElementById('check').checked;
+
+        if (chk == true) {
+            if (document.getElementById('switch_code').value == '') {
+                alert('Please select course.');
+                return;
+            }
+            if (action == 'S') {
+                document.form1.action = "switch_inter_update.jsp?P=S";
+                document.form1.submit();
+            } else if (action == 'U') {
+                document.form1.action = "switch_inter_update.jsp?P=U";
+                document.form1.submit();
+            }
+        } else {
+            alert("Please confirm the rules by checking the check box.");
+            return false;
+        }
+
+
+
+        //alert("Not Posssibleee>>>>>");
+    }
+
+    function switch_(rowid, code, codname, sem)
+    {
+        //alert("hiiiiiiii"+code);
+        window.open('switch_inter_list.jsp?swit=' + rowid + '&code=' + code + '&cour=' + codname + '&sem=' + sem, 'switch_', 'width=650,height=550');
+
+    }
+    function printAfterFullSubmission(obj, url) {
+        if (document.getElementById('switch_code').value == '') {
+            alert('No course has not been submitted by you.');
+            return;
+        }
+        // var alias_val=document.getElementById('alias').value;
+        // var pass_val=document.getElementById('passphrase').value;
+        // var URL = url+(alias_val!='' && pass_val!=''?'&alias='+alias_val+'&passphrase='+pass_val:'');
+        var H = screen.height - 10, W = screen.width - 10;
+        var URL = url;
+        // alert("prryguguuig"+printWindow);
+        if (!printWindow || (printWindow && printWindow.closed))
+            printWindow = window.open(URL, 'PRINT_WINDOW', 'height=' + H + ',width=' + W);
+        else
+            printWindow.location.href = URL;
+        printWindow.onload = function () {
+            this.print();
+            var conf = this.confirm('Have you received the printed copy correctly in your hand?\nIf Not then click on cancel otherwise this information will be saved into the database');
+
+        }
+    }
+    function showHideList() {
+        var openIt = document.getElementById('openIt');
+        var closeIt = document.getElementById('closeIt');
+        if (document.getElementById('roles').style.display == 'none') {
+            document.getElementById('roles').style.display = ''
+            openIt.style.display = 'none';
+            closeIt.style.display = '';
+        } else {
+            document.getElementById('roles').style.display = 'none';
+            closeIt.style.display = 'none';
+            openIt.style.display = '';
+        }
+
+    }
+
+    function getConf(obj)
+    {
+        if (obj.checked == true)
+        {
+            document.getElementById('r_check').value = "Y";
+        } else {
+            document.getElementById('r_check').value = "N";
+        }
+    }
+
+</script>
+<link rel="StyleSheet" href="./switch_files/style1.css">
+
+    
+        
+        <title>JSP Page</title>
+    </head>
+    <body>
+        <form name="form1" action="https://erp.iitkgp.ac.in/Acad/Bra_Swi_Vert/switch_inter.jsp" method="post">
+            
+            <table border="0" cellspacing="8" cellpadding="4" id="firstTAB" width="60%">
+                <tbody><tr>
+                    <td nowrap="" align="left" colspan="2">
+                        <center><font style="background-color:yellow;" size="2" color="black"><b>Option to Migrate/Switch Over For InterDisciplinary </b></font></center></td>
+                </tr>
+                <tr bgcolor="lightblue">
+                    <td nowrap="" align="left"><b><font color="Maroon">Roll No:22ME10087</font></b><input type="hidden" name="code" id="code" value=""></td>
+                    <td nowrap="" align="left"><b><font color="Maroon">Name:Swapneel Layek</font></b> </td>
+                </tr>
+                <tr bgcolor="lightblue">
+                    <td nowrap="" align="left"><b><font color="Maroon">Course Name:MECHANICAL ENGG.(B.Tech 4Y)</font></b></td>
+                    <td nowrap="" align="left"><b><font color="Maroon">Department:Mechanical Engineering</font></b></td>
+                </tr>
+
+                <tr bgcolor="white">
+                    <td colspan="16">
+                        <font color="maroon" size="3"><b>Note:<br></b></font>
+                        <font color="black" size="2"><b>1. B.Tech (2nd  year)/5-year Dual Degree(2nd  year) students are eligible to apply for Engineering Enterpreneurship/Financial Engineering .<br></b></font>
+
+                    </td>
+                </tr>
+                <tr onclick="showHideList();">
+                    <td colspan="16"><font color="maroon" size="3" style="cursor:pointer"><b><span id="openIt">+</span><span id="closeIt" style="display:none">-</span> &nbsp;&nbsp;&nbsp;&nbsp;Rules:</b></font></td>
+                </tr>
+                <tr id="roles" bgcolor="white" style="display:none; cursor:pointer;">
+                    <td colspan="16">
+                        <font color="blue" size="2"><b>1. Students have to complete all the prescribed course work for I and II semesters in first attempt with a minimum CGPA&gt;6.00 may opt for the 
+                                Dual Degree Programmes of Engineering Entrepreneurship/Financial Engineering.<br></b></font>
+                    </td>
+                </tr>
+            </tbody></table>
+            <table border="0" cellspacing="8" cellpadding="4" id="thirTAB" width="60%">
+
+
+                <tbody><tr bgcolor="lightyellow">
+                    <td><font color="#000099"><b>Proposed to Switch Over to  :</b></font></td>
+                    <td><input type="text" name="switch_code" readonly="" id="switch_code" value=""></td>
+                    <td><input type="text" name="switch_name" readonly="" id="switch_name" value=""></td>
+                    <td><img src="./switch_files/lov.gif" alt="" onclick="switch_(&#39;switch_code&#39;, &#39;ME&#39;, &#39;switch_name&#39;,4)"></td>
+                </tr>
+            </tbody></table>
+            <table><tbody><tr><td><input type="checkbox" name="check" id="check" onclick="getConf(this)">I have read and understood the Rules
+                        <input type="hidden" name="r_check" id="r_check" value="N"></td></tr>
+                <tr>
+                    <td>
+                        <input type="button" class="button" value="Submit" onclick="submit1(&#39;S&#39;)">
+                    </td>
+                    
+                </tr>
+
+            </tbody></table>
+
+            
+
+
+
+
+
+
+        </form>
+    
+
+</body></html>

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<!-- saved from url=(0057)https://erp.iitkgp.ac.in/Academic/studSAPPFormsUpload.htm -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        
+        <title>Welcome To ERP</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="./sapp_files/bootstrap.css">
+        <link rel="stylesheet" href="./sapp_files/font-awesome.min.css">
+        <link rel="stylesheet" href="./sapp_files/datepicker.css">
+        <link rel="stylesheet" href="./sapp_files/bootstrap-select.css">
+        <link rel="stylesheet" href="./sapp_files/bootstrap-table.css">
+        <link rel="stylesheet" href="./sapp_files/bootstrap-dialog.css">
+        <link rel="stylesheet" href="./sapp_files/bootstrap-theme.css">
+        <script src="./sapp_files/jquery-1.11.1.min.js.download"></script>
+        <script src="./sapp_files/bootstrap.js.download"></script>
+        <script src="./sapp_files/bootstrap-select.js.download"></script>
+        <script src="./sapp_files/bootstrap-datepicker.js.download"></script>
+        <script src="./sapp_files/bootstrap-table.js.download"></script>
+        <script src="./sapp_files/bootstrap-dialog.js.download"></script>
+        <script src="./sapp_files/bootstrap-table-export.js.download"></script>
+        <script src="./sapp_files/html2canvas.js.download"></script>
+        <script src="./sapp_files/jquery.base64.js.download"></script>
+        <script src="./sapp_files/tableExport.js.download"></script>
+
+        <!--<script src="bootstrap/js/fileinput.min.js"></script>-->
+        <script src="./sapp_files/custom-methods.js.download"></script>
+        <script src="./sapp_files/ckeditor.js.download"></script><style>.cke{visibility:hidden;}</style>
+        <script src="./sapp_files/config.js.download"></script>
+
+        <script>
+            var eligibleToApply = '', alreadyUploaded = '', freezed = '', view1 = '', view2 = '', view3 = '', view4 = '';
+            function alertBox(title, msg)
+            {
+                BootstrapDialog.show({
+                    size: BootstrapDialog.SIZE_LARGE,
+                    title: title,
+                    message: msg,
+                    onhidden: function () {
+                    }
+                });
+            }
+
+
+
+
+            function getLoadTable() {
+
+//                var rollno = $("#rollno").val();
+                $('#uploaded_documents_records_table').bootstrapTable('refresh', {url: 'getSAIPUploadedFilesTableDetails.htm'});
+            }
+
+            $(function () {
+
+                eligibleToApply = 'N';
+
+                alreadyUploaded = 'N';
+                freezed = '';
+                view1 = '';
+                view2 = '';
+                view3 = '';
+//                view4 = '';
+                main();
+
+            });
+            function main() {
+//                alert("eligibleToApply--"+eligibleToApply);
+                if (eligibleToApply === "Y") {
+
+                    if (alreadyUploaded === "N") {
+                        $('#not_eligible_for_document_upload_msg_div').addClass("hidden");
+                        $('#required_to_upload_doc').removeClass("hidden");
+//                        $('#uploaded_documents_records_table_DIV').addClass("hidden");
+                        getUploadDocumentFormx();
+//                        $('#fileUploadDiv1').removeClass("hidden");
+//                        $('#fileUploadDiv2').removeClass("hidden");
+//                        $('#fileUploadDiv3').removeClass("hidden");
+//                        $('#fileUploadDiv4').removeClass("hidden");
+                        if (view1 === "Y") {
+                            $('#fileViewDiv1').removeClass("hidden");
+                        }
+                        if (view2 === "Y") {
+                            $('#fileViewDiv2').removeClass("hidden");
+                        }
+                        if (view3 === "Y") {
+                            $('#fileViewDiv3').removeClass("hidden");
+                        }
+//                        if (view4 === "Y") {
+//                            $('#fileViewDiv4').removeClass("hidden");
+//                        }
+                        $('#submit_btn').removeClass("hidden");
+                        $('#unfreeze_msg').removeClass("hidden");
+                        $('#freeze_btn').addClass("hidden");
+                        $('#freeze_msg').addClass("hidden");
+
+                    }
+                    if (alreadyUploaded === "Y") {
+
+                        if (freezed === "Y") {
+                            $('#not_eligible_for_document_upload_msg_div').addClass("hidden");
+                            $('#required_to_upload_doc').removeClass("hidden");
+                            getUploadDocumentFormx();
+//                        $('#uploaded_documents_records_table_DIV').removeClass("hidden");
+                            $('#fileUploadDiv1').addClass("hidden");
+                            $('#fileUploadDiv2').addClass("hidden");
+                            $('#fileUploadDiv3').addClass("hidden");
+                            $('#fileUploadDiv4').addClass("hidden");
+                            $('#fileViewDiv1').removeClass("hidden");
+                            $('#fileViewDiv2').removeClass("hidden");
+                            $('#fileViewDiv3').removeClass("hidden");
+//                            $('#fileViewDiv4').removeClass("hidden");
+                            $('#submit_btn').addClass("hidden");
+                            $('#unfreeze_msg').addClass("hidden");
+                            $('#freeze_btn').addClass("hidden");
+                            $('#freeze_msg').removeClass("hidden");
+
+//                        $('#fileUpdateDiv1').removeClass("hidden");
+//                        $('#fileUpdateDiv2').removeClass("hidden");
+//                        $('#fileUpdateDiv3').removeClass("hidden");
+//                        $('#fileUpdateDiv4').removeClass("hidden");    
+
+                        }
+                        if (freezed === "N") {
+                            $('#not_eligible_for_document_upload_msg_div').addClass("hidden");
+                            $('#required_to_upload_doc').removeClass("hidden");
+                            getUploadDocumentFormx();
+//                        $('#uploaded_documents_records_table_DIV').removeClass("hidden");
+//                        $('#fileUploadDiv1').removeClass("hidden");
+//                        $('#fileUploadDiv2').removeClass("hidden");
+//                        $('#fileUploadDiv3').removeClass("hidden");
+//                        $('#fileUploadDiv4').removeClass("hidden");
+                            $('#fileViewDiv1').removeClass("hidden");
+                            $('#fileViewDiv2').removeClass("hidden");
+                            $('#fileViewDiv3').removeClass("hidden");
+//                            $('#fileViewDiv4').removeClass("hidden");
+                            $('#submit_btn').removeClass("hidden");
+                            $('#freeze_btn').removeClass("hidden");
+                            $('#unfreeze_msg').removeClass("hidden");
+                            $('#freeze_msg').addClass("hidden");
+//                        $('#fileUpdateDiv1').removeClass("hidden");
+//                        $('#fileUpdateDiv2').removeClass("hidden");
+//                        $('#fileUpdateDiv3').removeClass("hidden");
+//                        $('#fileUpdateDiv4').removeClass("hidden");    
+
+                        }
+
+
+                    }
+
+
+
+                } else {
+//                    alert("Not Eligible to apply...");
+                    $('#not_eligible_for_document_upload_msg_div').removeClass("hidden");
+//                    $('#uploaded_documents_records_table_DIV').addClass("hidden");
+                }
+            }
+
+            function getUploadDocumentFormx() {
+//                alert("view4--"+view4);
+                var form_html = "";
+
+                var test = '<div class="row container-fluid" id="upload_doc_rows1">' +
+                        '<div class="well well-sm col-lg-12 col-md-12 col-sm-12 col-xs-12">' +
+                        '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">' +
+                        '<label for="file1"> Complete application with all the details pertaining to the project to be undertaken.</label>' +
+                        '</div>' +
+//                        '<div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">' +
+//                        '<span class="view_annexure_file1 ml10 badge alert-warning btn fdet btn btn-info btn-lg" onclick="downloadAnnexureFile(1)" title="View File1"><i class="glyphicon glyphicon-download"></i> Download SAPP Forms1 </span>' +
+//                        '</div>' +
+                        '<div class="col-lg-2 col-md-2 col-sm-6 col-xs-12" id="fileUploadDiv1">' +
+                        '<input type="file" name="file1"  id="file1" />' +
+                        '</div>' +
+                        '<div class="col-lg-2 col-md-2 col-sm-6 col-xs-12 hidden" id="fileViewDiv1">' +
+                        '<span class="view_form1 ml10 badge alert-success btn fdet" onclick="viewForm1()"  title="View Pdf" class="btn btn-danger btn-lg"><i class="glyphicon glyphicon-print"></i> View Uploaded Form1 </span>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="well well-sm col-lg-12 col-md-12 col-sm-12 col-xs-12">' +
+                        '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">' +
+                        '<label for="file1">Recommendations from supervisor from the institute and No Objection Certificate from Head or Authorized Signatory of the host organization. <br/><font color="blue">(Please merge both the pdfs into one and upload here)</font></label>' +
+                        '</div>' +
+//                        '<div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">' +
+//                        '<span class="view_annexure_file2 ml10 badge alert-warning btn fdet btn btn-info btn-lg" onclick="downloadAnnexureFile(2)" title="View File2"><i class="glyphicon glyphicon-download"></i> Download SAPP Forms2 </span>' +
+//                        '</div>' +
+                        '<div class="col-lg-2 col-md-2 col-sm-6 col-xs-12" id="fileUploadDiv2">' +
+                        '<input type="file" name="file2"  id="file2" />' +
+                        '</div>' +
+                        '<div class="col-lg-2 col-md-2 col-sm-6 col-xs-12 hidden" id="fileViewDiv2">' +
+                        '<span class="view_form2 ml10 badge alert-success btn fdet" onclick="viewForm2()"  title="View Pdf" class="btn btn-danger btn-lg"><i class="glyphicon glyphicon-print"></i> View Uploaded Form2 </span>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="well well-sm col-lg-12 col-md-12 col-sm-12 col-xs-12">' +
+                        '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">' +
+                        '<label for="file1">Recommendations from the host organization.</label>' +
+                        '</div>' +
+//                        '<div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">' +
+//                        '<span class="view_annexure_file3 ml10 badge alert-warning btn fdet btn btn-info btn-lg" onclick="downloadAnnexureFile(3)" title="View File3"><i class="glyphicon glyphicon-download"></i> Download SAPP Forms3 </span>' +
+//                        '</div>' +
+                        '<div class="col-lg-2 col-md-2 col-sm-6 col-xs-12" id="fileUploadDiv3">' +
+                        '<input type="file" name="file3"  id="file3" />' +
+                        '</div>' +
+                        '<div class="col-lg-2 col-md-2 col-sm-6 col-xs-12 hidden" id="fileViewDiv3">' +
+                        '<span class="view_form3 ml10 badge alert-success btn fdet" onclick="viewForm3()"  title="View Pdf" class="btn btn-danger btn-lg"><i class="glyphicon glyphicon-print"></i> View Uploaded Form3 </span>' +
+                        '</div>' +
+                        '</div>' +
+//                        '<div class="well well-sm col-lg-12 col-md-12 col-sm-12 col-xs-12">' +
+//                        '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">' +
+//                        '<label for="file4">Non Disclosure Agreement signed by the student and mentor from the host organization.</label>' +
+//                        '</div>' +
+//                        '<div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">' +
+//                        '<span class="view_annexure_file4 ml10 badge alert-warning btn fdet btn btn-info btn-lg" onclick="downloadAnnexureFile(4)" title="View File"><i class="glyphicon glyphicon-download"></i> Download SAIP Forms4 </span>' +
+//                        '</div>' +
+//                        '<div class="col-lg-2 col-md-2 col-sm-6 col-xs-12" id="fileUploadDiv4">' +
+//                        '<input type="file" name="file4"  id="file4" />' +
+//                        '</div>' +
+//                        '<div class="col-lg-2 col-md-2 col-sm-6 col-xs-12 hidden" id="fileViewDiv4">' +
+//                        '<span class="view_form4 ml10 badge alert-success btn fdet" onclick="viewForm4()"  title="View Pdf" class="btn btn-danger btn-lg"><i class="glyphicon glyphicon-print"></i> View Form4 </span>' +
+//                        '</div>' +
+//                        '</div>' +
+
+                        '</div>';
+                form_html = form_html + test;
+                $("#uploadSAPPFormsId").html(form_html);
+                $("#uploadSAPPFormsId").show();
+                $("#submit_btn").show();
+
+            }
+            function downloadAnnexureFile(form_id) {
+                if (form_id === 1) {
+                    window.open('FinalProposal.pdf');
+                } else if (form_id === 2) {
+//                    alert("calling form 2");
+                    window.open('NOC.pdf');
+                } else if (form_id === 3) {
+//                    alert("calling form 2");
+                    window.open('StudentDeclaration.pdf');
+                }
+//                else if (form_id === 4) {
+////                    alert("calling form 2");
+//                    window.open('Medical_&_Other_Certificate_Or_Declaration.pdf');
+//                }
+            }
+            function viewForm1() {
+                $('#mainFrame').attr('src', 'viewSAPPDocs.htm?form_no=' + "1");
+                $('#myModalPDF').modal('show');
+            }
+            function viewForm2() {
+                $('#mainFrame').attr('src', 'viewSAPPDocs.htm?form_no=' + "2");
+                $('#myModalPDF').modal('show');
+            }
+            function viewForm3() {
+                $('#mainFrame').attr('src', 'viewSAPPDocs.htm?form_no=' + "3");
+                $('#myModalPDF').modal('show');
+            }
+//            function viewForm4() {
+//                $('#mainFrame').attr('src', 'viewDocs.htm?form_no=' + "4");
+//                $('#myModalPDF').modal('show');
+//            }
+            function uploadDocuments() {
+
+                var file1 = $("#file1").val();
+                var file2 = $("#file2").val();
+                var file3 = $("#file3").val();
+//                var file4 = $("#file4").val();
+
+//                if (file1 === "") {
+//                    alertBox("Alert", "Please select file1 to upload.");
+//                } else if (file2 === "") {
+//                    alertBox("Alert", "Please select file2 to upload.");
+//                } else if (file3 === "") {
+//                    alertBox("Alert", "Please select file3 to upload.");
+//                } else if (file4 === "") {
+//                    alertBox("Alert", "Please select file4 to upload.");
+//                } else {
+                var conf = confirm("Are you sure to upload this ?\nPlease Note- Before submitting make sure that you have attached all forms in pdf.");
+                if (conf)
+                {
+                    submitForm("#uploadSAPPFormsId");
+                }
+//                }
+            }
+
+            function submitForm(formid) {
+                var target_url = $(formid).attr("action");
+                var mime = "";
+                var found = "N";
+                $(formid + ' input[type=file]').each(
+                        function (index) {
+                            found = "Y";
+                        }
+                );
+                if (found === "Y") {
+                    var formData = new FormData($(formid)[0]);
+                    var x = $.ajax({
+                        type: "post",
+                        url: target_url,
+                        async: false,
+                        data: formData,
+                        cache: false,
+                        mimeType: mime,
+                        contentType: false,
+                        dataType: "json",
+                        processData: false,
+                        beforeSend: function () {
+                        },
+                        success: function (json) {
+                            var status = json.status;
+                            if (status === "1") {
+                                main();
+//                            getUploadDocumentFormx();
+                                window.location.reload();
+                            } else {
+                                alertBox("Information...", json.msg);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            if (status === "error") {
+                                alertBox("UNWANTED ERROR!", "Error Message:" + error);
+                            }
+                        }
+                    });
+                } else {
+                    formData = $(formid).serialize();
+                    var x = $.ajax({
+                        type: "post",
+                        url: target_url,
+                        async: false,
+                        data: $(formid).serialize(),
+                        cache: false,
+                        dataType: "json",
+                        beforeSend: function () {
+                        },
+                        success: function (json) {
+//                            
+
+
+
+                            var status = json.status;
+                            if (status === "1") {
+                                main();
+//                            getUploadDocumentFormx();
+                                window.location.reload();
+                            } else {
+                                alertBox("Information...", json.msg);
+                            }
+
+//                            $('#required_to_upload_doc').Class("hidden");
+//                            $('#uploaded_documents_records_table_DIV').removeClass("hidden");
+//                            $('#docs_det_table').bootstrapTable('refresh');
+                        },
+                        error: function (xhr, status, error) {
+                            if (status === "error") {
+                                alertBox("UNWANTED ERROR!", "Error Message:" + error);
+                            }
+                        }
+                    });
+                }
+
+            }
+
+            function afterSubmission(json) {
+                alertBox("Information", "done");
+            }
+            function freezeDocuments() {
+
+                var conf = confirm("Do you really want to freeze the forms ?\nOnce you freezed it, you will not be able to correct the forms.");
+                if (conf)
+                {
+                    $.ajax({
+                        url: "freezeSAPPForms.htm",
+                        type: "POST",
+                        cache: false,
+                        dataType: "json",
+                        success: function (json) {
+                            var status = json.status;
+                            if (status === "1") {
+                                window.location.reload();
+                                $('#freeze_msg').removeClass("hidden");
+                                $('#unfreeze_msg').addClass("hidden");
+                            } else {
+                                alertBox("Information...", json.msg);
+                                $('#freeze_msg').addClass("hidden");
+                                $('#unfreeze_msg').removeClass("hidden");
+                            }
+//                            
+
+                        }
+                    });
+                }
+            }
+
+        </script>
+        <style>
+            body {
+                min-height: 2000px;
+            }
+
+            .navbar-static-top {
+                margin-bottom: 19px;
+            }
+
+
+        </style>
+
+    </head>
+
+    <body>
+        <div class="row container-fluid">
+            <div class="well">
+                <div class="panel-heading has-info" style="font-weight: bolder;font-size: large">
+                    <center><h2><font color="green"><b>Uploading of relevant documents for SAPP Application (Step 2)</b></font></h2></center>
+                </div>
+            </div>
+
+            <div class="container" id="not_eligible_for_document_upload_msg_div">
+                <div class="col-sm-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-body">
+                            <div class="col-lg-offset-2 col-lg-8 col-sm-offset-2 col-sm-8 alert alert-danger text-center"><br>
+                                <font color="blue"> <strong>Sorry !!!<br>You are not eligible to upload SAPP Forms.</strong></font> <br><br>
+                            </div></div></div></div> </div>
+
+
+
+            <div class="col-lg-12 col-sm-12 col-xs-12 hidden" id="required_to_upload_doc">
+                <div class="container-fluid">
+
+
+
+                    <div id="msg_div" class="alert alert-dismissable alert-info">
+
+                        <!--<h3> Upload Listed Below Documents for Verification</h3>-->
+                        <h4 class="hidden" id="unfreeze_msg">Note- <font color="red">Only PDF file format (Max Size - 1 MB) is allowed to submit. Please avoid special characters in file name. </font><br><br>
+                            <font class="text-warning"> After Uploading all forms, you have to freeze the forms. Only after freezing the forms, Step-2 will be considered as confirmed and finally submitted.</font></h4>
+                        <h4 class="hidden" id="freeze_msg"><font color="green">You have successfully freezed the SAPP forms.</font></h4>
+                    </div>
+
+                    <form id="uploadSAPPFormsId" class="form-horizontal" action="https://erp.iitkgp.ac.in/Academic/uploadSAPPForms.htm" method="POST" enctype="multipart/form-data">
+
+
+                    </form>
+
+
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12"></div>
+                    <button id="submit_btn" type="button" class="btn btn-info" title="Click To Save Details" onclick="uploadDocuments();">Save Information</button>&nbsp; 
+                    <button id="freeze_btn" type="button" class="btn btn-danger" title="Click To freeze Details" onclick="freezeDocuments();">Freeze Forms</button>&nbsp;
+                    <!--</div>-->
+
+                </div>
+            </div> &nbsp; 
+        </div> 
+
+
+        <div id="myModalPDF" class="modal fade" style="width: 100%;height: 100%;" role="dialog">
+            <div class="modal-dialog-lg" style="width: 100%;height: 100%;">
+
+                <!-- Modal content-->
+                <div class="modal-content" style="width: 80%;height: 80%;">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">×</button>
+                        <h4 class="modal-title">Uploaded File</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div><iframe src="./sapp_files/saved_resource.html" width="80%" height="400px" id="mainFrame" name="mainFrame"></iframe></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div></div>
+
+
+    
+
+
+</body></html>

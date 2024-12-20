@@ -1,0 +1,202 @@
+/*
+    Copyright (c) 2008 Indian Institute of Technology,Kharagpur. All Rights Reserved.
+    This software is the confidential and proprietary information of Indian Institute of Technology,Kharagpur.
+    You shall not disclose such Confidential Information and shall use it only in
+    accordance with the terms of the license agreement you entered into with IITKGP.
+
+    Document   : gui
+    Author     : Debasis Jana
+    Description: GUI stylesheets, well known GUI elements have stylesheets and those defined in this file.
+    Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+/*
+any window has a title, this is the title stylesheet
+*/
+td.window-title{
+    background-color:#e0ecff;
+    font-size:14px;
+    font-family:Verdana, Arial, Helvetica, sans-serif;
+    font-weight:bold;
+    font-style:normal;
+    color:black;
+    padding:3px;
+}
+
+tr.group-row{
+    font-size:12px;
+    font-family:Verdana, Arial, Helvetica, sans-serif;
+    font-weight:bold;
+    font-style:normal;
+    padding:5px;
+    color:black;
+}
+
+/*
+window label/data stylesheet
+*/
+td.window-data{
+    font-size:12px;
+    font-family:Verdana, Arial, Helvetica, sans-serif;
+    font-weight:normal;
+    font-style:normal;
+    padding:5px;
+}
+
+/*
+window heading stylesheet
+*/
+td.window-header{
+    color:white;
+    background-color:#557CD7;
+}
+
+/*
+window has got data to be displayed on this, this is data stylesheet
+*/
+td.no-data{
+    color:red;
+    background-color:white;
+}
+
+/*
+if any data inactive, that stylesheet defined here
+*/
+td.inactive-data{
+    color:black;
+    background-color:white;
+}
+
+/*
+if any data active, that stylesheet defined here
+*/
+td.active-data{
+    color:black;
+    background-color:#eeeeee;
+}
+
+td.summary-data{
+    color:black;
+    background-color: #ffffcc;
+    border: solid 1px black;
+}
+
+td[class = "window-data inactive-data"] input[type = "text"]{
+    border:1px solid white;
+}
+
+td[class = "window-data inactive-data"] input[type = "text"]:hover{
+    border:1px solid gray;
+}
+
+td[class = "window-data inactive-data"] input[type = "text"]:focus{
+    border:1px solid #3333ff;
+}
+
+div.loading-win{
+    position: absolute;
+    background-color: inherit;
+    padding: 10px;
+    margin: 0px;
+    width: auto;
+    height: auto;
+}
+
+div.lazy-LOV-win{
+    border:2px solid #bbccff;
+    background-color: #ffffff;
+    padding:0px;
+    margin:0px;
+    height:auto;
+    width:auto;
+}
+
+tr.lazy-LOV-data{
+    font-size:12px;
+    font-family:Verdana, Arial, Helvetica, sans-serif;
+    font-weight:normal;
+    font-style:normal;
+    padding:3px;
+    background-color:inherit;
+    color:black;
+    cursor: default;
+}
+
+/*tr[class = "lazy-LOV-data"]:hover{
+    background-color: #d5e2ff;
+    cursor: pointer;
+}*/
+
+/*tr.loazy-LOV-active-data{
+    font-size:12px;
+    font-family:Verdana, Arial, Helvetica, sans-serif;
+    font-weight:normal;
+    font-style:normal;
+    padding:3px;
+    background-color: #557CD7;
+    color: black;
+    cursor: pointer;
+}*/
+
+div.LOV-win{
+    position:absolute;
+    border:2px solid black;
+    background-color: inherit;
+    padding:0px;
+    margin:0px;
+}
+
+td.LOV-data{
+    font-size:12px;
+    font-family:Verdana, Arial, Helvetica, sans-serif;
+    font-weight:normal;
+    font-style:normal;
+    padding:3px;
+    cursor:pointer;
+    background-color:inherit;
+    color:black;
+    border-bottom:solid 1px gray;
+}
+
+th.LOV-header{
+    background-color:#557CD7;
+    font-size:12px;
+    font-family:Verdana, Arial, Helvetica, sans-serif;
+    font-weight:normal;
+    font-style:normal;
+    color:#FFFFFF;
+    text-align:left;
+    padding:3px;
+}
+
+td.LOV-search-header{
+    background-color:#eeeeee;
+    font-size:12px;
+    font-family:Verdana, Arial, Helvetica, sans-serif;
+    font-weight:normal;
+    font-style:normal;
+    color:#000000;
+    padding:3px;
+}
+
+DIV.dialog-box{
+    border:3px solid black;
+    width:auto;
+    height:auto;
+    overflow:hidden;
+    background-color:white;
+    position:absolute;
+}
+
+input[type="text"].auto-search{
+    border-top: 1px solid black;
+    border-bottom: 1px solid gray;
+    border-left: 1px solid gray;
+    border-right: 1px solid gray;
+    color:black;
+}
+
+input[type="text"].auto-search:focus{
+    border: 2px solid #557CD7;
+    color:black;
+}

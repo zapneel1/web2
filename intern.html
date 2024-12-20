@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)https://erp.iitkgp.ac.in/TrainingPlacementSSO/InternshipFeedback.jsp -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+        
+        <title>JSP Page</title>
+        <link rel="stylesheet" href="./intern_files/jquery-ui-1.10.3.custom.css">
+        <link href="./intern_files/style1_1.css" rel="stylesheet" type="text/css">
+        <script src="./intern_files/jquery-1.9.1.js.download" type="text/javascript"></script>
+        <script src="./intern_files/jquery-ui.js.download" type="text/javascript"></script>
+        <script src="./intern_files/jquery.ui.datepicker.js.download" type="text/javascript"></script>
+        <script>
+            function windowpop(rollno, width, height)
+            {
+                width = 545;
+                height = 433;
+                url = "https://erp.iitkgp.ac.in/TrainingPlacementSSO/AdmFilePDF.htm?type=INFD&rollno=" + rollno;
+                var leftPosition, topPosition;
+                //Allow for borders.
+                leftPosition = (window.screen.width / 2) - ((width / 2) + 10);
+                //Allow for title and status bars.
+                topPosition = (window.screen.height / 2) - ((height / 2) + 50);
+                //Open the window.
+                window.open(url, "Window2", "status=no,height=" + height + ",width=" + width + ",resizable=yes,left=" + leftPosition + ",top=" + topPosition + ",screenX=" + leftPosition + ",screenY=" + topPosition + ",toolbar=no,menubar=no,scrollbars=no,location=no,directories=no");
+            }
+            function savenoc()
+            {
+                $('.span_er').each(function () {
+                    $(this).html('');
+                });
+
+
+
+
+
+
+                if ($("#F1").val() == '')
+                {
+                    $('#F1_span').html('Please select a file');
+                    $("#F1").focus();
+                    $('#F1').addClass("error");
+                }
+                if ($("#F1").val() != '' && $("#F1")[0].files[0].size > 300000)
+                {
+                    //alert($("#F1")[0].files[0].size);
+                    $('#F1_span').html('Please select a file less than 300kb');
+                    $("#F1").focus();
+                    $('#F1').addClass("error");
+                }
+                var ext = $('#F1').val().split('.').pop().toLowerCase();
+                var allow = new Array('pdf');
+
+                if (($("#F1").val() != '') && (jQuery.inArray(ext, allow) == -1))
+                {
+                    $('#F1_span').html('Please Select pdf File');
+                    $("#F1").focus();
+                    $('#F1').addClass("error");
+                }
+
+
+                var flag = '0';
+                $('.span_er').each(function () {
+                    if ($(this).html() != '')
+                    {
+                        flag = '1';
+                    }
+                });
+
+                if ($("#org").val() == '')
+                {
+                    alert("Please enter org name.");
+                    return false;
+                } else if ($("#address1").val() == '')
+                {
+                    alert("Please enter Address");
+                    return false;
+                } else if ($("#country").val() == '')
+                {
+                    alert("Please enter Country");
+                    return false;
+                } else if ($("#pincode").val() == '')
+                {
+                    alert("Please enter Pincode");
+                    return false;
+                } 
+//                else if ($("#website").val() == '')
+//                {
+//                    alert("Please enter Website");
+//                    return false;
+//                } 
+                else if ($("#category").val() == '')
+                {
+                    alert("Please enter category");
+                    return false;
+                } else if ($("#sector").val() == '')
+                {
+                    alert("Please enter sector");
+                    return false;
+                } else if ($("#reference").val() == '')
+                {
+                    alert("Please enter reference");
+                    return false;
+                } else if ($("#int_name").val() == '')
+                {
+                    alert("Please enter Reporting person name");
+                    return false;
+                } else if ($("#reportingpersondesignation").val() == '')
+                {
+                    alert("Please enter Reporting person designation");
+                    return false;
+                } 
+//                else if ($("#reportingpersonmobile").val() == '')
+//                {
+//                    alert("Please enter Reporting person mobile");
+//                    return false;
+//                } 
+                else if ($("#email").val() == '')
+                {
+                    alert("Please enter Reporting person email");
+                    return false;
+                } else if (confirm("Are you sure?") && flag == '0')
+                {
+                    $('#mode').val('savenoc');
+                    $('#from_noc').submit();
+                }
+            }
+        </script>
+    </head>
+    <body>
+
+        
+        <!--<h1>Upload feedback file for compulsory internship only.</h1>-->
+        
+
+        
+        
+        
+     <b><font style="color:red;">You did not register in CDC for session 2023-2024. You need to register in CDC. After that you can upload Internship Completion Certificate.</font></b>
+                   
+      
+     
+     
+        
+       
+        
+            
+                     <!--<center> <a style="color: blue; font-weight: bold;" href="TPFile.jsp?rollno=22ME10087&file_for=INFD">Upload internship feedback file</a></center>-->
+        
+
+
+ 
+
+
+        
+<form name="from_noc" id="from_noc" method="post" action="https://erp.iitkgp.ac.in/TrainingPlacementSSO/InternshipFeedback.jsp" enctype="multipart/form-data">
+    <input type="hidden" name="mode" id="mode">
+            <input type="hidden" name="rollno" id="rollno" value="22ME10087">
+            <!--        <div>
+                        <center><b>Please Note- <font style="color:green;">You have already selected in an internship though CDC programme. You need to upload only Internship feedback form</font></b></center><br>
+                       
+                        <center> <a style="color: blue; font-weight: bold;" href="TPFile.jsp?rollno=22ME10087&file_for=INFD">Upload internship feedback file</a></center>
+                    </div>--><br>
+            <table id="tab1" style="padding-left: 20px;"> 
+        
+            
+                
+                
+                 
+                
+                 
+            </table>
+        </form>
+        
+    
+
+</body></html>

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)https://erp.iitkgp.ac.in/Academic/getRegSpclPermission.htm?type=acad -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <title>Registration Special Permission</title>
+        <link rel="stylesheet" href="./acad_files/bootstrap.css">
+        <link rel="stylesheet" href="./acad_files/datepicker.css">
+        <link rel="stylesheet" href="./acad_files/bootstrap-dialog.css">
+        <link rel="stylesheet" href="./acad_files/bootstrap-select.css">
+        <link rel="stylesheet" href="./acad_files/bootstrap-table.css">
+        <link rel="stylesheet" href="./acad_files/font-awesome.min.css">
+        <script src="./acad_files/jquery-1.11.1.min.js.download"></script>
+        <script src="./acad_files/bootstrap.js.download"></script>
+        <script src="./acad_files/bootstrap-dialog.js.download"></script>
+        <script src="./acad_files/bootstrap-table.js.download"></script>
+        <script src="./acad_files/bootstrap-datepicker.js.download"></script>
+        <script src="./acad_files/bootstrap-select.js.download"></script>
+        <script src="./acad_files/bootstrap-filestyle.js.download"></script>
+        <script src="./acad_files/bootbox.min.js.download"></script>
+        <script src="./acad_files/somesh-bootstrap-select-loader.js.download"></script>
+        <script>
+
+            $(function() {
+                var type = "acad";
+                //alert(type);
+                loadlist('#app_lst',
+                        'appListSelect.htm?type='+type,
+                        ''
+                        )
+            });
+
+            function increaseDecreaseSession(obj) {
+                if (obj.value == '>>') {
+                    var acad_ses = obj.previousSibling.value;
+                    var year = acad_ses.split('-');
+                    acad_ses = year[1] + '-' + (parseInt(year[1]) + 1);
+                    obj.previousSibling.value = acad_ses;
+                    $('#session_id').val(acad_ses);
+                }
+                if (obj.value == '<<') {
+                    var acad_ses = obj.nextSibling.value;
+                    var year = acad_ses.split('-');
+                    acad_ses = (parseInt(year[0]) - 1) + '-' + year[0];
+                    obj.nextSibling.value = acad_ses;
+                    $('#session_id').val(acad_ses);
+                }
+            }
+
+
+            function submitForm() {
+
+
+                //alert(datastring);
+                var x = $("#session").val();
+                if ($("#app_justification").val() == '') {
+                    myalert("Error", "Please Give The Reason For the Application");
+                    return false;
+                }
+                if ($("#app_type").val() == 'PRV_REG_PRT_PYMNT' && ($("#proposed_partial_amt").val() == '' || $("#proposed_partial_amt").val() <= '0')) {
+                    myalert("Error", "Please Give Proposed Amount For Partial Payment To Be Paid");
+                    return false;
+                }
+                if ($("#app_type").val() == 'FEE_PAY_CER' && ($("#rel_w_guardian").val() == 'SELECT' || $("#name_guardian").val() == '')) {
+                    myalert("Error", "Please Give Guardian type and Guardian name");
+                    return false;
+                }
+                if (($("#app_type").val() == 'PRV_REG_PRT_PYMNT' || $("#app_type").val() == 'PRV_REG_NO_PYMNT') && ($("#req_date").val() == '' || $("#req_date").val() == 'undefine')) {
+                    myalert("Error", "Please Give Proposed date For Paying Remaining Fees");
+                    return false;
+                }
+                bootbox.confirm("Are you sure to save?", function(result) {
+                    var datastring = $("#spl_req").serialize();
+//                    alert(datastring)
+//                    var formData = new FormData($("#spl_req")[0]);
+//                    alert(formData);
+                    if (result) {
+                        var request = $.ajax({
+                            url: "update_reg_spl_application.htm",
+                            type: "POST",
+                            data: datastring,
+                            dataType: "json",
+//                            async: false,
+//                            cache: false,
+//                            contentType: false,
+//                            processData: false,
+                            success: function(json) {
+                                $("#print_id").show();
+                                myalert("Information", json.status);
+                                setTimeout(function() {
+                                }, 500);
+                            },
+                            error: function() {
+                                myalert("Information", "Error while updating");
+                            }
+                        });
+                    }
+                })
+
+            }
+            function myalert(title, msg, focusid) {
+                BootstrapDialog.show({
+                    size: BootstrapDialog.SIZE_LARGE,
+                    title: title,
+                    message: msg,
+                    onhidden: function() {
+                        $(focusid).focus();
+                    }
+                });
+            }
+            function reset() {
+                $("#details_panel").hide();
+            }
+            function showDetails() {
+                $("#req_date").datepicker({
+                    format: 'dd-mm-yyyy',
+                    autoclose: true
+                });
+
+                var session = $("#app_session").val();
+                var sem = $("#sem").val();
+                var app_lst = $("#app_lst").val();
+                if (app_lst == 'SELECT') {
+                    $("#details_panel").hide();
+                    myalert("Semester", "Please Select Application Type", "sem");
+                    return false;
+                } else if (sem == 'SELECT') {
+                    $("#details_panel").hide();
+                    myalert("Semester", "Please Select Semester", "sem");
+                    return false;
+                } else {
+
+                    var request = $.ajax({
+                        url: "get_reg_spl_application_details.htm?session=" + session + "&semester=" + sem + "&app_type=" + app_lst,
+                        type: "GET",
+                        success: function(data) {
+                            var dob = new Date();
+                            if (data.req_last_dt != null) {
+                                dob = new Date(data.req_last_dt);
+                            }
+
+                            $("#req_date").datepicker("setDate", dob);
+//                            alert(data.app_type);
+                            $("#session").val(data.session);
+                            $("#semester").val(data.semester);
+                            $("#app_type").val(data.app_type);
+                            $("#appl_body").val(data.appl_body);
+                            $("#app_justification").val(data.app_justification);
+                            $("#proposed_partial_amt").val(data.proposed_partial_amt);
+                            $("#rel_w_guardian").val(data.rel_w_guardian);
+                            $("#name_guardian").val(data.name_guardian);
+
+                            if (data.app_type === 'FEE_PAY_CER')
+                            {
+                                $('#span1').css('display', 'none');
+                            }
+                            else
+                            {
+                                $('#span1').css('display', 'block');
+                            }
+
+                            var conCat = $("#app_lst option:selected").text() + " For the session : " + data.semester + ", " + data.session;
+                            $("#app_sub").val(conCat);
+
+                            if (data.app_type === 'PRV_REG_NO_PYMNT') {
+                                $("#part_amt_div1").hide();
+                                $("#part_amt_div2").hide();
+                                $("#part_amt_div3").show();
+                                $("#part_amt_div4").show();
+                                $("#part_amt_div5").hide();
+                                $("#part_amt_div6").hide();
+                                $("#part_amt_div7").hide();
+                                $("#part_amt_div8").hide();
+                                $("#part_amt_div9").hide();
+                            } else if (data.app_type === 'FEE_PAY_CER') {
+                                $("#part_amt_div1").hide();
+                                $("#part_amt_div2").hide();
+                                $("#part_amt_div3").hide();
+                                $("#part_amt_div4").hide();
+                                $("#part_amt_div5").show();
+                                $("#part_amt_div6").show();
+                                $("#part_amt_div7").show();
+                                $("#part_amt_div8").show();
+                                $("#part_amt_div9").hide();
+                            } else if (data.app_type === 'LT_REG' || data.app_type === 'REG_AFTER_8_YR') {
+                                $("#part_amt_div1").hide();
+                                $("#part_amt_div2").hide();
+                                $("#part_amt_div3").hide();
+                                $("#part_amt_div4").hide();
+                                $("#part_amt_div5").hide();
+                                $("#part_amt_div6").hide();
+                                $("#part_amt_div7").hide();
+                                $("#part_amt_div8").hide();
+                                $("#part_amt_div9").hide();
+                            } else if (data.app_type === 'REG_EXTR_CRD') {
+                                $("#part_amt_div1").hide();
+                                $("#part_amt_div2").show();
+                                $("#part_amt_div3").hide();
+                                $("#part_amt_div4").hide();
+                                $("#part_amt_div5").hide();
+                                $("#part_amt_div6").hide();
+                                $("#part_amt_div7").hide();
+                                $("#part_amt_div8").hide();
+                                $("#part_amt_div9").show();
+                            } else {
+                                $("#part_amt_div1").show();
+                                $("#part_amt_div2").show();
+                                $("#part_amt_div3").show();
+                                $("#part_amt_div4").show();
+                                $("#part_amt_div5").hide();
+                                $("#part_amt_div6").hide();
+                                $("#part_amt_div7").hide();
+                                $("#part_amt_div8").hide();
+                                $("#part_amt_div9").hide();
+                                $("#part_amt_div10").hide();
+
+                            }
+                            if (data.app_justification == '' || data.app_justification == null) {
+                                $("#print_id").hide();
+                            } else {
+                                $("#print_id").show();
+                            }
+                        },
+                    });
+
+                    $('#details_panel').show();
+                }
+                if (typeof parent.setFrameWH != 'undefined')
+                    parent.setFrameWH();
+            }
+
+
+            function print() {
+//                $('#pdfview').modal('show');
+//                $('#pdfviewLabel').html('Student Application Details');
+//                $('#ifrm').attr('src', "getPDFApplicationCard.htm?session=" + $("#session").val() + "&semester=" + $("#semester").val() + "&app_type=" + $("#app_type").val());
+//            
+                $('#pdfviewLabel').html('Student Application Details');
+                var iftext = '<iframe src="getPDFApplicationCard.htm?session=' + $("#session").val() + '&semester=' + $("#semester").val() + '&app_type=' + $("#app_type").val() + '" style="overflow:hidden;height:600px;width:100%;" ></iframe>';
+                //$('#pdfviewBody').html("<center><li><a style='background-color: white;color: red;font-weight:bold;font-size:large;' href='javascript:void(0);' onclick='window.location=window.location;'>Close</a></li></center>"+iftext);
+                $('#pdfviewBody').html(iftext);
+                $('#pdfview').modal('show');
+                if (typeof parent.setFrameWH != 'undefined')
+                    parent.setFrameWH();
+
+            }
+
+        </script>
+    </head>
+    <body onload="reset();">
+        <div class="container-fluid" style="padding-top: 10px;">
+
+            <div class="form-inline col-lg-12 bg-info" align="center">
+                <h4><b>
+                        <label class="form-group">Application for : </label>
+                        <select data-live-search="true" class="form-control" name="app_lst" id="app_lst" style="width: 200px;">
+                        <option value="">Please Select ...</option><option value="REG_EXTR_CRD">EXTRA CREDIT REGISTRATION</option></select>
+                        <label class="form-group">For the Session : </label>
+                        <input type="button" class="btn btn-default" value="&lt;&lt;" name="decreaseSession" onclick="increaseDecreaseSession(this)"><input type="text" name="app_session" id="app_session" value="2023-2024" readonly="" class="form-control field__input" style="width:8%"><input type="button" class="btn btn-default" value="&gt;&gt;" name="increaseSession" onclick="increaseDecreaseSession(this)">
+                        <label class="form-group">For the Semester : </label>
+                        <select class="form-control" name="sem" id="sem">
+                            <option value="SELECT">Please Select...</option>
+                            <option value="AUTUMN">AUTUMN</option>
+                            <option value="SPRING">SPRING</option>
+                        </select>
+                        &nbsp;<button class="btn btn-primary" onclick="showDetails();">GET TEMPLATE</button>      
+                    </b></h4>
+            </div>
+            <div id="details_panel" class="well col-lg-12" style="display: none;">
+                <form id="spl_req" action="https://erp.iitkgp.ac.in/Academic/getRegSpclPermission.htm?type=acad" method="post">
+                    <div class="row form-group">
+                        <div class="col-lg-12">                        
+                            <label class="panel-primary">
+                                <span id="span1">To<br>Dean(UGS)<br><br>Through<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Head of MECHANICAL ENGINEERING<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Faculty Advisor<br><br></span>
+                            </label> 
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-lg-2">                        
+                            <label>Subject Of the Application :</label> 
+                        </div>                       
+                        <div class="col-lg-10"> 
+                            <input id="session" name="session" type="hidden" value="">
+                            <input id="semester" name="semester" type="hidden" value="">
+                            <input id="app_type" name="app_type" type="hidden" value="">
+                            <input type="text" id="app_sub" class="form-control field__input" readonly="">  
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-lg-2">                        
+                            <label>Content Of the Application :</label> 
+                        </div>
+                        <div class="col-lg-10">                        
+                            <textarea id="appl_body" name="appl_body" class="form-control" rows="5" cols="10"></textarea>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-lg-2">                        
+                                <label><font color="red"><b>*</b></font>Reason For the Application :</label> 
+                            </div>
+                            <div class="col-lg-10">                        
+                            <textarea id="app_justification" name="app_justification" class="form-control" rows="5" cols="10"></textarea>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-lg-2" id="part_amt_div1">                        
+                                <label><font color="red"><b>*</b></font>Proposed Amount For Partial Payment To Be Paid :</label> 
+                            </div>
+                            <div class="col-lg-2" id="part_amt_div9">                        
+                                <label><font color="red"><b>*</b></font>Proposed Total Credit To Be Registered:</label> 
+                            </div>
+                            <div class="col-lg-4" id="part_amt_div2">                        
+                            <input id="proposed_partial_amt" name="proposed_partial_amt" class="form-control field__input" type="text" value="0"> 
+                        </div>
+                        <div class="col-lg-2" id="part_amt_div3">                        
+                            <label><font color="red"><b>*</b></font>Proposed date For Paying Remaining Fees :</label> 
+                        </div>
+                        <div class="col-lg-4" id="part_amt_div4">                        
+                            <input type="text" id="req_date" name="req_date" readonly="" class="form-control field__input">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-lg-2" id="part_amt_div5">                        
+                            <label><font color="red"><b>*</b></font>Relationship with guardian :</label> 
+                        </div>
+                        <div class="col-lg-4" id="part_amt_div6">                        
+                            <select class="form-control" name="rel_w_guardian" id="rel_w_guardian">
+                                <option value="SELECT">Please Select...</option>
+                                <option value="FATHER">FATHER</option>
+                                <option value="MOTHER">MOTHER</option>
+                                <option value="OTHER GUARDIAN">OTHER GUARDIAN</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-2" id="part_amt_div7">                        
+                            <label><font color="red"><b>*</b></font>Guardian name :</label> 
+                        </div>
+                        <div class="col-lg-4" id="part_amt_div8">                        
+                            <input type="text" id="name_guardian" name="name_guardian" class="form-control">                            
+                        </div>
+                    </div>
+                    
+
+                </form>
+                <div class="row form-group">
+                    <div class="col-lg-12">                        
+                        <button class="btn btn-primary" onclick="submitForm();">SAVE</button>       
+                        <button class="btn btn-primary" id="print_id" onclick="print();">PRINT APPLICATION</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--        <div class="modal fade" id="pdfview" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+                    <div class="modal-dialog" style="width: 90%;height: 90%;">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                <h4 class="modal-title" id="pdfviewLabel"></h4>
+                            </div>
+                            <div class="modal-body" id="pdfviewBody" >    
+                                <iframe src="#" id="ifrm" scrolling="yes" frameborder="0" style="height: 700px; width: 100%;">
+                                </iframe>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+
+        <div class="modal fade bs-example-modal-lg" id="pdfview" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" style="width: 98%;height: 98%;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="pdfviewLabel"></h4>
+                    </div>
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-dialog modal-lg" id="pdfviewBody"> </div>
+                    </div>    
+                </div>
+            </div>
+        </div>
+        
+        <input type="hidden" id="type" name="type" value="">
+
+        <script>
+            $('#pdfview').on('show.bs.modal', function() {
+                $('.modal-content').css('height', $(window).height() * 0.9);
+            });
+            $('#ifrm').css('height', $(window).height() * 2.77);
+        </script>
+    
+
+</body></html>

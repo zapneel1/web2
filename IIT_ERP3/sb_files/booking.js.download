@@ -1,0 +1,420 @@
+$(function($) {
+	$('.accType').change(function() {
+		if ($(this).val()==='SHARED') {
+			$('.label-room').text("No. of Persons");
+		} else {
+			$('.label-room').text("No. of Rooms");
+		}
+	});
+	
+	$('.whoWillPay').change(function() {
+		var elem = $('.referenceNumber').removeAttr('name');
+		elem.closest('.form-group').addClass('d-none');
+		if ($(this).val()==='SRIC' || $(this).val()==='CEP' || $(this).val()==='HOST') {
+                    if ($(this).val()==='HOST') {
+                        $('#rt_label_name').html("Reference<span class=\"text-danger\">*</span>:");
+                    } else if($(this).val()==='CEP') {
+                        $('#rt_label_name').html("Course/Conference name<span class=\"text-danger\">*</span>:");
+                    }
+			elem.filter("." +$(this).val()).attr('name', 'referenceNumber').closest('.form-group').removeClass('d-none');
+		}
+	});
+	$('.whoWillPay').trigger('change');
+	
+	
+	$('input[name=bookingForList]').change(loadBookingForList);
+	
+	function loadBookingForList() {
+		
+		var type = $('input[name=bookingForList]:checked').val();
+		var form = $('form.ajax-form-booking');
+		var elem = $('.bookingFor', form);
+		var dataUrl = elem.attr('data-url');
+		dataUrl = dataUrl.substr(0, dataUrl.indexOf("=") + 1);
+		elem.attr('data-url', dataUrl + type).empty().each(loadSelect2Data);
+	}
+	
+	var form = $('form.ajax-form-booking');
+	$('a.ajax-cancel-booking').click(function(e){handleAjaxAnchor(e, bookingCancelPostAjax, bookingCancelPreAjax)});
+	$('body').on('click', 'a.ajax-cancel-booking', function(e){handleAjaxAnchor(e, bookingCancelPostAjax, bookingCancelPreAjax)});
+	form.submit(function(e){handleAjaxForm(e, bookingSuccessCallBack)});
+	
+	$('.ghCode', form).change(reLoadRoomType).trigger('change');
+	$('.rtCode,.numberOfRooms,.accType', form).change(changeGuestDetails);
+	form.on('click', '.delete-room',
+			function(e) {
+				var elem = $(this).closest('tbody');
+				elem.find('.'+$(this).attr('data-id')).remove();
+				var currentRowCount = $('table > tbody > tr> th', form).length/2
+				$('.numberOfRooms').val(currentRowCount);
+			});
+	
+	$('.person-count').text($('.guestSelected:checked').length);
+	$('body').on('change', '.guestSelected', updateNumberOfPerson);
+	$('body').on('change', '.guest-details-table.student select.relation', handleRelationChanges);
+	
+	function reLoadRoomType(e) {
+		if ($(this).attr('data-default-value') != null) {
+			$(this).removeAttr('data-default-value');
+			return;
+		}
+		var ghCode = $(e.currentTarget).val();
+		var form = $(e.currentTarget).closest('form');
+		var rtElem = $('.rtCode', form);
+		var dataUrl = rtElem.attr('data-url');
+		dataUrl = dataUrl.substr(0, dataUrl.indexOf("=") + 1);
+		rtElem.attr('data-url', dataUrl + ghCode).empty().each(loadSelect2Data);
+	}
+	
+	$(':input', form).change(updateAvailableRooms);
+	$('.select-all-guest').change(selectAllGuest);
+	
+	function handleRelationChanges() {
+		if ($(this).val() === 'OTHERS') {
+			$(this).siblings('.others').removeClass('d-none');
+		}
+	}
+	function selectAllGuest() {
+		$('.guestSelected').prop('checked', $(this).prop('checked'));
+		$('.guest-details-table.student select.relation').prop('required', $(this).prop('checked'));
+		updateNumberOfPerson();
+	}
+	
+	function updateAvailableRooms() {
+	
+		var ghCode = $('.ghCode').val();
+		var rtCode = $('.rtCode').val();
+		var numberOfRooms = $('.numberOfRooms').val();
+		var fromDate = $('.fromDate').val();
+		var toDate = $('.toDate').val();
+		var accType = "NON-SHARED";//$('.accType').val();
+		if((ghCode && rtCode && numberOfRooms && fromDate && toDate && accType)) {
+			$.ajax({
+				url : "getAvailableRoomCount.htm?ghCode="+ghCode+"&rtCode="+rtCode+"&numberOfRooms="+numberOfRooms
+					+"&fromDate="+fromDate+"&toDate="+toDate+"&accType="+accType,
+				type : "post",
+				dataType : "json",
+				success : function(count) {
+					if (count > 0) {
+						$('.availableRooms').addClass('badge-success').removeClass('badge-danger').text(count);
+					} else {
+						$('.availableRooms').addClass('badge-danger').removeClass('badge-success').text(count);
+					}
+					
+				}
+			});
+		}
+	}
+	function changeGuestDetails(e) {
+		var form = $(e.currentTarget).closest('form');
+		
+//		if ($('.ghCode', form).attr('data-default-value') != null || $('.rtCode', form).attr('data-default-value') != null) {
+//			return;
+//		}
+		var ghCode = $('.ghCode', form).val();
+		var rtCode = $('.rtCode', form).val();
+		var accType = "NON-SHARED";//$('.accType', form).val();
+		var numberOfRooms = $('.numberOfRooms', form).val();
+		if (!(ghCode && rtCode)) {
+			return;
+		}
+		$.ajax({
+			url : "getRoomTypeCapacity.htm?ghCode="+ghCode+"&rtCode="+rtCode+"&accType="+accType,
+			type : "get",
+			dataType : "json",
+			success : function(count) {
+				var tr="<tr class = 'guest-details-row'></tr>";
+				var thNumber = "<th scope='row' rowspan='1'>1</th>";
+				var tdName = " <td><div class='form-group'><input type='text' class='form-control name' placeholder='Name' /><div class='invalid-feedback'></div></div></td>";
+				var tdMobileNumber = "<td><div class='form-group'><input type='text' class='form-control mobileNumber' placeholder='Mobile No.' /><div class='invalid-feedback'></div></div></td>" ;
+				if ($('.guest-details-table').hasClass('student')) {
+					var tdRelation = "<td><div class='form-group'><select class='form-control relation'><option value=''>Select</option><option value='SELF'>Self</option><option value='MOTHER'>Mother</option><option value='FATHER'>Father</option><option value='OTHERS'>Others</option></select><div class='invalid-feedback'></div><small class='form-text text-muted others d-none'>For Others book offline</small></div></td>";
+				} else {
+					var tdRelation = "<td><div class='form-group'><input type='text' class='form-control relation' placeholder='Relation' /><div class='invalid-feedback'></div></div></td>";
+				}var tdNationality = "<td><div class='form-group'><select class='form-control nationality'><option value='INDIAN'>Indian</option><option value='FOREIGN'>Foreign</option></select><div class='invalid-feedback'></div></div></td>";
+				var tdAddress = "<td><div class='form-group'><textarea class='form-control address' placeholder='Address' /><div class='invalid-feedback'></div></div></td>";
+
+				var tdFood = "<td><div class='form-group'><div class='text-center'><input type='checkbox' name='foodOnArrival' class='foodOnArrival' /></div><div class='invalid-feedback'></div></div></td>";
+				var tdGuestSelected = "<td><div class='form-group'><div class='text-center'><input type='checkbox' name='guestSelected' class='form-control guestSelected' /><div class='invalid-feedback'></div></div></div></td>";
+//				"<td><span class='fa-stack text-secondary'> <i class='fa fa-circle fa-stack-2x'></i>" +
+//				" <i class='fa fa-trash-o fa-stack-1x fa-inverse'></i>" +
+//				"</span></td>" +
+				"</tr>";
+				var thRemove = "<th scope='row' rowspan='2'><span class='fa-stack fa-lg delete-room' > <i class='fa fa-circle fa-stack-2x'></i>" +
+						" <i class='fa fa-trash fa-stack-1x fa-inverse'></i>" +
+						" </span></th>";
+				var separator = "<tr><td colspan='6'><hr/></td></tr>";
+				
+				var currentRowCount = $('table > tbody > tr> th', form).length/2;
+				var currentGuestPerRoom = $('table > tbody > tr', form).length/currentRowCount;
+				
+				if (!isNaN(currentGuestPerRoom) && count !== currentGuestPerRoom || currentRowCount > numberOfRooms) {
+					var conf = confirm("Guest Details will be reset. Do you wish to continue?");
+					if (!conf) {
+						return;
+					} else {
+						$('.guest-details-table > tbody').empty();
+						currentRowCount = 0;
+					}
+					
+				}
+				for (var i = currentRowCount; i < numberOfRooms; i++) {
+					for (var j = 0; j < count; j++) {
+						var row = $(tr).addClass('bookings'+i);
+						if (j == 0) {
+							row.append($(thNumber).attr('rowspan', count).text(i + 1));
+						}
+						row.append($(tdName).find('input').attr('name', 'bookings[' + i + '].guestDetailsForm['+ j +'].name').addClass("bookings"+i+" guestDetailsForm"+j).end());
+						row.append($(tdMobileNumber).find('input').attr('name', 'bookings[' + i + '].guestDetailsForm['+ j +'].mobileNumber').addClass("bookings"+i+" guestDetailsForm"+j).end());
+						row.append($(tdRelation).find(':input').attr('name', 'bookings[' + i + '].guestDetailsForm['+ j +'].relation').addClass("bookings"+i+" guestDetailsForm"+j).end());
+						row.append($(tdNationality).find(':input').attr('name', 'bookings[' + i + '].guestDetailsForm['+ j +'].nationality').addClass("bookings"+i+" guestDetailsForm"+j).end());
+						row.append($(tdAddress).find(':input').attr('name', 'bookings[' + i + '].guestDetailsForm['+ j +'].address').addClass("bookings"+i+" guestDetailsForm"+j).end());
+						row.append($(tdFood).find('input').attr('name', 'bookings[' + i + '].guestDetailsForm['+ j +'].foodOnArrival').addClass("bookings"+i+" guestDetailsForm"+j).end());
+						row.append($(tdGuestSelected).find('input').attr('name', 'bookings[' + i + '].guestDetailsForm['+ j +'].guestSelected').addClass("bookings"+i+" guestDetailsForm"+j).end());
+						if (j == 0) {
+							row.append($(thRemove).find('span').attr('data-id', 'bookings'+i).end().attr('rowspan', count));
+						}
+						
+						$('table > tbody', form).append(row);
+					}
+					//$('table > tbody', form).append($(separator).addClass('bookings'+0));
+				}
+				var htmlHeight = $(parent.document).find('#myframe > html').height();
+				$(parent.document).find('#myframe').css("height", "1000px");
+			},
+			error : function() {
+				alert("Some Error Occured");
+			}
+		});
+	}
+	
+	function updateNumberOfPerson() {
+		$('.person-count').text($('.guestSelected:checked').length);
+		$(this).closest('.guest-details-table.student').find(this).closest('tr').find('select.relation').prop('required', $(this).prop('checked'));
+	}
+	
+	function bookingSuccessCallBack(e, json) {
+		var form = e.currentTarget;
+		$(form).find('.is-invalid').removeClass('is-invalid').siblings(
+		'.invalid-feedback').text("");
+		// show error
+		if (json.status === "error") {
+			jQuery.each(json.fieldErrorMap, function(key, val) {
+				$(form).find("." + key).addClass('is-invalid')
+						.removeClass('is-valid').siblings(
+								'.invalid-feedback').text(val);
+			});
+		} else if (json.status === "success") {
+//			$('.bootstrap-table').bootstrapTable('refresh');
+//			$(form).get(0).reset();
+//			$('.ghCode').select2();
+//			$('.ghCode').trigger('change');
+//			$('.person-count').text("0");
+			alert(json.msg);
+			location.reload();
+		}
+	}
+        	
+	$('input[type=radio][name=bookingDaysBefore]', '.booking-details').change(function() {
+		var bookingDetailsTable = $('#bookingDetails');
+		var dataUrl = bookingDetailsTable.attr('data-url');
+		dataUrl = dataUrl.substr(0, dataUrl.indexOf("=") + 1);
+		bookingDetailsTable.attr('data-url', dataUrl + this.value);
+                if((this.value==="yesterday") || (this.value==="today") || (this.value==="all_emp") || (this.value==="all_std") || (this.value==="all_grp")){
+                    $("#toolbar").addClass("d-none");
+                    bookingDetailsTable.bootstrapTable('refresh', {url: bookingDetailsTable.attr('data-url')});
+                }else{
+                    $("#toolbar").removeClass("d-none");
+                    $('#bookingDetails').bootstrapTable('refresh', {url: 'getBookingList.htm?bookingDaysBefore=all&search_type=null&search_text=null'});
+                }
+	});
+        
+        $('.search_by_all').click(function(){
+            var search_type = $("#search_type").val();
+            var search_text = $("#search_text").val();
+            if(search_text===""){
+                alert("Type booking no.");
+                return false;
+            }
+            $('#bookingDetails').bootstrapTable('refresh', {url: 'getBookingList.htm?bookingDaysBefore=all&search_type='+search_type+'&search_text='+search_text});
+	});
+	
+	
+	// ----edit form
+	var editForm = $('form.ajax-form-edit-booking');
+	editForm.submit(function(e){handleAjaxForm(e, bookingSuccessCallBack)});
+	
+	
+	$('.ghCode', editForm).change(reLoadRoomType).trigger('change');
+	$('.rtCode,.numberOfRooms,.accType', editForm).change(changeGuestDetails);
+	editForm.on('click', '.delete-room',
+			function(e) {
+				var elem = $(this).closest('tbody');
+				elem.find('.'+$(this).attr('data-id')).remove();
+				var currentRowCount = $('table > tbody > tr> th', editForm).length/2
+				$('.numberOfRooms').val(currentRowCount);
+			});
+	
+	$('.accType', editForm).val($('.accType').attr('data-default-value'));
+	$('.whoWillPay', editForm).val($('.whoWillPay').attr('data-default-value')).trigger('change');
+	$('.nationality, .relation').each(function(e){
+		$(this).val($(this).attr('data-default-value'));
+		});
+	
+	$(':input', editForm).change(updateAvailableRooms);
+	function bookingCancelPostAjax(e, json) {
+		if (json.status === 'error') {
+			alert(json.msg);
+		} else {
+			alert("Booking cancelled");
+			location.reload();
+		}
+		
+	}
+	
+	function bookingCancelPreAjax() {
+		return confirm("Do you really want to cancel this booking?");
+	}
+	
+	// group booking
+	var groupBookingForm = $('.ajax-form-group-booking');
+	if (groupBookingForm) {
+		$('.rtCode,.numberOfRooms,.accType', groupBookingForm).unbind('change', changeGuestDetails);
+		$(':input', groupBookingForm).unbind('change', updateAvailableRooms);
+		$('.add-more-booking', groupBookingForm).click(addMoreBooking);
+		addMoreBooking();
+	}
+	
+	function reLoadTempRoomType(e) {
+		var ghCode = $(e.currentTarget).val();
+		var form = $(e.currentTarget).closest('.row');
+		var rtElem = $('.t_rtCode', form);
+		var dataUrl = rtElem.attr('data-url');
+		dataUrl = dataUrl.substr(0, dataUrl.indexOf("=") + 1);
+		rtElem.attr('data-url', dataUrl + ghCode).empty().each(loadSelect2Data);
+	}
+	function updateTempAvailableRooms() {
+		var parentDiv = $(this).closest('.row');
+		var ghCode = $('.t_ghCode', parentDiv).val();
+		var rtCode = $('.t_rtCode', parentDiv).val();
+		var numberOfRooms = $('.t_numberOfRooms', parentDiv).val();
+		var fromDate = $('.fromDate').val();
+		var toDate = $('.toDate').val();
+		var accType = "NON-SHARED";//$('.accType').val();
+		if((ghCode && rtCode && numberOfRooms && fromDate && toDate && accType)) {
+			$.ajax({
+				url : "getAvailableRoomCount.htm?ghCode="+ghCode+"&rtCode="+rtCode+"&numberOfRooms="+numberOfRooms
+					+"&fromDate="+fromDate+"&toDate="+toDate+"&accType="+accType,
+				type : "post",
+				dataType : "json",
+				parentDiv : parentDiv,
+				success : function(count) {
+					if (count > 0) {
+						$('.availableRooms', parentDiv).addClass('badge-success').removeClass('badge-danger').text(count);
+					} else {
+						$('.availableRooms', parentDiv).addClass('badge-danger').removeClass('badge-success').text(count);
+					}
+					
+				}
+			});
+		}
+	}
+	function addMoreBooking() {
+		if ($('.ajax-form-group-booking').length === 0) {
+			return;
+		}
+		
+		var index = $('.group-booking-detail').length;
+		var ghCodeClass = "t_ghCode"+index;
+		var rtCodeClass = "t_rtCode"+index;
+		var numberOfRoomsClass = "t_numberOfRooms"+index;
+		var div = "<div class='row group-booking-detail'> " +
+						"<div class='col-md-2'>"+
+							"<div class='form-group'>"+
+								"<label for='ghCode'>Guest House<span class='text-danger'>*</span>:" +
+								"</label> <select class='form-control gbm t_ghCode " + ghCodeClass + "' name='t_ghCode' data-url='getAllGuestHouseForDD.htm' required></select>" +
+								"<div class='invalid-feedback'></div>"+
+							"</div>"+
+						"</div>" +
+
+						"<div class='col-md-2'>"+
+							"<div class='form-group'>"+
+								"<label for='rtCode'>Room Type<span class='text-danger'>*</span>:"+
+								"</label> <select class='form-control gbm t_rtCode " + rtCodeClass + "' name='t_rtCode' data-url='getRoomTypesForDD.htm?ghCode=' required>"+
+
+								"</select>"+
+								"<div class='invalid-feedback'></div>"+
+							"</div>"+
+						"</div>"+
+						
+						"<div class='col-md-2'>"+
+							"<div class='form-group'>"+
+								"<label for='numberOfRooms'><span class='label-room'>No. of Rooms</span><span class='text-danger'>*</span>:"+
+									"<span class='badge badge-success availableRooms' data-toggle='tooltip' data-placement='top' title='Available Rooms'>0</span>"+
+								"</label>"+
+								"<div class='input-group'>"+
+									"<input type='text' class='form-control gbm t_numberOfRooms " + numberOfRoomsClass + "' name='t_numberOfRooms' value='1'>"+
+									"<div class='input-group-append gh-plus'>"+
+										"<span class='input-group-text' id='basic-addon2'><i class='fa fa-plus' aria-hidden='true'></i></span>"+
+									"</div>"+
+									"<div class='input-group-append gh-minus'>"+
+									"<span class='input-group-text' id='basic-addon2'><i class='fa fa-minus' aria-hidden='true'></i></span>"+
+									"</div>"+
+									"<div class='invalid-feedback'></div>"+
+								"</div>"+
+							"</div>"+
+						"</div>"+
+					"</div>";
+		var divElem = $(div);
+		$(':input', divElem).each(function(i, e){
+			$(e).attr('name', 'gbm[' + index +'].'+$(e).attr('name'));
+		})
+		$('.t_ghCode', divElem).change(reLoadTempRoomType);
+		$('select[data-url]', divElem).each(loadSelect2Data);
+		$(':input', divElem).change(updateTempAvailableRooms);
+		$('div.gh-plus', divElem).click(function(e) {
+			var target = $(e.currentTarget);
+			var value = parseInt($(target).siblings('input').val());
+			$(target).siblings('input').val(value + 1).trigger('change');
+		});
+		$('div.gh-minus', divElem).click(function(e) {
+			var target = $(e.currentTarget);
+			var value = parseInt($(target).siblings('input').val()) - 1;;
+			$(target).siblings('input').val(value>0 ? value:1).trigger('change');
+		});
+		$('.fromDate, .toDate').change(function() {$(':input', divElem).trigger('change')});
+		var parentDiv = $('.card-body');
+		parentDiv.append(divElem);
+		$('select[data-url]', divElem).each(loadSelect2Data);
+		
+	}
+});
+
+
+function bookingActionsFormatter(value, row, index) {
+	var editBookingUrl = "editBooking.htm";
+	var cancelBookingUrl = "cancelBooking.htm";
+	if(row.bookingType==="EMPLOYEE") {
+		editBookingUrl = "editEmployeeBooking.htm";
+		cancelBookingUrl = "cancelEmployeeBooking.htm";
+	} else if (row.bookingType==="STUDENT") {
+		editBookingUrl = "editStudentBooking.htm";
+		cancelBookingUrl = "cancelStudentBooking.htm";
+	}
+	
+	var editButton = "<div class='btn-group' role='group' aria-label='Basic example'>"; 
+        editButton += "<a class='btn btn-sm btn-secondary' href='"+editBookingUrl +"?bookingNumber=" + row.bookingNumber + "' > Edit </a>";
+	editButton += "<a class='btn btn-sm btn-danger ajax-cancel-booking' href='"+cancelBookingUrl +"?bookingNumber=" + row.bookingNumber + "' > Cancel </a>";
+	editButton += "</div>";
+
+	var button_array = [];
+	button_array[button_array.length] = editButton;
+	return button_array.join('');
+}
+
+function guestNameFormatter(value, row, index) {
+var editButton = "<div><p style='width:200px; text-overflow:ellipsis; overflow:hidden;'>" + row.guestName + "</p></div>"; 
+	var button_array = [];
+	button_array[button_array.length] = editButton;
+	return button_array.join('');
+}

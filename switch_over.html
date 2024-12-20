@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!-- saved from url=(0061)https://erp.iitkgp.ac.in/Acad/Bra_Swi_Vert/switch_over_up.jsp -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><script language="JavaScript" type="text/javascript" src="./switch_over_files/common.js.download"></script>
+    <script>
+        var printWindow = null;
+        function submit1(action)
+  {
+      var chk=document.getElementById('check').checked;
+      var row1=document.getElementById('switch_code').value;
+
+     
+      if(chk==true){
+     if(action=='S')
+         {
+             if(row1!=''){
+
+             document.form1.action="switch_over_update.jsp?P=S";
+            document.form1.submit();
+             }
+             else{
+                 alert("Give one choices");
+                 document.getElementById('switch_code').focus();
+                 return false;
+             }
+         }
+
+        else if(action=='U')
+                 {
+                     document.form1.action="switch_over_update.jsp?P=U";
+                     document.form1.submit();
+                 }
+      }else{
+          alert("Please confirm the rules by checking the check box.");
+          return false;
+      }
+     
+
+
+  //alert("Not Posssibleee>>>>>");
+  }
+
+        function switch_(rowid,code,codname)
+        {
+            //alert("hiiiiiiii"+code);
+            window.open('switch_list.jsp?swit='+rowid+'&code='+code+'&cour='+codname,'switch_','width=650,height=550');
+
+        }
+        function printAfterFullSubmission(obj,url){
+               // var alias_val=document.getElementById('alias').value;
+               // var pass_val=document.getElementById('passphrase').value;
+               // var URL = url+(alias_val!='' && pass_val!=''?'&alias='+alias_val+'&passphrase='+pass_val:'');
+                   var H = screen.height-10, W = screen.width-10;
+                   var URL=url;
+                   //alert("prryguguuig"+printWindow);
+                if(!printWindow || (printWindow && printWindow.closed)) printWindow = window.open(URL,'PRINT_WINDOW','height='+H+',width='+W);
+                else printWindow.location.href = URL;
+                printWindow.onload = function(){
+                    this.print();
+                    var conf=this.confirm('Have you received the printed copy correctly in your hand?\nIf Not then click on cancel otherwise this information will be saved into the database');
+
+               }
+            }
+ function showHideList(){
+                var openIt=document.getElementById('openIt');
+                var closeIt=document.getElementById('closeIt');
+                  if(document.getElementById('roles').style.display=='none'){
+                        document.getElementById('roles').style.display=''
+                        openIt.style.display='none';
+                        closeIt.style.display='';
+                    }else{
+                        document.getElementById('roles').style.display='none';
+                        closeIt.style.display='none';
+                        openIt.style.display='';
+                    }
+
+            }
+function getConf(obj)
+{
+    if(obj.checked==true)
+        {
+            document.getElementById('r_check').value="Y";
+        }
+        else{
+           document.getElementById('r_check').value="N";
+        }
+}
+    </script>
+<link rel="StyleSheet" href="./switch_over_files/style1.css">
+
+    
+        
+        <title>JSP Page</title>
+    </head>
+    <body>
+         <form name="form1" action="https://erp.iitkgp.ac.in/Acad/Bra_Swi_Vert/switch_over_up.jsp" method="post">
+      
+            <table border="0" cellspacing="8" cellpadding="4" id="firstTAB" width="60%">
+                <tbody><tr>
+                <td nowrap="" align="left" colspan="2">
+                   <center><font style="background-color:yellow;" size="2" color="black"><b>Option to Migrate/Switch Over </b></font></center></td>
+                </tr>
+                <tr bgcolor="lightblue">
+                        <td nowrap="" align="left"><b><font color="Maroon">Roll No:22ME10087</font></b><input type="hidden" name="code" id="code" value=""></td>
+                        <td nowrap="" align="left"><b><font color="Maroon">Name:Swapneel Layek</font></b> </td>
+                </tr>
+                <tr bgcolor="lightblue">
+                        <td nowrap="" align="left"><b><font color="Maroon">Course Name:MECHANICAL ENGG.(B.Tech 4Y)</font></b></td>
+                        <td nowrap="" align="left"><b><font color="Maroon">Department:Mechanical Engineering</font></b></td>
+                 </tr>
+                  <tr bgcolor="white">
+                    <td colspan="16">
+                        <font color="maroon" size="3"><b>Note:<br></b></font>
+                        <font color="black" size="2"><b>1. Option to switch over from B.TECH(Hons.) to the Dual Degree Programme in the same Department.<br></b></font>
+                        <font color="black" size="2"><b>2. Dual Degree Students of AG,CE,EE,EC &amp; ME to choose any of the M.TECH. specialisations in the same department .<br></b></font>
+                  </td>
+                </tr>
+                <tr onclick="showHideList();">
+                    <td colspan="16"><font color="maroon" size="3" style="cursor:pointer"><b><span id="openIt">+</span><span id="closeIt" style="display:none">-</span> &nbsp;&nbsp;&nbsp;&nbsp;Rules:</b></font></td>
+                </tr>
+                <tr id="roles" bgcolor="white" style="display:none; cursor:pointer;">
+                    <td colspan="16">
+                        
+                        <font color="blue" size="2">
+
+                            1.For BTech(Third Year)/BS Students:-<br>
+                            BTech(Third Year) can apply for Switch Over from B.TECH(Hons.) /BS to the Dual Degree/MS Programme in the same Department.
+                            <br>Eligibility:-<br>
+                        a)A student must have secured CGPA of 6.00 or above at the end of the 6th Semester.<br>
+                        b)There should'nt be any backlog upto the previous semester,including the results of the 6th semester,availing the oppurtunity
+                        of Summer Quarter/Supplementary.<br>
+                        c)The student is otherwise eligible for the Dual Degree programme in the same department.
+                        <br><br>
+                        2.For Dual(Third Year) Students:-<br>
+                        All third year dual degree students of the department of AG,CE,EE,EC &amp; ME are to opt PG specialisation in the same Department.<br>
+<br>
+                        3)The Rules and Regulations for such migration/switching into Dual Degree programme,including the grant<br>
+                        of assistantship,etc.will be applicable as per practice and norms observed for the present Dual Degree students/programme.
+                        </font>
+                    </td>
+                </tr>
+                 </tbody></table>
+
+
+             
+            <table border="0" cellspacing="8" cellpadding="4" id="secTAB" width="60%">
+            <tbody><tr>
+                <td nowrap="" align="left">
+                <center><font color="#000099"><b>You are not eligible for a switch over </b></font></center>
+                </td>
+            </tr>
+        </tbody></table>
+   
+    </form>
+    
+
+</body></html>

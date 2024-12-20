@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<!-- saved from url=(0050)https://erp.iitkgp.ac.in/extApp/sso/viewCreche.htm -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <title>Creche</title>
+        <link rel="stylesheet" href="./Creche_files/bootstrap.css">
+        <link rel="stylesheet" href="./Creche_files/datepicker.css">
+        <link rel="stylesheet" href="./Creche_files/bootstrap-select.css">
+        <link rel="stylesheet" href="./Creche_files/bootstrap-table.css">
+        <link rel="stylesheet" href="./Creche_files/bootstrap-dialog.css">
+        <link rel="stylesheet" href="./Creche_files/font-awesome.css">
+        <link rel="stylesheet" href="./Creche_files/build.css">
+        <link rel="stylesheet" href="./Creche_files/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="./Creche_files/bootstrp-support-abhi.css">
+
+
+        <script src="./Creche_files/jquery-1.11.1.min.js.download"></script>
+        <script src="./Creche_files/bootstrap.js.download"></script>
+        <script src="./Creche_files/bootstrap-select.js.download"></script>
+        <script src="./Creche_files/bootstrap-datepicker.js.download"></script>
+        <script src="./Creche_files/bootstrap-table.js.download"></script>
+        <script src="./Creche_files/bootstrap-table-export.js.download"></script>
+        <script src="./Creche_files/tableExport.js.download"></script>
+        <script src="./Creche_files/bootstrap-dialog.js.download"></script>
+        <script src="./Creche_files/autoNumeric.js.download"></script>
+        <script src="./Creche_files/bootstrap-filestyle.js.download"></script>
+        <script src="./Creche_files/table_filter_control.js.download"></script>
+        <script>
+            $(function() {
+                $('#date_of_birth').datepicker({
+                    format: 'dd-mm-yyyy',
+                    autoclose: true
+                });
+             });
+//            $(function(){
+//                var fileInput = $('.filestyle');
+//                var maxSize = fileInput.data('max-size');
+//                $('#registration_page_form').submit(function(e)
+//                {
+//                    $('.filestyle').each(function (index, value) { 
+//                        if(fileInput.get(0).files.length)
+//                        {
+//                            var fileSize = fileInput.get(0).files[0].size; 
+//                            if(fileSize>maxSize)
+//                            {
+//                                alert('file size is more then 1 MB');
+//                                return false;
+//                            }
+//                        }
+//                        else
+//                        {
+//                            alert('choose file, please');
+//                            return false;
+//                        } 
+//                    });
+//                    
+//                    if(fileInput.get(0).files.length)
+//                    {
+//                        var fileSize = fileInput.get(0).files[0].size; // in bytes
+//                        if(fileSize>maxSize)
+//                        {
+//                            alert('file size is more then 1 MB');
+//                            return false;
+//                        }
+//                    }
+//                    else
+//                    {
+//                        alert('choose file, please');
+//                        return false;
+//                    }
+//
+//                });
+//            });
+            function printDiv(el){
+                var printcontent = $('#' + el).clone();
+                $('body').empty().html(printcontent);
+                window.print();
+                window.location.reload();
+            }
+            function feeStructure() {
+                $('#imagemodal').modal('show');
+            }
+            function runningFormatter(value, row, index) {
+                return (index+1);
+            }
+            
+            function myalert(title, msg, focusid)
+            {
+                BootstrapDialog.show({
+                    size: BootstrapDialog.SIZE_NORMAL,
+                    title: title,
+                    message: msg,
+                    onhidden: function ()
+                    {
+                        $(focusid).focus();
+                    }
+                });
+            }
+            
+            function AjaxCallForIndividualMyDialogue(ajaxURL, header, body, footer, method, functionNeedToCall) 
+            {
+                var dialog = new BootstrapDialog({
+                    title: '<h4>' + header + '</h4>',
+                    message: '<h4>' + body + '</h4>',
+                    buttons: [
+                        {
+                            id: 'Yes',
+                            label: 'YES',
+                            cssClass: 'btn-success',
+                            action: function (dialogItself) { //if click YES then save the data
+                                dialogItself.close();
+                                var x = $.ajax({
+                                    type: method,
+                                    url: ajaxURL,
+                                    async: false,
+                                    beforeSend: function () {
+                                        $(".modal").modal('hide');
+                                        $("body").append("<div id='overlay' style='position:absolute;top:0;left:0;height:200%;width:100%;z-index:999'><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><center><img src='../pics/ajax-loader.gif' alt='Processing...' height='150' width='150'/></center></div>");
+                                    },
+                                    success: function (json) {
+                                        $("#overlay").remove();
+                                        functionNeedToCall(json);
+                                    },
+                                    error: function (xhr, status, error) {
+                                        $(".modal").modal('hide');
+                                        $("#overlay").remove();
+                                        if (status === "error") {
+                                            myalert("UNWANTED ERROR!", "Error Message:" + error);
+                                        }
+                                        functionNeedToCall();
+                                    }
+                                });
+                            }
+                        },
+                        {
+                            id: 'NO',
+                            label: 'NO',
+                            cssClass: 'btn-danger',
+                            action: function (dialogItself) {
+                                dialogItself.close();
+                            }
+                        }
+                    ]
+                });
+                dialog.realize();
+                dialog.setSize(BootstrapDialog.SIZE_LARGE);
+                dialog.open();
+            }
+            
+            function getJsonValueFromAjaxCall(target_url)
+            {
+                var value = "";
+                var x = $.ajax({
+                    type: "post",
+                    url: target_url,
+                    async: false,
+                    beforeSend: function () {
+                        $(".modal").modal('hide');
+                        $("body").append("<div id='overlay' style='position:absolute;top:0;left:0;height:200%;width:100%;z-index:999'><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><center><img src='../pics/ajax-loader.gif' alt='Processing...' height='150' width='150'/></center></div>");
+                    },
+                    success: function (json) {
+                        $(".modal").modal('hide');
+                        $("#overlay").remove();
+                        value = json;
+                    },
+                    error: function (xhr, status, error) {
+                        $(".modal").modal('hide');
+                        $("#overlay").remove();
+                        if (status === "error") {
+                            myalert("UNWANTED ERROR!", "Error Message:" + error);
+                        }
+                    }
+                });
+                return value;
+            }
+            
+            function crudmodifyactionbtns(value, row, index)
+            {
+//                alert(row.user_type);
+//                alert(row.flag);
+                var combine1 = escape(row.id) + "##" + escape(row.user_id);
+                var y = "";
+                y = '&nbsp;&nbsp;<span class="badge alert-success btn"><i class="glyphicon glyphicon-list-alt" onclick="viewrequeststatus(\'' + combine1 + '\')" title="View Info"></i></span>&nbsp;';
+                
+                if (row.user_type === "user" && (row.flag === "S" ||  row.flag === "R"))
+                {
+                    y += '<span class="btn btn-sm btn-warning"><i class="glyphicon glyphicon-edit"  title="Edit Info" onclick="editChildInfo(\'' + combine1 + '\')"/></i></span>&nbsp;<span class="badge alert-danger btn"><i  title="Delete Info" class="glyphicon glyphicon-trash" onclick="deleteReqApplication(\'' + combine1 + '\')"/></i></span>';
+                }
+                if (row.user_type === "user" && row.flag === "S")
+                {
+                    y += '&nbsp;<span class="btn btn-info btn-sm"><i class="glyphicon glyphicon-chevron-right" title="Forward" onclick="forwardReqApplication(\'' + combine1 + '\')"/></i></span>';
+                }
+                if (row.user_type === "admin" && row.flag === "F")
+                {
+                    y += '<span class="btn btn-sm btn-success"><i class="glyphicon glyphicon-ok"  title="Approve" onclick="approveReqApplication(\'' + combine1 + '\')"/></i></span>&nbsp;<span class="badge alert-danger btn"><i  title="Reject" class="glyphicon glyphicon-remove" onclick="rejectReqApplication(\'' + combine1 + '\')"/></i></span>';
+                }
+                
+                return [y].join('');
+            }
+
+            function addChild()
+            {
+                refreshForm();
+                $("#ChildInfoEdit").modal('show');
+                if(typeof parent.setFrameWH != null) parent.setFrameWH();
+            }
+            function viewrequeststatus(y)
+            {
+                var temp = y.split("##");
+                var id = unescape(temp[0]);
+                var user_id = unescape(temp[1]);
+                
+                var url1 = 'downloadImage.htm?user_id=' + user_id + '&child_id=' + id + '&type=PIC';
+                var url2 = 'downloadImage.htm?user_id=' + user_id + '&child_id=' + id + '&type=BCER';
+                var url3 = 'downloadImage.htm?user_id=' + user_id + '&child_id=' + id + '&type=MBK';
+                
+                var param = "user_id="+user_id+"&child_id="+id;
+                
+                $.ajax({
+                    url: "viewCrecheINDVDB.htm",
+                    type: "POST",
+                    cache: false,
+                    data: param,
+                    dataType: "json",
+                    success: function(json)
+                    {
+                        //alert(json)
+                        $.each(json, function(index, item) 
+                        {
+                            $("#child_name_v").text(item.child_name);
+                            $("#sex_of_child_v").text(item.gender);
+                            $("#date_of_birth_v").text(item.dateofbirth.split('/').reverse().join('-'));
+                            $("#father_name_v").text(item.father_name);
+                            $("#father_mobile_no_v").text(item.father_mobileno);
+//                            $("#mother_name_v").text(item.mother_name);
+                            $("#mother_mobile_no_v").text(item.mother_mobileno);
+                            $("#land_no_v").text(item.land_no);
+                            $("#email_id_v").text(item.email_id);
+                            $("#residential_add_v").text(item.residential_address);
+                            $("#queries_v").text(item.query);                
+                            if (item.facility_required === 'AA')
+                            {
+                                $("#facility_req_v").text('only pre school');
+                            } 
+                            if (item.facility_required === 'BB')
+                            {
+                                $("#facility_req_v").text('pre school + half day care (forenoon)');
+                            }
+                            if (item.facility_required === 'CC')
+                            {
+                                $("#facility_req_v").text('pre school + half day care (afternoon)');
+                            }
+                            if (item.facility_required === 'DD')
+                            {
+                                $("#facility_req_v").text('Full day care');
+                            }
+                            if (item.facility_required === 'EE')
+                            {
+                                $("#facility_req_v").text('Half day care (half day full week or full day half week)');
+                            }
+                            if (item.facility_required === 'FF')
+                            {
+                                $("#facility_req_v").text('Half day care (half day half week)');
+                            }
+                            if (item.facility_required === 'GG')
+                            {
+                                $("#facility_req_v").text('After School');
+                            }
+                            if (item.facility_required === 'HH')
+                            {
+                                $("#facility_req_v").text('Flexi plan (Mention details in the remark/query section)');
+                            }
+                            if (item.facility_required === 'II')
+                            {
+                                $("#facility_req_v").text('Full day care with pre school)');
+                            }
+                            $('#output1_v').attr('src', url1);
+                            $('#output2_v').attr('src', url2);
+                            $('#output3_v').attr('src', url3);
+                        });
+                    }
+                });
+                
+                
+                
+                $("#ChildInfoView").modal('show');
+                if(typeof parent.setFrameWH != null) parent.setFrameWH();
+            }
+            
+            function editChildInfo(y)
+            {
+                refreshForm();
+                var temp = y.split("##");
+                var id = unescape(temp[0]);
+                var user_id = unescape(temp[1]);
+                
+                
+                var data = "user_id="+user_id+"&child_id="+id;
+                
+                $.ajax({
+                    url: "viewCrecheINDVDB.htm",
+                    type: "POST",
+                    cache: false,
+                    data: data,
+                    dataType: "json",
+                    success: function(json)
+                    {
+                        $.each(json, function(index, item) 
+                        {
+                            $("#child_id").val(item.id);
+                            $("#child_name").val(item.child_name);
+                            //$('#gender option[value="' + item.gender + '"]').prop('selected', true);
+                            if (item.gender === 'F')
+                            {
+                                $('input:radio[value=F]').prop('checked', true);
+                            } else
+                            {
+                                $('input:radio[value=M]').prop('checked', true);
+                            }
+                            $("#date_of_birth").val(item.dateofbirth.split('/').reverse().join('-'));
+                            $("#father_name").val(item.father_name);
+                            $("#father_mobile_no").val(item.father_mobileno);
+//                            $("#mother_name").val(item.mother_name);
+                            $("#mother_mobile_no").val(item.mother_mobileno);
+                            $("#land_no").val(item.land_no);
+                            $("#email_id").val(item.email_id);
+                            $("#residential_add").val(item.residential_address);
+                            $("#queries").val(item.query);
+                            if (item.facility_required === 'AA')
+                            {
+                                $('input:radio[value=AA]').prop('checked', true);
+                            } 
+                            if (item.facility_required === 'BB')
+                            {
+                                $('input:radio[value=BB]').prop('checked', true);
+                            }
+                            if (item.facility_required === 'CC')
+                            {
+                                $('input:radio[value=CC]').prop('checked', true);
+                            }
+                            if (item.facility_required === 'DD')
+                            {
+                                $('input:radio[value=DD]').prop('checked', true);
+                            }
+                            if (item.facility_required === 'EE')
+                            {
+                                $('input:radio[value=EE]').prop('checked', true);
+                            }
+                            if (item.facility_required === 'FF')
+                            {
+                                $('input:radio[value=FF]').prop('checked', true);
+                            }
+                            if (item.facility_required === 'GG')
+                            {
+                                $('input:radio[value=GG]').prop('checked', true);
+                            }
+                            if (item.facility_required === 'HH')
+                            {
+                                $('input:radio[value=HH]').prop('checked', true);
+                            }
+                            if (item.facility_required === 'II')
+                            {
+                                $('input:radio[value=II]').prop('checked', true);
+                            }
+                        });
+                    }
+                });
+                $("#ChildInfoEdit").modal('show');
+                if(typeof parent.setFrameWH != null) parent.setFrameWH();
+            }
+            
+            function refreshForm()
+            {
+                $("#child_id").val('0');
+                $("#child_name").val('');
+                $("#date_of_birth").val('');
+                $("#father_name").val('');
+                $("#father_mobile_no").val('');
+//                $("#mother_name").val('');
+                $("#mother_mobile_no").val('');
+                $("#land_no").val('');
+                $("#email_id").val('');
+                $("#residential_add").val('');
+                $("#queries").val('');
+                $('input:checkbox').removeAttr('checked');
+                $('input[name="gender"]').removeAttr('checked'); 
+                $('input[name="facilities"]').removeAttr('checked'); 
+
+                $("#file").replaceWith($("#file").clone());
+            }
+            
+            function deleteReqApplication(y) 
+            {
+                var temp = y.split("##");
+                var id = unescape(temp[0]); 
+                var url = "deleteapplication.htm?id=" + id;
+                AjaxCallForIndividualMyDialogue(url, "Information", "Want To Delete? ", "", "post", afterDelete);
+
+                function afterDelete(json) {
+                    if (json.data === "Y") {
+                        myalert("Information", "Application Removed Successfully.");
+                        window.location.reload();
+                    }
+                }
+                if(typeof parent.setFrameWH != null) parent.setFrameWH();
+            }
+            function forwardReqApplication(y) 
+            {
+                var temp = y.split("##");
+                var user_id = unescape(temp[1]); 
+                var id = unescape(temp[0]); 
+                var url = "forwardapplication.htm?user_id="+user_id+"&id=" + id;
+                AjaxCallForIndividualMyDialogue(url, "Information", "Want To Forward? ", "", "post", afterForward);
+
+                function afterForward(json) {
+                    if (json.data === "Y") {
+                        myalert("Information", "Application Forwarded Successfully.");
+                        window.location.reload();
+                    }
+                }
+                if(typeof parent.setFrameWH != null) parent.setFrameWH();
+            }
+            function approveReqApplication(y) 
+            {
+                var temp = y.split("##");
+                var user_id = unescape(temp[1]); 
+                var id = unescape(temp[0]); 
+                var url = "approveapplication.htm?user_id="+user_id+"&id=" + id;
+                AjaxCallForIndividualMyDialogue(url, "Information", "Want To Approve? ", "", "post", afterApprove);
+
+                function afterApprove(json) {
+                    if (json.data === "Y") {
+                        myalert("Information", "Application Approved Successfully.");
+                        window.location.reload();
+                    }
+                }
+                if(typeof parent.setFrameWH != null) parent.setFrameWH();
+            }
+            function rejectReqApplication(y) 
+            {
+                var temp = y.split("##");
+                var user_id = unescape(temp[1]); 
+                var id = unescape(temp[0]); 
+                var url = "rejectapplication.htm?user_id="+user_id+"&id=" + id;
+                AjaxCallForIndividualMyDialogue(url, "Information", "Want To Reject? ", "", "post", afterReject);
+
+                function afterReject(json) {
+                    if (json.data === "Y") {
+                        myalert("Information", "Application Rejected Successfully.");
+                        window.location.reload();
+                    }
+                }
+                if(typeof parent.setFrameWH != null) parent.setFrameWH();
+            }
+            
+            $(document).ready(function() {
+                $(".disabled_radio").attr('disabled', true);
+                });
+        </script>
+        <style>
+            .modal-header {
+                background-color: #a1d8f0;
+            }
+        </style>
+    </head>
+    
+    
+    <body style="padding-top: 5px;">        
+        <div class="container">
+            
+            <div class="alert-info"><button type="button" class="btn btn-primary" onclick="addChild();">Create New Application</button>&nbsp;&nbsp;<button type="button" class="btn btn-info" onclick="feeStructure();">Fee Structure</button>&nbsp;&nbsp; After creating new application, please forward it using <span class="btn btn-info btn-sm"><i class="glyphicon glyphicon-chevron-right"></i></span> You may sent a mail to chairperson for immediate approval.</div>
+            
+            
+            <div class="bootstrap-table"><div class="fixed-table-toolbar"><div class="columns columns-right btn-group pull-right"><button class="btn btn-default" type="button" name="refresh" title="Refresh"><i class="glyphicon glyphicon-refresh icon-refresh"></i></button><div class="export btn-group"><button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button"><i class="glyphicon glyphicon-export icon-share"></i> <span class="caret"></span></button><ul class="dropdown-menu" role="menu"><li data-type="json"><a href="javascript:void(0)">JSON</a></li><li data-type="xml"><a href="javascript:void(0)">XML</a></li><li data-type="csv"><a href="javascript:void(0)">CSV</a></li><li data-type="txt"><a href="javascript:void(0)">TXT</a></li><li data-type="sql"><a href="javascript:void(0)">SQL</a></li><li data-type="excel"><a href="javascript:void(0)">Ms-Excel</a></li></ul></div></div><div class="pull-left search"><input class="form-control" type="text" placeholder="Search"></div></div><div class="fixed-table-container" style="height: 376px; padding-bottom: 41px;"><div class="fixed-table-header" style="margin-right: 0px;"><table class="table table-responsive table-hover" style="width: 1138px;"><thead class="bg-success"><tr><th style="" data-field="0"><div class="th-inner ">Index</div><div class="fht-cell"></div></th><th class="hidden" style="text-align: center; " data-field="id"><div class="th-inner ">ID</div><div class="fht-cell"></div></th><th style="text-align: center; " data-field="user_id"><div class="th-inner ">Stake Holder ID</div><div class="fht-cell"></div></th><th style="text-align: center; " data-field="child_name"><div class="th-inner ">Child Name</div><div class="fht-cell"></div></th><th style="text-align: center; " data-field="gender"><div class="th-inner ">Gender</div><div class="fht-cell"></div></th><th style="text-align: center; " data-field="dateofbirth"><div class="th-inner ">Birth Date</div><div class="fht-cell"></div></th><th style="text-align: center; " data-field="father_name"><div class="th-inner ">Parent Name</div><div class="fht-cell"></div></th><th style="text-align: center; " data-field="father_mobileno"><div class="th-inner ">Mobile Phone number 1</div><div class="fht-cell"></div></th><th style="text-align: center; " data-field="mother_mobileno"><div class="th-inner ">Mobile Phone number 2</div><div class="fht-cell"></div></th><th class="hidden" style="text-align: center; " data-field="email_id"><div class="th-inner ">Email ID</div><div class="fht-cell"></div></th><th class="hidden" style="text-align: center; " data-field="residential_address"><div class="th-inner ">Residential Address</div><div class="fht-cell"></div></th><th class="hidden" style="text-align: center; " data-field="query"><div class="th-inner ">Remark</div><div class="fht-cell"></div></th><th class="hidden" style="text-align: center; " data-field="facility_required"><div class="th-inner "></div><div class="fht-cell"></div></th><th style="text-align: center; " data-field="flag_status"><div class="th-inner ">Status</div><div class="fht-cell"></div></th><th class="hidden" style="text-align: center; " data-field="child_medicalbook"><div class="th-inner ">Child Medical Book</div><div class="fht-cell"></div></th><th class="hidden" style="text-align: center; " data-field="child_photo"><div class="th-inner ">Child Picture</div><div class="fht-cell"></div></th><th style="text-align: center; " data-field="16"><div class="th-inner ">Action</div><div class="fht-cell"></div></th></tr></thead></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 42px; display: none;">Loading, please wait...</div><table id="childrentable" class="table table-responsive table-hover" data-toggle="table" data-method="post" data-height="450" data-search="true" data-search-align="left" data-page-list="[5, 10, 20, 50, 100, 200, 500, 1000, 5000, 10000, 20000, 50000]" data-row-style="rowStyleChildMongrace" data-pagination="true" data-show-refresh="true" data-show-export="true" data-url="viewCrecheDB.htm" style="margin-top: -41px;">
+                <thead class="bg-success"><tr><th style="" data-field="0"><div class="th-inner ">Index</div><div class="fht-cell"></div></th><th class="hidden" style="text-align: center; " data-field="id"><div class="th-inner ">ID</div><div class="fht-cell"></div></th><th style="text-align: center; " data-field="user_id"><div class="th-inner ">Stake Holder ID</div><div class="fht-cell"></div></th><th style="text-align: center; " data-field="child_name"><div class="th-inner ">Child Name</div><div class="fht-cell"></div></th><th style="text-align: center; " data-field="gender"><div class="th-inner ">Gender</div><div class="fht-cell"></div></th><th style="text-align: center; " data-field="dateofbirth"><div class="th-inner ">Birth Date</div><div class="fht-cell"></div></th><th style="text-align: center; " data-field="father_name"><div class="th-inner ">Parent Name</div><div class="fht-cell"></div></th><th style="text-align: center; " data-field="father_mobileno"><div class="th-inner ">Mobile Phone number 1</div><div class="fht-cell"></div></th><th style="text-align: center; " data-field="mother_mobileno"><div class="th-inner ">Mobile Phone number 2</div><div class="fht-cell"></div></th><th class="hidden" style="text-align: center; " data-field="email_id"><div class="th-inner ">Email ID</div><div class="fht-cell"></div></th><th class="hidden" style="text-align: center; " data-field="residential_address"><div class="th-inner ">Residential Address</div><div class="fht-cell"></div></th><th class="hidden" style="text-align: center; " data-field="query"><div class="th-inner ">Remark</div><div class="fht-cell"></div></th><th class="hidden" style="text-align: center; " data-field="facility_required"><div class="th-inner "></div><div class="fht-cell"></div></th><th style="text-align: center; " data-field="flag_status"><div class="th-inner ">Status</div><div class="fht-cell"></div></th><th class="hidden" style="text-align: center; " data-field="child_medicalbook"><div class="th-inner ">Child Medical Book</div><div class="fht-cell"></div></th><th class="hidden" style="text-align: center; " data-field="child_photo"><div class="th-inner ">Child Picture</div><div class="fht-cell"></div></th><th style="text-align: center; " data-field="16"><div class="th-inner ">Action</div><div class="fht-cell"></div></th></tr></thead>
+            <tbody><tr class="no-records-found"><td colspan="17">No matching records found</td></tr></tbody></table></div><div class="fixed-table-footer" style="display: none;"><table><tbody><tr></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"><div class="pull-left pagination-detail"><span class="pagination-info">Showing 1 to 0 of 0 rows</span><span class="page-list" style="display: none;"><span class="btn-group dropup"><button type="button" class="btn btn-default  dropdown-toggle" data-toggle="dropdown"><span class="page-size">10</span> <span class="caret"></span></button><ul class="dropdown-menu" role="menu"><li><a href="javascript:void(0)">5</a></li></ul></span> records per page</span></div><div class="pull-right pagination" style="display: none;"><ul class="pagination"><li class="page-first disabled"><a href="javascript:void(0)">«</a></li><li class="page-pre disabled"><a href="javascript:void(0)">‹</a></li><li class="page-next disabled"><a href="javascript:void(0)">›</a></li><li class="page-last disabled"><a href="javascript:void(0)">»</a></li></ul></div></div></div></div><div class="clearfix"></div>
+            
+        </div>
+        <div class="modal fade" id="ChildInfoEdit" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h4 class="modal-title"><font style="color: white;">Add / Edit Mongrace Application</font></h4>
+                </div>
+                <div class="modal-body" data-backdrop="false" style="background-color: #FFF;">
+                    <div class="form-group">
+                        <form action="https://erp.iitkgp.ac.in/extApp/sso/insertRegistrationForm.htm" name="myForm" method="post" id="registration_page_form" enctype="multipart/form-data">
+                            <input type="hidden" class="form-control" id="child_id" name="child_id" value="0">
+                            <div class=" form-group">           
+                                <label for="child_name">Name of the child :</label>             
+                            </div> 
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="child_name" placeholder=" Name of the child * " name="child_name" required="">
+                            </div>
+                            <div class=" form-group">
+                                <label for="sex_of_child">Gender of the child :</label>                
+                            </div>
+                            <div class=" form-group " id="gender">
+                                <label class="radio-inline">
+                                    <input type="radio" id="child_rad_M" name="gender" value="M" required="">Male
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" id="child_rad_F" name="gender" value="F">Female
+                                </label>
+                            </div>        
+                            <div class=" form-group">
+                                <label for="date">Date of Birth :</label>             
+                            </div> 
+                            <div class="form-group">         
+                                <input type="text" class="form-control" id="date_of_birth" name="date_of_birth" placeholder=" DD-MM-YYYY * " required="">
+                            </div>
+                            <div class=" form-group">
+                                <label for="father_name">Parent's Name (Employee/student) :</label>             
+                            </div> 
+                            <div class="form-group">         
+                                <input type="text" class="form-control" id="father_name" placeholder=" Parent Name * " name="father_name" required="">
+                            </div>
+                            <div class=" form-group">
+                                <label for="father_mobile_no">Mobile Phone number 1 (10 digit) :</label>             
+                            </div> 
+                            <div class="form-group">         
+                                <input type="text" class="form-control" id="father_mobile_no" pattern="[789][0-9]{9}" placeholder=" Mobile Phone number 1* " name="father_mobile_no" required="">
+                            </div>
+<!--                            <div class=" form-group" >
+                                <label for="mother_name">Mother's Name. :</label>             
+                            </div> 
+                            <div class="form-group" >         
+                                <input type="text" class="form-control" id="mother_name" placeholder=" Mother's Name.* " name="mother_name" required >
+                            </div>-->
+                            <div class=" form-group">
+                                <label for="mother_mobile_no">Mobile Phone number 2 (10 digit) :</label>             
+                            </div> 
+                            <div class="form-group">         
+                                <input type="text" class="form-control" id="mother_mobile_no" pattern="[789][0-9]{9}" placeholder="Mobile Phone number 2* " name="mother_mobile_no" required="">
+                            </div>
+                            <div class=" form-group">
+                                <label for="mother_mobile_no">Land line no. :</label>             
+                            </div> 
+                            <div class="form-group">         
+                                <input type="text" class="form-control" id="land_no" placeholder="Land line no. " name="land_no">
+                            </div>
+                            <div class=" form-group">           
+                                <label for="email_id">Email ID :</label>             
+                            </div> 
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="email_id" id="email_id" placeholder=" Email ID * " required="">
+                            </div>
+                            <div class=" form-group">
+                                <label for="residential_add">Residential Address. :</label>             
+                            </div> 
+                            <div class="form-group">         
+                                <input type="text" class="form-control" id="residential_add" placeholder=" Residential Address.* " name="residential_add" required="">
+                            </div>
+<!--                            <div class=" form-group" >
+                                <label for="facility_req">Facility Required. :</label>             
+                            </div> 
+                            <div class="form-group" >         
+                                <label class="checkbox-inline"><input type="checkbox" value="OPS" id="ops" name="facilities_OPS" required >Only pre school</label>
+                                <label class="checkbox-inline"><input type="checkbox" value="CRCH" id="crch" name="facilities_CRCH">Creche</label>
+                                <label class="checkbox-inline"><input type="checkbox" value="DC" id="dc" name="facilities_DC">Daycare</label>
+                                <label class="checkbox-inline"><input type="checkbox" value="ASH" id="ash" name="facilities_ASH">After school Hours</label>
+
+                            </div>-->
+                            <div class=" form-group">
+                                <label for="facility_req">Facility Required. :</label>             
+                            </div>
+                            <div class=" form-group " id="facilities">
+                                <label class="radio-inline">
+                                    <input type="radio" id="AA" name="facilities" value="AA">only pre school
+                                </label>
+<!--                                <label class="radio-inline">
+                                    <input type="radio" id="BB" name="facilities" value="BB" class="disabled_radio">pre school + half day care (forenoon)
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" id="CC" name="facilities" value="CC" class="disabled_radio">pre school + half day care (afternoon)
+                                </label>-->
+                                <label class="radio-inline">
+                                    <input type="radio" id="DD" name="facilities" value="DD">Full day care
+                                </label>
+<!--                                <label class="radio-inline">
+                                    <input type="radio" id="II" name="facilities" value="II">Full day care with pre school
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" id="EE" name="facilities" value="EE" class="disabled_radio">Half day care (half day full week or full day half week)
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" id="FF" name="facilities" value="FF" class="disabled_radio">Half day care (half day half week)
+                                </label>-->
+                                <label class="radio-inline">
+                                    <input type="radio" id="GG" name="facilities" value="GG">After School
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" id="HH" name="facilities" value="HH">Flexi plan (Mention details in the remark/query section)
+                                </label>
+                            </div>
+                            <div class=" form-group">
+                                <label for="queries">Remark if any :</label>                
+                            </div>
+                            <div class="form-group">         
+                                <label for="queries"><textarea rows="4" cols="50" class="form-control" id="queries" placeholder=" Remark " name="queries"> </textarea></label>
+                            </div>
+
+                            <div class=" form-group">
+                                <label for="child_photo">Upload Photo <font style="color: red;">[.jpg or .png file max 1MB *]</font> of the Child :</label>             
+                            </div> 
+                            <div class="form-group">         
+                                <input type="file" id="photo_file" class="filestyle" name="photo_file" data-input="false" accept=".png, .jpg, .jpeg" data-max-size="1000000" required="" tabindex="-1" style="position: absolute; clip: rect(0px, 0px, 0px, 0px);"><div class="bootstrap-filestyle input-group"><span class="group-span-filestyle " tabindex="0"><label for="photo_file" class="btn btn-default "><span class="icon-span-filestyle glyphicon glyphicon-folder-open"></span> <span class="buttonText">Choose file</span></label></span></div>
+                            </div>       
+                            <div class="form-group">         
+                                <label for="birth_cer">Upload  photo <font style="color: red;">[.jpg or .png file max 1MB *]</font> of the Child's birth certificate :</label>   
+                            </div> 
+                            <div class="form-group">         
+                                <input type="file" id="birth_cer" class="filestyle" name="birth_cer" data-input="false" accept=".png, .jpg, .jpeg" data-max-size="1000000" required="" tabindex="-1" style="position: absolute; clip: rect(0px, 0px, 0px, 0px);"><div class="bootstrap-filestyle input-group"><span class="group-span-filestyle " tabindex="0"><label for="birth_cer" class="btn btn-default "><span class="icon-span-filestyle glyphicon glyphicon-folder-open"></span> <span class="buttonText">Choose file</span></label></span></div> 
+                            </div>
+                            <div class="form-group">         
+                                <label for="medical_book">Upload photo <font style="color: red;">[.jpg or .png file max 1MB *]</font> of the cover page of Child's medical book :</label>   
+                            </div> 
+                            <div class="form-group">         
+                                <input type="file" id="medical_book" class="filestyle" name="medical_book" data-input="false" accept=".png, .jpg, .jpeg" data-max-size="1000000" required="" tabindex="-1" style="position: absolute; clip: rect(0px, 0px, 0px, 0px);"><div class="bootstrap-filestyle input-group"><span class="group-span-filestyle " tabindex="0"><label for="medical_book" class="btn btn-default "><span class="icon-span-filestyle glyphicon glyphicon-folder-open"></span> <span class="buttonText">Choose file</span></label></span></div> 
+                            </div>
+                            <div class=" form-group"> 
+                                <input type="submit" value="Save" class="btn btn-info btn-block" id="applyformongrace">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer" style="background-color: white;">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+            </div>
+        </div>
+         <div class="modal fade" id="ChildInfoView" role="dialog">
+             <div class="modal-dialog" style="height: 1000px;">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h5><a href="javascript:void(0);" onclick="printDiv(&#39;prntdiv&#39;);"><b>Print Creche Application</b></a></h5>
+                </div>
+                <div class="modal-body" data-backdrop="false" style="background-color: #FFF;">
+                    
+                    <div class="table-responsive panel" id="prntdiv">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td><img id="output1_v" src="https://erp.iitkgp.ac.in/extApp/sso/viewCreche.htm" class="img-responsive"></td>
+                                    <td><img id="output2_v" src="https://erp.iitkgp.ac.in/extApp/sso/viewCreche.htm" class="img-responsive"></td>
+                                    <td><img id="output3_v" src="https://erp.iitkgp.ac.in/extApp/sso/viewCreche.htm" class="img-responsive"></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-success"><i class="alert-success"></i> Name of the child</td>
+                                    <td><span id="child_name_v"></span></td>
+                                    <td class="text-success"><i class="alert-success"></i> Gender of the child</td>
+                                    <td><span id="sex_of_child_v"></span></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-success"><i class="alert-success"></i> Date of Birth</td>
+                                    <td><span id="date_of_birth_v"></span></td>
+                                    <td class="text-success"><i class="alert-success"></i> Parent's Name</td>
+                                    <td><span id="father_name_v"></span></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-success"><i class="alert-success"></i> Mobile Phone Number 1</td>
+                                    <td><span id="father_mobile_no_v"></span></td>
+<!--                                    <td class="text-success"><i class="alert-success"></i> Mother's Name</td>
+                                    <td><span id="mother_name_v"></span></td>-->
+                                </tr>
+                                <tr>
+                                    <td class="text-success"><i class="alert-success"></i> Mobile Phone Number 2</td>
+                                    <td><span id="mother_mobile_no_v"></span></td>
+                                    <td class="text-success"><i class="alert-success"></i> Land line no.</td>
+                                    <td><span id="land_no_v"></span></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-success"><i class="alert-success"></i> Email ID</td>
+                                    <td><span id="email_id_v"></span></td>
+                                    <td class="text-success"><i class="alert-success"></i> Residential Address</td>
+                                    <td><span id="residential_add_v"></span></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-success"><i class="alert-success"></i> Facility Required</td>
+                                    <td><span id="facility_req_v"></span></td>
+                                    <td class="text-success"><i class="alert-success"></i> Remark</td>
+                                    <td><span id="queries_v"></span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>                   
+                    
+                </div>
+                 <div class="modal-footer" style="background-color: white;">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">Fee Structure</h4>
+              </div>
+              <div class="modal-body">
+                  <img src="./Creche_files/fees structure.jpg" id="imagepreview" style="width: 575px;height: 1000px;">
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    
+    
+    
+    
+
+<div class="datepicker datepicker-dropdown dropdown-menu"><div class="datepicker-days" style="display: block;"><table class=" table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><i class="icon-arrow-left"></i></th><th colspan="5" class="switch">June 2024</th><th class="next" style="visibility: visible;"><i class="icon-arrow-right"></i></th></tr><tr><th class="dow">Su</th><th class="dow">Mo</th><th class="dow">Tu</th><th class="dow">We</th><th class="dow">Th</th><th class="dow">Fr</th><th class="dow">Sa</th></tr></thead><tbody><tr><td class="day old">26</td><td class="day old">27</td><td class="day old">28</td><td class="day old">29</td><td class="day old">30</td><td class="day old">31</td><td class="day">1</td></tr><tr><td class="day">2</td><td class="day">3</td><td class="day">4</td><td class="day">5</td><td class="day">6</td><td class="day">7</td><td class="day">8</td></tr><tr><td class="day">9</td><td class="day">10</td><td class="day">11</td><td class="day">12</td><td class="day">13</td><td class="day">14</td><td class="day">15</td></tr><tr><td class="day">16</td><td class="day">17</td><td class="day">18</td><td class="day">19</td><td class="day">20</td><td class="day">21</td><td class="day">22</td></tr><tr><td class="day active">23</td><td class="day">24</td><td class="day">25</td><td class="day">26</td><td class="day">27</td><td class="day">28</td><td class="day">29</td></tr><tr><td class="day">30</td><td class="day new">1</td><td class="day new">2</td><td class="day new">3</td><td class="day new">4</td><td class="day new">5</td><td class="day new">6</td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datepicker-months" style="display: none;"><table class="table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><i class="icon-arrow-left"></i></th><th colspan="5" class="switch">2024</th><th class="next" style="visibility: visible;"><i class="icon-arrow-right"></i></th></tr></thead><tbody><tr><td colspan="7"><span class="month">Jan</span><span class="month">Feb</span><span class="month">Mar</span><span class="month">Apr</span><span class="month">May</span><span class="month active">Jun</span><span class="month">Jul</span><span class="month">Aug</span><span class="month">Sep</span><span class="month">Oct</span><span class="month">Nov</span><span class="month">Dec</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datepicker-years" style="display: none;"><table class="table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><i class="icon-arrow-left"></i></th><th colspan="5" class="switch">2020-2029</th><th class="next" style="visibility: visible;"><i class="icon-arrow-right"></i></th></tr></thead><tbody><tr><td colspan="7"><span class="year old">2019</span><span class="year">2020</span><span class="year">2021</span><span class="year">2022</span><span class="year">2023</span><span class="year active">2024</span><span class="year">2025</span><span class="year">2026</span><span class="year">2027</span><span class="year">2028</span><span class="year">2029</span><span class="year old">2030</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div></div></body></html>

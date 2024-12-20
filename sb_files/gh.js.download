@@ -1,0 +1,255 @@
+// tooltip
+
+$(function () {
+	$('body').tooltip({
+		selector : '[data-toggle=tooltip]'
+	});
+	
+});
+
+var frame = $(parent.document).find('#myframe');
+$(parent.window).scroll(function(e) {
+	if (frame) {
+		var bodyHeight = $('body').css('height');
+		var frameHeight = frame.css('height');
+		if (parseInt(bodyHeight) > parseInt(frameHeight)) {
+			frame.css('height', (parseInt(bodyHeight) + 200) + "px");
+		}
+	}
+});
+$(parent.document).find('#myframe').css("height", "1000px");
+
+// datepicker 
+
+$('input.datetime-without-minute-picker').datetimepicker({
+	format : "dd-mm-yyyy hh:ii",
+	autoclose : true,
+	fontAwesome : true,
+	minView : 1,
+	trimMinute:true,
+});
+
+$('div.calendartime-without-minute-picker').click(function(e) {
+	var target = $(e.currentTarget);
+	var datetimepicker = $(target).siblings('input.datetime-without-minute-picker')
+	datetimepicker.datetimepicker('show');
+});
+
+$('input.datetimepicker').datetimepicker({
+	format : 'dd-mm-yyyy hh:ii',
+	autoclose : true,
+	fontAwesome : true,
+
+});
+
+$('input.datepicker').datetimepicker({
+	format : 'dd-mm-yyyy hh:ii',
+	autoclose : true,
+	fontAwesome : true,
+});
+
+$('div.calendartimepicker').click(function(e) {
+	var target = $(e.currentTarget);
+	var datetimepicker = $(target).siblings('input.datetimepicker')
+	datetimepicker.datetimepicker('show');
+});
+
+$('div.gh-plus').click(function(e) {
+	var target = $(e.currentTarget);
+	var value = parseInt($(target).siblings('input').val());
+	$(target).siblings('input').val(value + 1).trigger('change');
+});
+
+$('div.gh-minus').click(function(e) {
+	var target = $(e.currentTarget);
+	var value = parseInt($(target).siblings('input').val()) - 1;
+	$(target).siblings('input').val(value>0 ? value:1).trigger('change');
+});
+
+// select2
+
+$('select[data-url]').each(loadSelect2Data);
+
+function loadSelect2Data(e) {
+	var elem = $(this);
+	var templateResult;
+	if (elem.attr('data-template-resultf') === "formatBookingNumberList") {
+		templateResult = formatBookingNumberList;
+	} else if(elem.attr('data-template-resultf') === "formatRoomListForCheckin") {
+		templateResult = formatRoomListForCheckin;
+	}
+	
+	$.ajax({
+		url : elem.attr('data-url'),
+		type : "post",
+		dataType : "json",
+		elem: $(this),
+		templateResult: templateResult,
+		success : function(json) {
+			var defaultValue = elem.attr('data-default-value');
+			if (defaultValue === 'Select') {
+				var newOption = new Option(defaultValue, '', false, false);
+				elem.append(newOption).removeAttr('data-default-value').trigger('change');
+			}
+			
+			if (templateResult) {
+				elem.select2({
+					data : json,
+					dropdownAutoWidth : elem.attr('dd-auto-width'),
+	//				matcher: matchCustom
+					templateResult: templateResult
+				}).trigger('change');
+				if (defaultValue && defaultValue !== 'Select') {
+					elem.val(defaultValue).removeAttr('data-default-value').trigger('change');
+				}
+			} else {
+				elem.select2({
+					data : json,
+					dropdownAutoWidth : elem.attr('dd-auto-width'),
+				}).trigger('change');
+			}
+			if (!templateResult && defaultValue && defaultValue !== 'Select') {
+				elem.val(defaultValue).select2();
+			}
+			
+		},
+		error : function() {
+			alert("Some Error Occured");
+		}
+	});
+}
+
+//function matchCustom(params, data) {
+//    // If there are no search terms, return all of the data
+//    if ($.trim(params.term) === '') {
+//      return data;
+//    }
+//
+//    // Do not display the item if there is no 'text' property
+//    if (typeof data.text === 'undefined') {
+//      return null;
+//    }
+//
+//    // `params.term` should be the term that is used for searching
+//    // `data.text` is the text that is displayed for the data object
+//    if (data.text.indexOf(params.term) > -1) {
+//      var modifiedData = $.extend({}, data, true);
+//      modifiedData.text += ' (matched)';
+//
+//      // You can return modified objects from here
+//      // This includes matching the `children` how you want in nested data sets
+//      return modifiedData;
+//    }
+//
+//    // Return `null` if the term should not be displayed
+//    return null;
+//}
+
+
+function formatBookingNumberList(booking) {
+	var $state = $('<span class="badge badge-primary booking-'
+			+ new String(booking.label).toLowerCase() + '">' + booking.label
+			+ '</span>' + '<span>' + booking.text + '</span>');
+	return $state;
+};
+
+function formatRoomListForCheckin(room) {
+	if (room.label == null) {
+		room.label='';
+	}
+	var $state = $('<span data-toggle="tooltip" data-placement="top" title="No. of guests there" class="badge badge-primary booking-'
+			+ new String(room.label).toLowerCase() + '">' + room.label
+			+ '</span>  ' + '<span>  ' + room.text + '</span>');
+	
+	return $state;
+};
+
+
+function handleAjaxForm(e, successFunctionCallback, preAjaxFunction) {
+	e.preventDefault();
+	if (preAjaxFunction != null && !preAjaxFunction()){
+		return;
+	}
+	
+	var form = e.currentTarget;
+	var formData = new FormData(form);
+	formData.append("action", $(e.currentTarget).attr('name'));
+	$.ajax({
+		url : $(form).attr('action'),
+		type : $(form).attr('method'),
+		enctype : 'multipart/form-data',
+		data : formData,
+		processData : false,
+		contentType : false,
+		cache : false,
+		targetElem : e.currentTarget,
+		// dataType: "json",
+		success : function(json) {
+			if (json === "Some Error Occured!") {
+				alert(json);
+			}
+			if (successFunctionCallback != null){
+				successFunctionCallback(e, json);
+			}
+			
+			if (json.redirectTo) {
+				window.location = json.redirectTo;
+			}
+			
+			if (json.status==="error" && json.msg) {
+				alert(json.msg);
+			}
+		},
+		error : function() {
+			alert("Some Error Occured");
+		},
+		complete : function(xhr, textStatus) {
+			if (xhr.status == 302) {
+				location.href = xhr.getResponseHeader("Location");
+			}
+			
+		}
+	});
+	return;
+}
+
+function handleAjaxAnchor(e, successFunctionCallback, preAjaxFunction) {
+	e.preventDefault();
+	if (preAjaxFunction != null && !preAjaxFunction()){
+		return;
+	}
+	
+	var anchor = e.currentTarget;
+	$.ajax({
+		url : $(anchor).attr('href'),
+		type : 'post',
+		targetElem : e.currentTarget,
+		// dataType: "json",
+		success : function(json) {
+			if (json === "Some Error Occured!") {
+				alert(json);
+			}
+			if (successFunctionCallback != null){
+				successFunctionCallback(e, json);
+			}
+			
+			if (json.redirectTo) {
+				window.location = json.redirectTo;
+			}
+			
+			if (json.status==="error" && json.msg) {
+				alert(json.msg);
+			}
+		},
+		error : function() {
+			alert("Some Error Occured");
+		},
+		complete : function(xhr, textStatus) {
+			if (xhr.status == 302) {
+				location.href = xhr.getResponseHeader("Location");
+			}
+			
+		}
+	});
+	return;
+}

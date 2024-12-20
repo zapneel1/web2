@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<!-- saved from url=(0076)https://erp.iitkgp.ac.in/Academic/studentDocumentUploadDetailsInterface.htm# -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        
+        <title>Welcome To ERP</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="./bootstrap.css">
+        <link rel="stylesheet" href="./font-awesome.min.css">
+        <link rel="stylesheet" href="./datepicker.css">
+        <link rel="stylesheet" href="./bootstrap-select.css">
+        <link rel="stylesheet" href="./bootstrap-table.css">
+        <link rel="stylesheet" href="./bootstrap-dialog.css">
+        <link rel="stylesheet" href="./bootstrap-theme.css">
+        <script src="./jquery-1.11.1.min.js.download"></script>
+        <script src="./bootstrap.js.download"></script>
+        <script src="./bootstrap-select.js.download"></script>
+        <script src="./bootstrap-datepicker.js.download"></script>
+        <script src="./bootstrap-table.js.download"></script>
+        <script src="./bootstrap-dialog.js.download"></script>
+        <script src="./bootstrap-table-export.js.download"></script>
+        <script src="./html2canvas.js.download"></script>
+        <script src="./jquery.base64.js.download"></script>
+        <script src="./tableExport.js.download"></script>
+
+        <!--<script src="bootstrap/js/fileinput.min.js"></script>-->
+        <script src="./custom-methods.js.download"></script>
+        <script src="./ckeditor.js.download"></script><style>.cke{visibility:hidden;}</style>
+        <script src="./config.js.download"></script>
+
+        <script>
+            var json_length = '', stud_rollno, docId;
+            function alertBox(title, msg)
+            {
+                BootstrapDialog.show({
+                    size: BootstrapDialog.SIZE_LARGE,
+                    title: title,
+                    message: msg,
+                    onhidden: function () {
+                    }
+                });
+            }
+
+
+            function getUploadDocumentFormx() {
+                var data;
+                var q = $.ajax({
+                    type: "post",
+                    url: "docTypeList.htm",
+                    async: false,
+//                    data: {sub_type: sub_type, teacher_Id: teacher_Id},
+                    success: function (json) {
+                        data = json;
+
+
+                        if (data.length > 0)
+                        {
+                            var form_html = "";
+                            var mandatory_flag = "";
+                            var mandatory_msg = "";
+                            for (var obj in data) {
+                                var outer_object = data[obj];
+                                var doc_id = outer_object.doc_id;
+                                json_length = json_length + doc_id + "~";
+                                var doc_name = outer_object.doc_name;
+                                mandatory_flag = outer_object.mandatory_flag;
+
+                                if (mandatory_flag === 'Y') {
+                                    mandatory_msg = "<font color='red'>(*)</font>";
+                                } else {
+                                    mandatory_msg = "";
+                                }
+
+                                var test = '<div class="row container-fluid" id="upload_doc_rows' + doc_id + '">' +
+                                        '<div class="well well-sm col-lg-12 col-md-12 col-sm-12 col-xs-12" id="fileUploadDiv' + doc_id + '">' +
+                                        '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">' +
+                                        '<label for="file' + doc_id + '">' + doc_name + mandatory_msg + '</label>' +
+                                        '</div>' +
+                                        '<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 hidden">' +
+                                        '<input type="text" name="doc' + doc_id + '_id"  id="doc' + doc_id + '_id" value="' + doc_id + '" />' +
+                                        '</div>' +
+                                        '<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 hidden">' +
+                                        '<input type="text" name="file' + doc_id + '_mandatory"  id="file' + doc_id + '_mandatory" value="' + mandatory_flag + '" />' +
+                                        '</div>' +
+                                        '<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">' +
+                                        '<input type="file" name="file' + doc_id + '"  id="file' + doc_id + '" />' +
+                                        '</div>' +
+                                        '<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">' +
+                                        '<label for="RemarksForView_' + doc_id + '">Put Remarks (if any)</label>' +
+                                        '<textarea  class="form-control" name="RemarksForView_' + doc_id + '" id="RemarksForView_' + doc_id + '" ></textarea>' +
+                                        '</div>' +
+                                        '<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 hidden">' +
+                                        '<label for="Remarks_' + doc_id + '">Put Remarks (if any)</label>' +
+                                        '<textarea  class="form-control" name="Remarks_' + doc_id + '" id="Remarks_' + doc_id + '" ></textarea>' +
+                                        '</div>' +
+                                        '</div>' +
+                                        '</div>';
+                                form_html = form_html + test;
+//                                count++;
+                            }
+                            $("#saveDocumentUploadFileForm").html(form_html);
+                            $("#saveDocumentUploadFileForm").show();
+                            $("#submit_btn").show();
+
+
+                        } else {
+                            alertBox("Alert", "Nothing To Do.");
+                            $("#saveDocumentUploadFileForm").hide();
+                            $("#submit_btn").hide();
+//                          
+                        }
+                    }
+                });
+            }
+            function generateCommonforBind(id, url, fieldvalue)
+            {
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    cache: false,
+                    dataType: "json",
+                    async: false,
+                    success: function (json) {
+                        var len = json.length;
+                        if (len > 0)
+                        {
+                            $("#" + id).empty();
+                            $("#" + id).append($('<option></option>').val("").html("-SELECT-"));
+                            for (var i = 0; i < json.length; i++) {
+                                var columns = json[i];
+                                var value1 = "";
+                                var value2 = "";
+                                var count = 0;
+                                for (var key in columns) {
+                                    if (count === 0)
+                                    {
+                                        value1 = json[i][key];
+                                    }
+                                    if (count === 1)
+                                    {
+                                        value2 = json[i][key];
+                                        // var r=value1+' [ '+value2+' ]';
+                                        var r = '[ ' + value2 + ' ] ' + value1;
+                                        // var r = value2;
+                                    }
+                                    count++;
+                                }
+                                if (value2.toString().trim() === fieldvalue)
+                                {
+                                    $("#" + id).append($('<option selected></option>').val(value2).html(r));
+                                } else
+                                {
+                                    $("#" + id).append($('<option></option>').val(value2).html(r));
+                                }
+                            }
+                            $('#' + id).selectpicker('refresh');
+                        }
+                    }
+                });
+            }
+
+
+            function getLoadTable() {
+
+//                var rollno = $("#rollno").val();
+                $('#uploaded_documents_records_table').bootstrapTable('refresh', {url: 'getUploadedDocumentsTableDetails.htm'});
+            }
+
+            $(function () {
+                getLoadTable();
+//                webElement.getLocation().getX();
+//                webElement.getLocation().getY();
+
+                var eligibleToApply = 'Y';
+                var checkEligibility = true;
+                var checkIsOtherFileUploadedEarlier = false;
+//                alert("eligibleToApply----" + eligibleToApply);
+                if (eligibleToApply === "Y") {
+                    var serverRunning = true;
+                    if (serverRunning === true) {
+                        $('#server_down').addClass("hidden");
+                        if (checkEligibility === true) {
+                            $('#not_required_to_upload_doc').addClass("hidden");
+                            $('#not_eligible_for_document_upload_msg_div').addClass("hidden");
+                            $('#required_to_upload_doc').removeClass("hidden");
+                            $('#uploaded_documents_records_table_DIV').removeClass("hidden");
+                            $('#insert_other_file_btn').addClass("hidden");
+                            getUploadDocumentFormx();
+                        } else {
+                            $('#required_to_upload_doc').addClass("hidden");
+                            $('#not_required_to_upload_doc').removeClass("hidden");
+                            $('#uploaded_documents_records_table_DIV').removeClass("hidden");
+                            $('#not_eligible_for_document_upload_msg_div').addClass("hidden");
+
+                            if (checkIsOtherFileUploadedEarlier === true) {
+                                $('#insert_other_file_btn').addClass("hidden");
+                            } else {
+                                $('#insert_other_file_btn').removeClass("hidden");
+                            }
+
+                        }
+
+                    } else {
+                        $('#server_down').removeClass("hidden");
+                    }
+
+                } else {
+//                    alert("Not Eligible to apply...");
+                    $('#not_eligible_for_document_upload_msg_div').removeClass("hidden");
+                    $('#uploaded_documents_records_table_DIV').addClass("hidden");
+                }
+
+            });
+
+            function uploadDocuments() {
+                var rollno = $("#rollno").val();
+                var stud_name = $("#stud_name").val();
+                var user_type = 'SU';
+
+                var conf = confirm("Are you sure to submit this ?\nPlease Note- Before submitting make sure that you have attached all mandatory files in pdf.");
+                if (conf)
+                {
+                    submitForm("#saveDocumentUploadFileForm");
+//                        formSubmitMyDialogue("#saveCorrectionDataForm", "Submission", "Do you really want to save this information ?", "", "AJAX_FORM_SUBMIT", afterSubmission);
+                }
+            }
+
+            function submitForm(formid) {
+
+                var fields = json_length.split('~');
+                var editedText = fields.slice(0, -1);
+//alert("test::"+editedText.length);
+                for (var i = 0; i < editedText.length; i++) {
+//  alert("values:: "+editedText[i]); 
+                    var aaa = $("#RemarksForView_" + editedText[i]).val();
+                    var post_msg = btoa(aaa);
+//                alert('---1----' + aaa);
+//                    aaa = encodeURIComponent(aaa);
+                    //alert('---2----'+aaa);
+//                    aaa = encodeURIComponent(aaa);
+                    //alert('---3----'+aaa);
+                    $("#Remarks_" + editedText[i]).val(post_msg);
+
+                }
+                var target_url = $(formid).attr("action");
+                var mime = "";
+                var found = "N";
+                $(formid + ' input[type=file]').each(
+                        function (index) {
+                            found = "Y";
+                        }
+                );
+                if (found === "Y") {
+                    var formData = new FormData($(formid)[0]);
+                    var x = $.ajax({
+                        type: "post",
+                        url: target_url,
+                        async: false,
+                        data: formData,
+                        cache: false,
+                        mimeType: mime,
+                        contentType: false,
+                        dataType: "json",
+                        processData: false,
+                        beforeSend: function () {
+                        },
+                        success: function (json) {
+
+                            alertBox("Information...", json.msg);
+                            if (json.msg === "please attach all manadatory file in pdf format !!!" || json.msg === "Server is down now. Please try later........!!!" || json.msg === "Please attach file size of upto 1 MB. Try once again. !!!" || json.msg === "please attach all manadatory file before clicking save button !!!" || json.msg === "Application Not Submitted... ERROR Occured !!!") {
+                                $('#required_to_upload_doc').removeClass("hidden");
+                                $('#not_required_to_upload_doc').addClass("hidden");
+                                $('#not_eligible_for_document_upload_msg_div').addClass("hidden");
+                            } else if (json.msg === "Data Saved but No File Uploaded !!!") {
+                                $('#required_to_upload_doc').addClass("hidden");
+                                $('#not_required_to_upload_doc').removeClass("hidden");
+                                $('#uploaded_documents_records_table').bootstrapTable('refresh');
+                                $('#not_eligible_for_document_upload_msg_div').addClass("hidden");
+                            } else {
+
+                                $('#required_to_upload_doc').addClass("hidden");
+                                $('#not_required_to_upload_doc').removeClass("hidden");
+                                $('#uploaded_documents_records_table').bootstrapTable('refresh');
+                                $('#not_eligible_for_document_upload_msg_div').addClass("hidden");
+                            }
+
+
+//                            location.reload(true);
+//                                    getCertificateApplyDetailsOnChange();
+                        },
+                        error: function (xhr, status, error) {
+                            if (status === "error") {
+                                $('#required_to_upload_doc').removeClass("hidden");
+                                $('#not_required_to_upload_doc').addClass("hidden");
+                                alertBox("UNWANTED ERROR!", "Error Message:" + error);
+
+                            }
+                        }
+                    });
+                } else {
+                    formData = $(formid).serialize();
+                    var x = $.ajax({
+                        type: "post",
+                        url: target_url,
+                        async: false,
+                        data: $(formid).serialize(),
+                        cache: false,
+                        dataType: "json",
+                        beforeSend: function () {
+                        },
+                        success: function (json) {
+//                            $('#required_to_upload_doc').addClass("hidden");
+//                            $('#not_required_to_upload_doc').removeClass("hidden");
+                            alertBox("Information...", json.msg);
+                            if (json.msg === "please attach all manadatory file in pdf format !!!" || json.msg === "Server is down now. Please try later........!!!" || json.msg === "Please attach file size of upto 1 MB. Try once again. !!!" || json.msg === "please attach all manadatory file before clicking save button !!!" || json.msg === "Application Not Submitted... ERROR Occured !!!") {
+                                $('#required_to_upload_doc').removeClass("hidden");
+                                $('#not_required_to_upload_doc').addClass("hidden");
+                                $('#not_eligible_for_document_upload_msg_div').addClass("hidden");
+                            } else if (json.msg === "Data Saved but No File Uploaded !!!") {
+                                $('#required_to_upload_doc').addClass("hidden");
+                                $('#not_required_to_upload_doc').removeClass("hidden");
+                                $('#uploaded_documents_records_table').bootstrapTable('refresh');
+                                $('#not_eligible_for_document_upload_msg_div').addClass("hidden");
+                            } else {
+
+                                $('#required_to_upload_doc').addClass("hidden");
+                                $('#not_required_to_upload_doc').removeClass("hidden");
+                                $('#uploaded_documents_records_table').bootstrapTable('refresh');
+                                $('#not_eligible_for_document_upload_msg_div').addClass("hidden");
+                            }
+
+
+//                            location.reload(true);
+//                                    getCertificateApplyDetailsOnChange();
+                        },
+                        error: function (xhr, status, error) {
+                            if (status === "error") {
+                                $('#required_to_upload_doc').removeClass("hidden");
+                                $('#not_required_to_upload_doc').addClass("hidden");
+                                $('#not_eligible_for_document_upload_msg_div').addClass("hidden");
+                                alertBox("UNWANTED ERROR!", "Error Message:" + error);
+                            }
+                        }
+                    });
+                }
+
+            }
+
+            function afterSubmission(json) {
+                alertBox("Information", "done");
+            }
+
+            function ButtonActionFormatter(value, row, index) {
+                var status = row.status.toString();
+                var final_verification_status = row.final_verification_status.toString();
+//                alert("final_verification_status::" + final_verification_status);
+                var doc_file_path1 = row.doc_file_path.toString();
+                //  alert(doc_file_path1);
+                if (status === "Pending" && (doc_file_path1 != "")) {
+
+                    return [
+                        '<span><b><font color="blue">Verification Pending</font></b></span>,' + '<span class="view_uploaded_file ml10 badge alert-info btn fdet" title="View File" class="btn btn-info btn-lg"><i class="glyphicon glyphicon-print"></i> View File </span>,' +
+                                '<span class="edit_uploaded_file ml10 badge alert-danger btn fdet" title="Edit File" class="btn btn-warning btn-lg"><i class="glyphicon glyphicon-pencil"></i> Update Details</span> '];
+//                        +
+//                                '<span class="delete_details ml10 badge alert-danger btn fdet" title="DELETE DATA" class="btn btn-danger btn-lg"><i class="glyphicon glyphicon-trash"></i> Delete </span>'];
+                }
+                if (status === "Verified") {
+                    return [
+                        '<span><b><font color="green">Request Verified</font></b></span>,' + '<span class="view_uploaded_file ml10 badge alert-info btn fdet" title="View File" class="btn btn-info btn-lg"><i class="glyphicon glyphicon-print"></i> View File </span>'];
+                }
+                if (status === "Rejected" && final_verification_status === "") {
+                    return [
+                        '<span><b><font color="Red">Request Rejected</font></b></span>,'
+                                + '<span class="view_uploaded_file ml10 badge alert-info btn fdet" title="View File" class="btn btn-info btn-lg"><i class="glyphicon glyphicon-print"></i> View File </span>,' +
+                                '<span class="edit_uploaded_file ml10 badge alert-warning btn fdet" title="Again Send for verification" class="btn btn-warning btn-lg"><i class="glyphicon glyphicon-pencil"></i> Update Details & Again Send for Verification.</span> '];
+                }
+                if (status === "Rejected" && final_verification_status === "N") {
+                    return [
+                        '<span><b><font color="Red">Request Rejected</font></b></span>,'
+                                + '<span class="view_uploaded_file ml10 badge alert-info btn fdet" title="View File" class="btn btn-info btn-lg"><i class="glyphicon glyphicon-print"></i> View File </span>,' +
+                                '<span class="edit_uploaded_file ml10 badge alert-warning btn fdet" title="Again Send for verification" class="btn btn-warning btn-lg"><i class="glyphicon glyphicon-pencil"></i> Update Details & Again Send for Verification.</span> '];
+                }
+                if (status === "Rejected" && final_verification_status === "Y") {
+                    return [
+                        '<span><b><font color="Red">Request Rejected </font></b></span>,'
+                                + '<span class="view_uploaded_file ml10 badge alert-info btn fdet" title="View File" class="btn btn-info btn-lg"><i class="glyphicon glyphicon-print"></i> View File </span>'];
+                }
+                if (doc_file_path1 == "") {
+                    return ['<span><b><font color="Red">Data Saved but No File Uploaded</font></b></span>,' +
+                                '<span class="edit_uploaded_file ml10 badge alert-danger btn fdet" title="Edit File" class="btn btn-warning btn-lg"><i class="glyphicon glyphicon-pencil"></i> Update Details</span> '];
+                }
+            }
+
+            window.ButtonActionEvent = {
+                'click .view_uploaded_file': function (e, value, row, index) {
+//                    alert("row.uploaded_file_path.toString()==" + row.uploaded_file_path.toString());
+                    var path = row.doc_file_path.toString();
+//                    alert("File Path::--" + path);
+
+//                    var url = "downloadFundExpenseDoc.htm";
+//                    var data = {"path": path};
+//                    openWindowWithPost(url, data, "self");
+//                    commonViewPDF("commonFileDownloader.jsp?fileFullPath='" + path + "'&reqType=open'", 'Print Preview');
+//                    alert("path ::--" + path);
+                    window.open('commonFileDownloader.jsp?fileFullPath=' + path + '&reqType=open');
+//                    $('#pdfview').modal('show');
+//                    $('#pdfviewLabel').html('<font color="red">Uploaded Supporting Document</font>');
+//                    $('#ifrm').attr('src', 'commonFileDownloader.jsp?fileFullPath=' + path + '&reqType=open');
+
+                }
+                ,
+                'click .edit_uploaded_file': function (e, value, row, index) {
+                    stud_rollno = row.roll_no;
+                    docId = row.doc_id;
+//                    alert("for document update:: roll & doc id--" + roll_no + doc_id);
+                    var conf = confirm("Do you really want to update the details ?");
+                    if (conf)
+                    {
+                        $('#update_file_modal').modal('show');
+                        $('#updateFileModalLabel').html('Update Supporting Document and Remarks');
+//                        $.ajax({
+//                            url: "updateUploadedDocument.htm?rollno=" + roll_no + "&doc_id=" + doc_id,
+//                            type: "POST",
+//                            cache: false,
+//                            dataType: "json",
+//                            success: function (json) {
+//                                alertBox("Information...", json.msg);
+//                                $('#uploaded_documents_records_table').bootstrapTable('refresh');
+//                            }
+//                        });
+                    }
+
+                }
+            };
+
+            function downloadAnnexureFile() {
+
+//                var path = "";
+//
+//                $.ajax({
+//                    url: "getAnnexureFilePath.htm",
+//                    type: "POST",
+//                    cache: false,
+//                    dataType: "json",
+//                    success: function (json) {
+//                        alertBox("Information...", json.path);
+//                        path = json.path.toString();
+//
+//                    }
+//                });
+
+                window.open('pdf/Medical_&_Other_Certificate_Or_Declaration.pdf');
+
+            }
+
+            function updateFileAndRemarks() {
+
+                var update_file = $("#update_file").val();
+                var extension = update_file.split(".")[1];
+//                alert("extension::"+extension);
+                var update_remarks = $("#update_remarks").val();
+                if (update_file !== "" && extension !== 'pdf') {
+                    alertBox("Alert", "Please select file of only pdf format.");
+                } else {
+                    var conf = confirm("Are you sure to update details ?");
+                    if (conf)
+                    {
+                        Update("#update_file_div");
+
+                    }
+                }
+//                alert("update file");
+
+            }
+            function Update(formid) {
+
+                var update_file = $("#update_file").val();
+                var extension = update_file.split(".")[1];
+//                alert("stud_roll_no-" + stud_rollno);
+//                alert("docId-" + docId);
+                $("#doc_id").val(docId);
+//                alert("hidden docId" + $("#doc_id").val());
+                var update_remarks_for_view = $("#update_remarks_for_view").val();
+
+//                var aaa = encodeURIComponent(update_remarks_for_view);
+                var post_msg = btoa(update_remarks_for_view);
+                //alert('---2----'+aaa);
+//                aaa = encodeURIComponent(update_remarks_for_view);
+                //alert('---3----'+aaa);
+                $("#update_remarks").val(post_msg);
+
+
+                var target_url = $(formid).attr("action");
+                var mime = "";
+                var found = "N";
+                $(formid + ' input[type=file]').each(
+                        function (index) {
+                            found = "Y";
+                        }
+                );
+                if (found === "Y") {
+                    var formData = new FormData($(formid)[0]);
+                    var x = $.ajax({
+                        type: "post",
+                        url: target_url,
+                        async: false,
+                        data: formData,
+                        cache: false,
+                        mimeType: mime,
+                        contentType: false,
+                        dataType: "json",
+                        processData: false,
+                        beforeSend: function () {
+                        },
+                        success: function (json) {
+
+                            alertBox("Information...", json.msg);
+                            if (json.msg === "please attach file in pdf format !!!" || json.msg === "Server is down now. Please try later........!!!" || json.msg === "Please attach file size of upto 1 MB. Try once again. !!!" || json.msg === "Nothing to update !!!" || json.msg === "ERROR Occured.... Contact To Admin.") {
+                                $('#required_to_upload_doc').addClass("hidden");
+                                $('#not_required_to_upload_doc').removeClass("hidden");
+                                $('#not_eligible_for_document_upload_msg_div').addClass("hidden");
+                            } else {
+                                $('#required_to_upload_doc').addClass("hidden");
+                                $('#not_required_to_upload_doc').removeClass("hidden");
+                                $('#uploaded_documents_records_table').bootstrapTable('refresh');
+                                $('#update_file_modal').modal('hide');
+                                $('#not_eligible_for_document_upload_msg_div').addClass("hidden");
+                            }
+
+//                            location.reload(true);
+//                                    getCertificateApplyDetailsOnChange();
+                        },
+                        error: function (xhr, status, error) {
+                            if (status === "error") {
+                                alertBox("UNWANTED ERROR!", "Error Message:" + error);
+
+                            }
+                        }
+                    });
+                } else {
+                    formData = $(formid).serialize();
+                    var x = $.ajax({
+                        type: "post",
+                        url: target_url,
+                        async: false,
+                        data: $(formid).serialize(),
+                        cache: false,
+                        dataType: "json",
+                        beforeSend: function () {
+                        },
+                        success: function (json) {
+                            alertBox("Information...", json.msg);
+                            if (json.msg === "please attach file in pdf format !!!" || json.msg === "Server is down now. Please try later........!!!" || json.msg === "Please attach file size of upto 1 MB. Try once again. !!!" || json.msg === "Nothing to update !!!" || json.msg === "ERROR Occured.... Contact To Admin.") {
+                                $('#required_to_upload_doc').addClass("hidden");
+                                $('#not_required_to_upload_doc').removeClass("hidden");
+                                $('#not_eligible_for_document_upload_msg_div').addClass("hidden");
+                            } else {
+                                $('#update_file_modal').modal('hide');
+                                $('#required_to_upload_doc').addClass("hidden");
+                                $('#not_required_to_upload_doc').removeClass("hidden");
+                                $('#uploaded_documents_records_table').bootstrapTable('refresh');
+
+                                $('#not_eligible_for_document_upload_msg_div').addClass("hidden");
+                            }
+
+                        },
+                        error: function (xhr, status, error) {
+                            if (status === "error") {
+                                alertBox("UNWANTED ERROR!", "Error Message:" + error);
+                            }
+                        }
+                    });
+                }
+
+            }
+
+            function showmodalbtn(e, value, row, index) {
+                $('#other_file_option_modal').modal('show');
+
+                $('#otherFileOptionModalLabel').html('Add Other File (if you forget to upload earlier)'); //&nbsp &nbsp (*) Fields are Mandatory');
+                //generateCommonForm(jsonArrDpcodeInsert, "dpcode_div", "insertDpcode.htm", 'btn-success', 'Save', "dpcode_table_show", "add_new_modal");
+
+            }
+
+            function otherFileInsertionOptionBtn() {
+
+                var other_file_option = $("#other_file_option").val();
+                var extension = other_file_option.split(".")[1];
+                if (other_file_option === "") {
+                    alertBox("Alert", "Please select pdf file before clicking submit buton.");
+                } else if (other_file_option !== "" && extension !== 'pdf') {
+                    alertBox("Alert", "Please select file of only pdf format.");
+                } else {
+                    var conf = confirm("Are you sure to add this details ?");
+                    if (conf)
+                    {
+                        AddOtherFileInsertionOption("#other_file_option_div");
+
+                    }
+                }
+//                alert("update file");
+
+            }
+            function AddOtherFileInsertionOption(formid) {
+
+                var other_file_option = $("#other_file_option").val();
+                var extension = other_file_option.split(".")[1];
+
+                var other_file_remarks_for_view = $("#other_file_remarks_for_view").val();
+                var post_msg = btoa(other_file_remarks_for_view);
+//                var aaa = encodeURIComponent(other_file_remarks_for_view);
+                //alert('---2----'+aaa);
+//                aaa = encodeURIComponent(other_file_remarks_for_view);
+                //alert('---3----'+aaa);
+                $("#other_file_remarks").val(post_msg);
+
+
+                var target_url = $(formid).attr("action");
+                var mime = "";
+                var found = "N";
+                $(formid + ' input[type=file]').each(
+                        function (index) {
+                            found = "Y";
+                        }
+                );
+                if (found === "Y") {
+                    var formData = new FormData($(formid)[0]);
+                    var x = $.ajax({
+                        type: "post",
+                        url: target_url,
+                        async: false,
+                        data: formData,
+                        cache: false,
+                        mimeType: mime,
+                        contentType: false,
+                        dataType: "json",
+                        processData: false,
+                        beforeSend: function () {
+                        },
+                        success: function (json) {
+
+                            alertBox("Information...", json.msg);
+                            if (json.msg === "please attach file in pdf format !!!" || json.msg === "Server is down now. Please try later........!!!" || json.msg === "Please attach file size of upto 1 MB. Try once again. !!!" || json.msg === "Nothing to add !!!" || json.msg === "ERROR Occured.... Contact To Admin.") {
+                                $('#required_to_upload_doc').addClass("hidden");
+                                $('#not_required_to_upload_doc').removeClass("hidden");
+                                $('#not_eligible_for_document_upload_msg_div').addClass("hidden");
+                                $('#insert_other_file_btn').removeClass("hidden");
+                            } else {
+                                $('#required_to_upload_doc').addClass("hidden");
+                                $('#not_required_to_upload_doc').removeClass("hidden");
+                                $('#uploaded_documents_records_table').bootstrapTable('refresh');
+                                $('#other_file_option_modal').modal('hide');
+                                $('#insert_other_file_btn').addClass("hidden");
+                                $('#not_eligible_for_document_upload_msg_div').addClass("hidden");
+                            }
+
+//                            location.reload(true);
+//                                    getCertificateApplyDetailsOnChange();
+                        },
+                        error: function (xhr, status, error) {
+                            if (status === "error") {
+                                alertBox("UNWANTED ERROR!", "Error Message:" + error);
+
+                            }
+                        }
+                    });
+                } else {
+                    formData = $(formid).serialize();
+                    var x = $.ajax({
+                        type: "post",
+                        url: target_url,
+                        async: false,
+                        data: $(formid).serialize(),
+                        cache: false,
+                        dataType: "json",
+                        beforeSend: function () {
+                        },
+                        success: function (json) {
+                            alertBox("Information...", json.msg);
+                            if (json.msg === "please attach file in pdf format !!!" || json.msg === "Server is down now. Please try later........!!!" || json.msg === "Please attach file size of upto 1 MB. Try once again. !!!" || json.msg === "Nothing to update !!!" || json.msg === "ERROR Occured.... Contact To Admin.") {
+                                $('#required_to_upload_doc').addClass("hidden");
+                                $('#not_required_to_upload_doc').removeClass("hidden");
+                                $('#not_eligible_for_document_upload_msg_div').addClass("hidden");
+                                $('#insert_other_file_btn').removeClass("hidden");
+                            } else {
+                                $('#other_file_option_modal').modal('hide');
+                                $('#insert_other_file_btn').addClass("hidden");
+                                $('#required_to_upload_doc').addClass("hidden");
+                                $('#not_required_to_upload_doc').removeClass("hidden");
+                                $('#uploaded_documents_records_table').bootstrapTable('refresh');
+
+                                $('#not_eligible_for_document_upload_msg_div').addClass("hidden");
+                            }
+
+                        },
+                        error: function (xhr, status, error) {
+                            if (status === "error") {
+                                alertBox("UNWANTED ERROR!", "Error Message:" + error);
+                            }
+                        }
+                    });
+                }
+
+            }
+
+
+
+        </script>
+        <!-- Custom styles for this template -->
+        <style>
+            body {
+                min-height: 2000px;
+            }
+
+            .navbar-static-top {
+                margin-bottom: 19px;
+            }
+
+
+        </style>
+
+    </head>
+
+    <body>
+        <div class="row container-fluid">
+            <div class="well">
+                <div class="panel-heading has-info" style="font-weight: bolder;font-size: large">
+                    <center><h2><font color="green"><b>Apply for Document Verification</b></font></h2></center>
+                </div>
+            </div>
+
+            <div class="container hidden" id="not_eligible_for_document_upload_msg_div">
+                <div class="col-sm-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-body">
+                            <div class="col-lg-offset-2 col-lg-8 col-sm-offset-2 col-sm-8 alert alert-danger text-center"><br>
+                                <font color="blue"> <strong>Alert !!!<br>You are not eligible for this facility.</strong></font> <br><br>
+                            </div></div></div></div> </div>
+            <div class="container hidden" id="server_down">
+                <div class="col-sm-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-body">
+                            <div class="col-lg-offset-2 col-lg-8 col-sm-offset-2 col-sm-8 alert alert-info text-center"><br>
+                                <font color="red"><strong>Alert !!!<br>Server is down now. Please contact to Admin........!!!</strong></font> <br><br>
+                            </div></div></div></div> </div>
+
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden" id="not_required_to_upload_doc">
+                <div class="panel-body">
+                    <div class="alert alert-dismissable alert-danger">
+                        <h3>Uploaded Documents Records</h3>
+                        <h4><font color="blue">Below given are details after your submission.</font></h4> 
+                    </div>
+                </div>
+
+
+
+
+                <center> <button class="btn btn-info hidden" id="insert_other_file_btn" onclick="showmodalbtn()"><i class="glyphicon glyphicon-plus"></i>Add Any Other File (if you forget to upload earlier)</button></center>
+
+            </div>
+            <div class="col-lg-12 col-sm-12 col-xs-12" id="required_to_upload_doc">
+                <div class="container-fluid">
+
+
+
+                    <div id="msg_div" class="alert alert-dismissable alert-warning">
+
+                        <h3> Upload Listed Below Documents for Verification</h3><h4>Note- <font color="red">Only PDF file format (Max Size - 1 MB) is allowed to submit. Asterisk(*) denotes mandatory file to upload. Please avoid special characters in file name. </font></h4>
+                        <h4><font color="blue">Click below to download annexure files that needs to be uploaded here in same format. </font></h4><span class="view_annexure_file ml10 badge alert-info btn fdet btn btn-info btn-lg" onclick="downloadAnnexureFile()" title="View File"><i class="glyphicon glyphicon-download"></i> Download Annexure Files </span>
+                    </div>
+
+                    <form id="saveDocumentUploadFileForm" class="form-horizontal" action="https://erp.iitkgp.ac.in/Academic/uploadDocumentsWithRemarksForVerification.htm" method="post" enctype="multipart/form-data"><div class="row container-fluid" id="upload_doc_rows3"><div class="well well-sm col-lg-12 col-md-12 col-sm-12 col-xs-12" id="fileUploadDiv3"><div class="col-lg-6 col-md-6 col-sm-6 col-xs-12"><label for="file3">Class X Certificate Copy.<font color="red">(*)</font></label></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 hidden"><input type="text" name="doc3_id" id="doc3_id" value="3"></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 hidden"><input type="text" name="file3_mandatory" id="file3_mandatory" value="Y"></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"><input type="file" name="file3" id="file3"></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"><label for="RemarksForView_3">Put Remarks (if any)</label><textarea class="form-control" name="RemarksForView_3" id="RemarksForView_3"></textarea></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 hidden"><label for="Remarks_3">Put Remarks (if any)</label><textarea class="form-control" name="Remarks_3" id="Remarks_3"></textarea></div></div></div><div class="row container-fluid" id="upload_doc_rows4"><div class="well well-sm col-lg-12 col-md-12 col-sm-12 col-xs-12" id="fileUploadDiv4"><div class="col-lg-6 col-md-6 col-sm-6 col-xs-12"><label for="file4">Class XII Marks Sheet Copy.<font color="red">(*)</font></label></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 hidden"><input type="text" name="doc4_id" id="doc4_id" value="4"></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 hidden"><input type="text" name="file4_mandatory" id="file4_mandatory" value="Y"></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"><input type="file" name="file4" id="file4"></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"><label for="RemarksForView_4">Put Remarks (if any)</label><textarea class="form-control" name="RemarksForView_4" id="RemarksForView_4"></textarea></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 hidden"><label for="Remarks_4">Put Remarks (if any)</label><textarea class="form-control" name="Remarks_4" id="Remarks_4"></textarea></div></div></div><div class="row container-fluid" id="upload_doc_rows5"><div class="well well-sm col-lg-12 col-md-12 col-sm-12 col-xs-12" id="fileUploadDiv5"><div class="col-lg-6 col-md-6 col-sm-6 col-xs-12"><label for="file5">Class X Marks Sheet Copy.<font color="red">(*)</font></label></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 hidden"><input type="text" name="doc5_id" id="doc5_id" value="5"></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 hidden"><input type="text" name="file5_mandatory" id="file5_mandatory" value="Y"></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"><input type="file" name="file5" id="file5"></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"><label for="RemarksForView_5">Put Remarks (if any)</label><textarea class="form-control" name="RemarksForView_5" id="RemarksForView_5"></textarea></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 hidden"><label for="Remarks_5">Put Remarks (if any)</label><textarea class="form-control" name="Remarks_5" id="Remarks_5"></textarea></div></div></div><div class="row container-fluid" id="upload_doc_rows6"><div class="well well-sm col-lg-12 col-md-12 col-sm-12 col-xs-12" id="fileUploadDiv6"><div class="col-lg-6 col-md-6 col-sm-6 col-xs-12"><label for="file6">Guardian's Declaration and Student's Undertaking Form Verification<font color="red">(*)</font></label></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 hidden"><input type="text" name="doc6_id" id="doc6_id" value="6"></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 hidden"><input type="text" name="file6_mandatory" id="file6_mandatory" value="Y"></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"><input type="file" name="file6" id="file6"></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"><label for="RemarksForView_6">Put Remarks (if any)</label><textarea class="form-control" name="RemarksForView_6" id="RemarksForView_6"></textarea></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 hidden"><label for="Remarks_6">Put Remarks (if any)</label><textarea class="form-control" name="Remarks_6" id="Remarks_6"></textarea></div></div></div><div class="row container-fluid" id="upload_doc_rows7"><div class="well well-sm col-lg-12 col-md-12 col-sm-12 col-xs-12" id="fileUploadDiv7"><div class="col-lg-6 col-md-6 col-sm-6 col-xs-12"><label for="file7">Medical Certificate and Declaration Submission.<font color="red">(*)</font></label></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 hidden"><input type="text" name="doc7_id" id="doc7_id" value="7"></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 hidden"><input type="text" name="file7_mandatory" id="file7_mandatory" value="Y"></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"><input type="file" name="file7" id="file7"></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"><label for="RemarksForView_7">Put Remarks (if any)</label><textarea class="form-control" name="RemarksForView_7" id="RemarksForView_7"></textarea></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 hidden"><label for="Remarks_7">Put Remarks (if any)</label><textarea class="form-control" name="Remarks_7" id="Remarks_7"></textarea></div></div></div><div class="row container-fluid" id="upload_doc_rows15"><div class="well well-sm col-lg-12 col-md-12 col-sm-12 col-xs-12" id="fileUploadDiv15"><div class="col-lg-6 col-md-6 col-sm-6 col-xs-12"><label for="file15">Caste/Category certificate<font color="red">(*)</font></label></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 hidden"><input type="text" name="doc15_id" id="doc15_id" value="15"></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 hidden"><input type="text" name="file15_mandatory" id="file15_mandatory" value="Y"></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"><input type="file" name="file15" id="file15"></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"><label for="RemarksForView_15">Put Remarks (if any)</label><textarea class="form-control" name="RemarksForView_15" id="RemarksForView_15"></textarea></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 hidden"><label for="Remarks_15">Put Remarks (if any)</label><textarea class="form-control" name="Remarks_15" id="Remarks_15"></textarea></div></div></div><div class="row container-fluid" id="upload_doc_rows21"><div class="well well-sm col-lg-12 col-md-12 col-sm-12 col-xs-12" id="fileUploadDiv21"><div class="col-lg-6 col-md-6 col-sm-6 col-xs-12"><label for="file21">Upload other Files (which are supposed to be submitted as per your offer letter, but the corresponding file uploading option is  not available)</label></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 hidden"><input type="text" name="doc21_id" id="doc21_id" value="21"></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 hidden"><input type="text" name="file21_mandatory" id="file21_mandatory" value="N"></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"><input type="file" name="file21" id="file21"></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"><label for="RemarksForView_21">Put Remarks (if any)</label><textarea class="form-control" name="RemarksForView_21" id="RemarksForView_21"></textarea></div><div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 hidden"><label for="Remarks_21">Put Remarks (if any)</label><textarea class="form-control" name="Remarks_21" id="Remarks_21"></textarea></div></div></div></form> 
+
+
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12"></div>
+                    <!--                    <div class="alert alert-danger">
+                                            <strong>Alert!</strong> Please Note- Once you confirm & submit this then you will not be able to modify later.
+                                        </div>-->
+                    <button id="submit_btn" type="button" class="btn btn-info" title="Click To Save Details" onclick="uploadDocuments();">Save Information</button>&nbsp;                   
+                    <!--</div>-->
+
+                </div>
+            </div> &nbsp; 
+
+            <div class="col-lg-12" id="uploaded_documents_records_table_DIV">
+
+                <div class="container-fluid">
+
+                    <!--                    <div class="alert alert-dismissable alert-success">
+                                            <h3>Uploaded Documents Records</h3>
+                                        </div>-->
+
+                    <!--getUploadedDocumentsTableDetails.htm-->
+                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px; display: none;">Loading, please wait...</div><table id="uploaded_documents_records_table" data-toggle="table" data-url="getUploadedDocumentsTableDetails.htm" data-cache="false" data-sort-name="rollno" data-sort-order="asc" class="table table-bordered table-condensed table-hover">
+                        <thead class="bg-primary">
+                            <tr><th style=""><div class="th-inner sortable">Roll number</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Document Description</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Mandatory</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Remarks Details Given (if any)</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Remarks by Approving Authority (if any)</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Status</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner sortable">Action</div><div class="fht-cell"></div></th></tr>
+                        </thead>
+                    <tbody><tr class="no-records-found"><td colspan="7">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div>
+
+                    <script>
+                        $('#table2').bootstrapTable({
+                        }).on('load-success.bs.table', function (e, data) {
+                            parent.setFrameWH();
+                        })
+                    </script>
+
+                </div>
+            </div></div> 
+        <div class="modal fade update_file_modal" id="update_file_modal" role="dialog">
+            <div class="modal-dialog" style="width: 75%;height: 75%;">
+                <div class="modal-content">
+                    <div class="modal-header alert-success">
+                        <button type="button" class="close" data-dismiss="modal">×</button>
+                        <h4 class="modal-title" id="updateFileModalLabel"></h4>
+                    </div>
+                    <div class="modal-body col-lg-12">
+                        <form id="update_file_div" action="https://erp.iitkgp.ac.in/Academic/updateDocumentsAndRemarks.htm" method="POST">
+                            <input type="text" name="doc_id" id="doc_id" hidden="">
+
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"> <label for="update_file">Update File </label>
+                                <input type="file" name="update_file" id="update_file">
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <label for="update_remarks_for_view">Update Remarks (if any)</label>
+                                <textarea class="form-control" name="update_remarks_for_view" id="update_remarks_for_view"></textarea>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 hidden">
+                                <label for="update_remarks">Update Remarks (if any)</label>
+
+                                <textarea class="form-control" name="update_remarks" id="update_remarks"></textarea>
+                            </div>
+
+
+                            <div class="col-lg-4 form-group">
+                                <label for="updateFileBtn"></label>
+                                <input type="button" id="updateFileBtn" class="btn btn-block btn-success" value="Submit &amp; Update Details" onclick="updateFileAndRemarks()">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <div id="modal_inst" class="col-lg-10 col-md-10 col-sm-12 col-xs-12" align="left"></div>
+
+                    </div> 
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade other_file_option_modal" id="other_file_option_modal" role="dialog">
+            <div class="modal-dialog" style="width: 75%;height: 75%;">
+                <div class="modal-content">
+                    <div class="modal-header alert-info">
+                        <button type="button" class="close" data-dismiss="modal">×</button>
+                        <h4 class="modal-title" id="otherFileOptionModalLabel"></h4>
+                    </div>
+                    <div class="modal-body col-lg-12">
+                        <form id="other_file_option_div" action="https://erp.iitkgp.ac.in/Academic/otherFileOptionInsertionOfDocumentsAndRemarks.htm" method="POST">
+                            <!--<input type="text" name="doc_id"  id="doc_id" hidden/>-->
+
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"> <label for="other_file_option">Attach File </label>
+                                <input type="file" name="other_file_option" id="other_file_option">
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <label for="other_file_remarks_for_view">Put Remarks (if any)</label>
+                                <textarea class="form-control" name="other_file_remarks_for_view" id="other_file_remarks_for_view"></textarea>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 hidden">
+                                <label for="other_file_remarks">Put Remarks (if any)</label>
+
+                                <textarea class="form-control" name="other_file_remarks" id="other_file_remarks"></textarea>
+                            </div>
+
+
+                            <div class="col-lg-4 form-group">
+                                <label for="otherFileOptionBtn"></label>
+                                <input type="button" id="otherFileOptionBtn" class="btn btn-block btn-success" value="Click &amp; Save Details" onclick="otherFileInsertionOptionBtn()">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <div id="modal_inst" class="col-lg-10 col-md-10 col-sm-12 col-xs-12" align="left"></div>
+
+                    </div> 
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="pdfview" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" style="width: auto;height: auto;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="pdfviewLabel"></h4>
+                    </div>
+                    <div class="modal-body" id="pdfviewBody">    
+                        <iframe src="./studentDocumentUploadDetailsInterface(1).html" id="ifrm" scrolling="yes" frameborder="0" style="height: 0px; width: 100%;">
+                        </iframe>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $('#pdfview').on('show.bs.modal', function () {
+                $('.modal-content').css('height', $(window).height() * 0.9);
+            });
+            $('#ifrm').css('height', $(window).height() * 2.5);
+        </script>
+
+        <div></div>
+
+    
+
+</body></html>
