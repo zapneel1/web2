@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<!-- saved from url=(0230)https://erp.iitkgp.ac.in/Academic/studentPerformenceUG.htm?ssoToken=4C6ABC659F7E334510A4A5B5C8C5EBAB.worker1CE119606E2E39E34F89B1FA0E1781207.worker3Z6XZWFIP27X0U7KYX7WZT9QNUEMUH4I43OSFHTTUKKTACSR4JNLMBEKX89496AF7&rollno=22ME10087# -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta http-equiv="Pragma" content="no-cache">
+        <meta http-equiv="Cache-Control" content="no-cache">
+        <meta http-equiv="Expires" content="Mon, 25 Dec 2016 00:00:00 GMT">
+        <title>Student Performance UG</title>
+        <link rel="stylesheet" href="./bootstrap.css">
+        <link rel="stylesheet" href="./datepicker.css">
+        <link rel="stylesheet" href="./bootstrap-table.css">
+        <script src="./jquery-1.11.1.min.js.download"></script>
+        <script src="./bootstrap.js.download"></script>
+        <script src="./bootstrap-table.js.download"></script>
+        <script src="./bootstrap-datepicker.js.download"></script>
+        <script src="./tableExport.js.download"></script>
+        <script src="./bootstrap-table-export.js.download"></script>
+        <script src="./bootstrap-table-filter.js.download"></script>
+        <script src="./bootstrap-table-flatJSON.js.download"></script>
+        <script src="./jquery.base64.js.download"></script>
+
+        <style>
+            .mycolorsuccess{
+                background-color: #B0E0E6;
+            }
+            .mycolorfailure{
+                background-color: #FA8072;
+            }
+            .mycolorreg{
+                background-color: #F5DEB3;
+            }
+            .mycolornotreg{
+                background-color: #D8BFD8;
+            }
+            .mycolorallreg{
+                background-color: #F0FFF0;
+            }
+
+        </style>
+        <style>
+            .btn { /* just for this demo. */
+                margin-top: 5px;
+            }
+            .btn-arrow-right,
+            .btn-arrow-left {
+                position: relative;
+                padding-left: 18px;
+                padding-right: 18px;
+            }
+            .btn-arrow-right {
+                padding-left: 36px;
+            }
+            .btn-arrow-left {
+                padding-right: 36px;
+            }
+            .undlin {
+                border-bottom: 1px solid lightblue;
+                padding: 15px;
+            }
+            .btn-arrow-right:before,
+            .btn-arrow-right:after,
+            .btn-arrow-left:before,
+            .btn-arrow-left:after { /* make two squares (before and after), looking similar to the button */
+                content:"";
+                position: absolute;
+                top: 5px; /* move it down because of rounded corners */
+                width: 22px; /* same as height */
+                height: 22px; /* button_outer_height / sqrt(2) */
+                background: inherit; /* use parent background */
+                border: inherit; /* use parent border */
+                border-left-color: transparent; /* hide left border */
+                border-bottom-color: transparent; /* hide bottom border */
+                border-radius: 0px 4px 0px 0px; /* round arrow corner, the shorthand property doesn't accept "inherit" so it is set to 4px */
+                -webkit-border-radius: 0px 4px 0px 0px;
+                -moz-border-radius: 0px 4px 0px 0px;
+            }
+            .btn-arrow-right:before,
+            .btn-arrow-right:after {
+                transform: rotate(45deg); /* rotate right arrow squares 45 deg to point right */
+                -webkit-transform: rotate(45deg);
+                -moz-transform: rotate(45deg);
+                -o-transform: rotate(45deg);
+                -ms-transform: rotate(45deg);
+            }
+            .btn-arrow-left:before,
+            .btn-arrow-left:after {
+                transform: rotate(225deg); /* rotate left arrow squares 225 deg to point left */
+                -webkit-transform: rotate(225deg);
+                -moz-transform: rotate(225deg);
+                -o-transform: rotate(225deg);
+                -ms-transform: rotate(225deg);
+            }
+            .btn-arrow-right:before,
+            .btn-arrow-left:before { /* align the "before" square to the left */
+                left: -11px;
+            }
+            .btn-arrow-right:after,
+            .btn-arrow-left:after { /* align the "after" square to the right */
+                right: -11px;
+            }
+            .btn-arrow-right:after,
+            .btn-arrow-left:before { /* bring arrow pointers to front */
+                z-index: 1;
+            }
+            .btn-arrow-right:before,
+            .btn-arrow-left:after { /* hide arrow tails background */
+                background-color: white;
+            }
+
+            fieldset.scheduler-border {
+                border: 1px groove #ddd !important;
+                padding: 0 1.4em 1.4em 1.4em !important;
+                margin: 0 0 1.5em 0 !important;
+                -webkit-box-shadow:  0px 0px 0px 0px #000;
+                box-shadow:  0px 0px 0px 0px #000;
+            }
+            legend.scheduler-border {
+                font-size: 1.2em !important;
+                font-weight: bold !important;
+                text-align: left !important;
+
+            }
+        </style>
+        <script>
+
+            ///new added
+            $(function () {
+                var data_placement = "left";
+                var title = "Information";
+                var data_trigger = "hover";
+                var data_content = "<span>\n\
+               \n\<span class='badge alert-warning'><i class='glyphicon glyphicon-ok'></i></span> :Currently Registered<br>\n\
+               \n\<span class='badge alert-success'><i class='glyphicon glyphicon-ok'></i></span> :Already Registered and Cleared<br>\n\
+               \n\<span class='badge alert-danger'><i class='glyphicon glyphicon-remove'></i></span> :Already Registered and failed<br>\n\
+               \n\<span class='badge alert-danger'><i class='glyphicon glyphicon-ban-circle'></i></span> :Not Yet Registered<br>\n\
+                <span>";
+                MyPopOver("#subject_status_1", data_placement, title, data_trigger, data_content);
+                MyPopOver("#subject_status_2", data_placement, title, data_trigger, data_content);
+                MyPopOver("#subject_status_3", data_placement, title, data_trigger, data_content);
+                MyPopOver("#subject_status_4", data_placement, title, data_trigger, data_content);
+                MyPopOver("#subject_status_5", data_placement, title, data_trigger, data_content);
+                MyPopOver("#subject_status_6", data_placement, title, data_trigger, data_content);
+                MyPopOver("#subject_status_7", data_placement, title, data_trigger, data_content);
+                MyPopOver("#subject_status_8", data_placement, title, data_trigger, data_content);
+                MyPopOver("#subject_status_9", data_placement, title, data_trigger, data_content);
+                MyPopOver("#subject_status_10", data_placement, title, data_trigger, data_content);
+                MyPopOver("#subject_status_11", data_placement, title, data_trigger, data_content);
+                MyPopOver("#subject_status_12", data_placement, title, data_trigger, data_content);
+            });
+            function MyPopOver(id, data_placement, title, data_trigger, data_content) {
+                //alert("ok"+id)
+                //data-placement='top' title='INFORMATION--wor' data-trigger='hover' data-content='Worked'
+                $(id).attr("data-placement", data_placement);
+                $(id).attr("title", title);
+                $(id).attr("data-trigger", data_trigger);
+                $(id).attr("data-content", data_content);
+                $(id).popover({
+                    html: true,
+                    content: function () {
+                        return $('#popover-content').html();
+                    }
+                });
+                /*
+                 $(id).popover();
+                 * $(id).popover({
+                 html: true,
+                 content: function() {
+                 return $('#popover-content').html();
+                 }
+                 });
+                 */
+            }
+            ///end
+            $(function () {
+
+                var n = $("#showSem").val();
+                for (var i = n; i <= 12; i++) {
+                    $("#semMenu" + i).hide();
+                }
+                $("#semMenu" + n).show();
+
+                for (var i = 1; i <= 12; i++) {
+                    $("#perform_menu_" + i).hide();
+                    $("#performance" + i).hide();
+                }
+
+
+                var aliasPassPhrase = $("#aliasPassPhraseChecked").val();
+                var student_type = $("#student_type").val();
+                var performanceViewEligibility = $("#performanceViewEligibleStatus").val();
+                if (aliasPassPhrase == 'N') {
+                    $('#myModalAlias').modal('show');
+                    $("#eligibilityMsg").hide()
+                    $(".lstitemdetailsprofile").hide();
+                    // $('#myModalLabelAlias').html('Please give the Alias and Passphrase to get performance card.');                    
+                } else {
+                    if (performanceViewEligibility == 'false') {
+                        $("#eligibilityMsg").show();
+                    } else {
+                        $("#eligibilityMsg").hide();
+                        $(".lstitemdetailsprofile").show();
+                        if (student_type == 'true') {
+                            $("#academic_status_history_div").hide();
+                        }
+                    }
+                }
+
+                $("#academic_status_history").bootstrapTable('refresh', {url: "academic_status_history.htm?rollno=" + $("#rollno").val()});
+
+
+//                var request = $.ajax({
+//                    url: "student_details_ug.htm?rollno=" + $("#rollno").val(),
+//                    type: "POST",
+//                    cache: false,
+//                    dataType: "json",
+//                    success: function(json)
+//                    {
+//                        $("#name").html(json.name);
+//                        //$("#semno").text(json.semno);
+//                        $("#deptname").text(json.deptname);
+//                        $("#coursename").text(json.coursename);
+//                        $("#minor").text(json.minor_coursename);
+//                        $("#micro").text(json.micro_coursename);
+//                        $("#email").text(json.email);
+//                        $("#inst_email").text(json.inst_email);
+//                        $("#mob").text(json.mob);
+//                        $("#hallcode").text(json.hallcode);
+//                        $("#fac_adv").text(json.fac_adv);
+//                        $("#current_status_desc").text(json.current_status_desc);
+//                        $("#overall_min_crd_req").text(json.overall_min_crd_req);
+//                        $("#overall_min_sub_req").text(json.subReq);
+//                        $("#eAA").text(json.eAA);
+//                        $("#rollnoRemarks").text(json.Remarks);
+//
+//                    }
+//                });
+
+
+
+            });
+
+            function print(i) {
+                $('#pdfview').modal('show');
+                $('#pdfviewLabel').html('Performance Details');
+                $('#ifrm').attr('src', "getPDFPerformanceCard.htm?semno=" + i + "&rollno=" + $("#rollno").val());
+            }
+//New Settings
+
+            $(function () {
+                $(".lstitem").click(function () {
+                    $(".lstitem").removeClass("active");
+                    $(this).addClass("active");
+                    $(".lstitemdetails").hide();
+                    //alert($(this).attr("data-target").substr(1));
+                    var n = $("#showSem").val();
+                    if ($(this).attr("data-target").substr(1) == 'profile_menu') {
+                        $(".lstitemdetailsprofile").show();
+                        $(".lstitemdetails").hide();
+                        $(".semheadsAll").hide();
+                        $("#profile_menu").show();
+                    } else if ($(this).attr("data-target").substr(1) == 'curr_summ_menu') {
+                        $(".lstitemdetailsprofile").hide();
+                        $("#perform_summ_all").hide();
+                        //$(".lstitemdetails").show();
+                        for (var i = 1; i <= n; i++) {
+                            $("#perform_menu_" + i).hide();
+                        }
+                        $(".semheadsAll").hide();
+                        $("#profile_menu").hide();
+                        internalCurriculaSummaryPopulate();
+                    } else if ($(this).attr("data-target").substr(1) == 'curricula_all') {
+                        $(".lstitemdetailsprofile").hide();
+                        $("#perform_summ_all").hide();
+
+                        //$(".lstitemdetails").show();
+                        for (var i = 1; i <= n; i++) {
+                            $("#perform_menu_" + i).show();
+                        }
+                        $(".semheadsAll").hide();
+                        $("#profile_menu").hide();
+                        internalCurriculaSubjectPopulate();
+                    } else if ($(this).attr("data-target").substr(1) == 'perf_summ_menu') {
+                        $(".lstitemdetailsprofile").hide();
+                        $("#curr_curr_all").hide();
+                        //$(".lstitemdetails").show();
+                        for (var i = 1; i <= n; i++) {
+                            $("#perform_menu_" + i).hide();
+                        }
+                        $(".semheadsAll").hide();
+                        $("#profile_menu").hide();
+                        internalPerformenceSummaryPopulate();
+                    } else if ($(this).attr("data-target").substr(1) == 'perform_menu_all') {
+                        $(".lstitemdetailsprofile").hide();
+                        $("#perform_summ_all").hide();
+                        $("#curr_curr_all").hide();
+                        //$(".lstitemdetails").show();
+                        for (var i = 1; i <= n; i++) {
+                            $("#perform_menu_" + i).show();
+                        }
+                        $(".semheadsAll").show();
+                        $("#profile_menu").hide();
+                        internalPopulate();
+
+                    } else {
+                        $(".lstitemdetailsprofile").hide();
+                        $(".lstitemdetails").hide();
+                        $(".semheadsAll").hide();
+                        $(".semheads").show();
+                        var i = $(this).attr("data-target").substr(14);
+                        $("#perform_menu_" + i).show();
+                        $("#performance" + i).show();
+                        $("#curriculaDiv" + i).show();
+                        $("#detailsDiv" + i).show();
+                        $("#summeryDiv" + i).show();
+                        $("#curricula" + i).show();
+                        $("#details" + i).show();
+                        $("#summery" + i).show();
+                        $("#curricula" + i).bootstrapTable('refresh', {url: "student_curricula_ug.htm?semno=" + i + "&rollno=" + $("#rollno").val()});
+                        //$("#curricula" + i).hide();
+                        $("#details" + i).bootstrapTable('refresh', {url: "student_performance_details_ug.htm?semno=" + i + "&rollno=" + $("#rollno").val()});
+                        $("#summery" + i).bootstrapTable('refresh', {url: "student_performance_summery_ug.htm?semno=" + i + "&rollno=" + $("#rollno").val()});
+                    }
+                    //parent.setFrameWH();
+                });
+            });
+
+            function internalPopulate() {
+                var n = $("#showSem").val();
+                for (var i = 1; i <= n; i++) {
+
+                    $(".semheads").hide();
+                    $("#performance" + i).show();
+                    $("#curriculaDiv" + i).show();
+                    $("#detailsDiv" + i).show();
+                    $("#summeryDiv" + i).show();
+                    $("#curricula" + i).show();
+                    $("#details" + i).show();
+                    $("#summery" + i).show();
+                    $("#curricula" + i).bootstrapTable('refresh', {url: "student_curricula_ug.htm?semno=" + i + "&rollno=" + $("#rollno").val()});
+                    //$("#curricula" + i).hide();
+                    $("#details" + i).bootstrapTable('refresh', {url: "student_performance_details_ug.htm?semno=" + i + "&rollno=" + $("#rollno").val()});
+                    $("#summery" + i).bootstrapTable('refresh', {url: "student_performance_summery_ug.htm?semno=" + i + "&rollno=" + $("#rollno").val()});
+
+                }
+            }
+            function internalCurriculaSummaryPopulate() {
+                var n = $("#showSem").val();
+
+                for (var i = 1; i <= n; i++) {
+                    $(".semheads").hide();
+                    $("#performance" + i).hide();
+                }
+                $("#curr_curr_all").show();
+                $("#curriculaAll").show();
+                $("#curriculaDivAll").show();
+                $("#curriculaAll").bootstrapTable('refresh', {url: "student_curricula_ug.htm?semno=" + n + "&rollno=" + $("#rollno").val()});
+
+            }
+            function internalPerformenceSummaryPopulate() {
+                var n = $("#showSem").val();
+                for (var i = 1; i <= n; i++) {
+                    $(".semheads").hide();
+                    $("#performance" + i).hide();
+                }
+                $("#perform_summ_all").show();
+                $("#summeryDivAll").show();
+                $("#summeryAll").bootstrapTable('refresh', {url: "student_performance_summery_ug_all.htm?semno=" + n + "&rollno=" + $("#rollno").val()});
+
+            }
+            function internalCurriculaSubjectPopulate() {
+                var n = $("#showSem").val();
+                for (var i = 1; i <= n; i++) {
+                    $(".semheads").hide();
+                    $("#performance" + i).show();
+                    $("#curriculaDiv" + i).hide();
+                    $("#detailsDiv" + i).show();
+                    $("#summeryDiv" + i).hide();
+                    $("#details" + i).show();
+                    $("#details" + i).bootstrapTable('refresh', {url: "student_performance_details_ug.htm?semno=" + i + "&rollno=" + $("#rollno").val()});
+
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div class="well container-fluid">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <h4>Student Performance of 22ME10087 (Swapneel Layek)</h4><hr>                            
+                        </li>
+                    </ul>
+                </div>
+                <div class="form-group" id="edit_onroll_vertical_tab_options">  
+                    <input type="hidden" id="showSem" value="8">
+                    <input type="hidden" id="aliasPassPhraseChecked" value="Y">
+                    <input type="hidden" id="performanceViewEligibleStatus" value="true">
+                    <input type="hidden" id="rollno" value="22ME10087">
+                    <!--<input type="hidden" id="regSem" value="">-->
+                    <input type="hidden" id="maxSem" value="5">
+                    <input type="hidden" id="student_type" value="true">
+                    <input type="hidden" id="ssoToken" value="4C6ABC659F7E334510A4A5B5C8C5EBAB.worker1CE119606E2E39E34F89B1FA0E1781207.worker3Z6XZWFIP27X0U7KYX7WZT9QNUEMUH4I43OSFHTTUKKTACSR4JNLMBEKX89496AF7">
+                    <input type="hidden" id="hostUrl" name="hostUrl" value="https://erp.iitkgp.ac.in">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <ul class="list-group eventitemlist">
+                        <!--                        <li class="list-group-item active lstitem"  data-target="#profile_menu">Student Profile Details</li>-->
+
+                        <li class="list-group-item lstitem" data-target="#perform_menu_all">Curricula cum Performance</li>
+                        <li class="list-group-item lstitem" data-target="#curricula_all">Curricula Subject Details</li>
+                        <li class="list-group-item lstitem" data-target="#curr_summ_menu">Curricula Summary</li>
+                        <li class="list-group-item lstitem" data-target="#perf_summ_menu">Performance Summary</li>
+
+                        <li class="list-group-item lstitem" id="semMenu1" data-target="#perform_menu_1">Curr. and Perf. Semno 1</li>
+                        <li class="list-group-item lstitem" id="semMenu2" data-target="#perform_menu_2">Curr. and Perf. Semno 2</li>
+                        <li class="list-group-item lstitem" id="semMenu3" data-target="#perform_menu_3">Curr. and Perf. Semno 3</li>
+                        <li class="list-group-item lstitem" id="semMenu4" data-target="#perform_menu_4">Curr. and Perf. Semno 4</li>
+                        <li class="list-group-item lstitem" id="semMenu5" data-target="#perform_menu_5">Curr. and Perf. Semno 5</li>
+                        <li class="list-group-item lstitem" id="semMenu6" data-target="#perform_menu_6">Curr. and Perf. Semno 6</li>
+                        <li class="list-group-item lstitem" id="semMenu7" data-target="#perform_menu_7">Curr. and Perf. Semno 7</li>
+                        <li class="list-group-item lstitem" id="semMenu8" data-target="#perform_menu_8" style="display: block;">Curr. and Perf. Semno 8</li>
+                        <li class="list-group-item lstitem" id="semMenu9" data-target="#perform_menu_9" style="display: none;">Curr. and Perf. Semno 9</li>
+                        <li class="list-group-item lstitem" id="semMenu10" data-target="#perform_menu_10" style="display: none;">Curr. and Perf. Semno 10</li>
+                        <li class="list-group-item lstitem" id="semMenu11" data-target="#perform_menu_11" style="display: none;">Curr. and Perf. Semno 11</li>
+                        <li class="list-group-item lstitem" id="semMenu12" data-target="#perform_menu_12" style="display: none;">Curr. and Perf. Semno 12</li>
+
+
+                    </ul>
+                </div>
+                <div class="col-sm-10">
+                    <ul class="list-group">
+                        <li class="list-group-item lstitemdetails" id="eligibilityMsg" style="min-height:600px; display: none;">
+                            <div class="form-group col-md-12 col-lg-12"><h4 class="semheads">Sorry! You can not view the performance of the student 22ME10087</h4><hr>  </div>
+                        </li>           
+                        <!--                        <li class="list-group-item lstitemdetailsprofile" id="profile_menu" style="min-height:800px;">
+                                                    <h4 class="semheads">Student Details</h4><hr/>    
+                                                    <div id="profile" >
+                                                        
+                                                        
+                                                        <div class=' col-md-12 '>
+                                                            <div class="col-md-12 form-group undlin">                                    
+                                                                <label class="control-label col-md-2">Rollno :</label><div class=' col-md-2' style='margin: 0px'>22ME10087&nbsp;&nbsp;&nbsp;&nbsp;<span id="rollnoRemarks"></span></div>
+                                                                <label class="control-label col-md-1">Name :</label><div class='col-md-3' style='margin: 0px' id="name"></div>
+                                                                <label class="control-label col-md-1">Status :</label><div class='col-md-3' style='margin: 0px' id="current_status_desc"></div>
+                                                            </div>
+                                                                <hr>
+                                                            <div class="col-md-12 form-group undlin" >      
+                                                                <label class="control-label col-md-2">Allotted EAA :</label><div class='col-md-2' style='margin: 0px' id="eAA"></div>
+                                                                <label class="control-label col-md-3">Min. Subject Requirement :</label><div class='col-md-1' style='margin: 0px' id="overall_min_sub_req"></div>
+                                                                <label class="control-label col-md-3">Min. Credit Requirement :</label><div class='col-md-1' style='margin: 0px' id="overall_min_crd_req"></div>
+                                                            </div><hr>
+                                                            <div class="col-md-12 form-group undlin">      
+                                                                <label class="control-label col-md-2">Department :</label><div class='col-md-4' style='margin: 0px' id="deptname">&nbsp;</div>
+                                                                <label class="control-label col-md-2">Course Name :</label><div class='col-md-4' style='margin: 0px' id="coursename">&nbsp;</div>
+                                                            </div><hr>
+                                                            <div class="col-md-12 form-group undlin">      
+                                                                <label class="control-label col-md-2">Minor Course Name:</label><div class='col-md-4' style='margin: 0px' id="minor">&nbsp;</div>
+                                                                <label class="control-label col-md-2">Micro Course Name:</label><div class='col-md-4' style='margin: 0px' id="micro">&nbsp;</div>
+                                                            </div><hr>
+                                                            <div class="col-md-12 form-group undlin">      
+                                                                <label class="control-label col-md-2">HALL :</label><div class='col-md-4' style='margin: 0px' id="hallcode">&nbsp;</div>
+                                                                <label class="control-label col-md-2">Faculty Advisor :</label><div class='col-md-4' style='margin: 0px' id="fac_adv">&nbsp;</div>
+                                                            </div><hr>
+                                                            <div class="col-md-12 form-group undlin">      
+                                                                <label class="control-label col-md-2">Mobile No. :</label><div class='col-md-2' style='margin: 0px' id="mob">&nbsp;</div>
+                                                                <label class="control-label col-md-2">Email :</label><div class='col-md-2' style='margin: 0px' id="email">&nbsp;</div>
+                                                                <label class="control-label col-md-2">Institute Email :</label><div class='col-md-2' style='margin: 0px' id="inst_email">&nbsp;</div>
+                                                            </div><hr>
+                                                        </div>
+                                                        <div class='form-group col-md-12 col-lg-12' id="academic_status_history_div">
+                                                            <legend>Academic Status History</legend>
+                                                            <table id="academic_status_history" data-toggle="table"   data-method="post"
+                                                                   data-cache="false" data-sort-order="asc"                           
+                                                                   class="table table-bordered table-condensed table-hover" >
+                                                                <thead class="bg-info">
+                                                                    <tr>
+                                                                        <th data-field="backlog" class="hidden">Backlog</th>
+                                                                        <th data-formatter="backStatus"  data-align="center" data-events="backStatusEvent">Backlog</th>
+                                                                        <th  data-field="unregister" class="hidden">Unregister</th>
+                                                                        <th  data-field="deregistration" class="hidden">De Registration</th>
+                                                                        <th  data-formatter="deregStatus"  data-align="center" data-events="deregEvent">De Registration</th>
+                                                                        <th  data-field="malpractise" class="hidden">Exam Malpractice</th>
+                                                                        <th  data-formatter="examMalStatus"  data-align="center" data-events="examMalEvent">Exam Malpractice</th>
+                                                                        <th  data-field="supplementary" class="hidden">Supplementary</th>
+                                                                        <th  data-formatter="suppStatus"  data-align="center" data-events="suppStatusEvent">Supplementary</th>
+                                                                        <th  data-field="repeat" class="hidden">Repeat Year</th>
+                                                                        <th  data-formatter="repeatStatus"  data-align="center" data-events="repeatEvent" >Repeat Year</th>
+                                                                        <th  data-field="weak" class="hidden">Weak category</th>
+                                                                        <th  data-formatter="weakStatus"  data-align="center" data-events="weakEvent" >Weak category</th>
+                                                                    </tr>
+                                                                </thead>                            
+                                                            </table>
+                                                        </div>
+                                                        <script>
+                                                            function backStatus(value, row, index) {
+                                                                var View_Details = ' <span class="btn btn-link backlogevt" > ' + row.backlog + '</span>';
+                                                                var button_array = [];
+                                                                button_array[button_array.length] = View_Details;
+                                                                return button_array.join('');
+                                                            }
+                                                            window.backStatusEvent = {
+                                                                'click .backlogevt': function(e, value, row, index) {
+                                                                    //alert(row.fac_mail_count);
+                                                                    $('#myModal1').modal('show');
+                                                                    $('#myModalLabel1').html('Backlog History of ' + $("#rollno").val());
+                                                                    //$('#mailDetails').attr('data-url','weak_student_mail_details.htm');
+                                                                    $('#backlogDetails').bootstrapTable('refresh', {url: 'backlog_history_details.htm?rollno=' + $("#rollno").val()});
+                        
+                                                                }
+                                                            };
+                                                            function deregStatus(value, row, index) {
+                                                                var View_Details = ' <span class="btn btn-link deregevt" > ' + row.deregistration + '</span>';
+                                                                var button_array = [];
+                                                                button_array[button_array.length] = View_Details;
+                                                                return button_array.join('');
+                                                            }
+                                                            window.deregEvent = {
+                                                                'click .deregevt': function(e, value, row, index) {
+                                                                    //alert(row.fac_mail_count);
+                                                                    $('#myModal3').modal('show');
+                                                                    $('#myModalLabel3').html('Deregistration History of ' + $("#rollno").val());
+                                                                    //$('#mailDetails').attr('data-url','weak_student_mail_details.htm');
+                                                                    $('#deregistrationDetails').bootstrapTable('refresh', {url: 'deregistration_details.htm?rollno=' + $("#rollno").val()});
+                        
+                                                                }
+                                                            };
+                                                            function examMalStatus(value, row, index) {
+                                                                var View_Details = ' <span class="btn btn-link examMalevt" > ' + row.malpractise + '</span>';
+                                                                var button_array = [];
+                                                                button_array[button_array.length] = View_Details;
+                                                                return button_array.join('');
+                                                            }
+                                                            window.examMalEvent = {
+                                                                'click .examMalevt': function(e, value, row, index) {
+                                                                    //alert(row.fac_mail_count);
+                                                                    $('#myModal4').modal('show');
+                                                                    $('#myModalLabel4').html('Exam malpractice History of ' + $("#rollno").val());
+                                                                    //$('#mailDetails').attr('data-url','weak_student_mail_details.htm');
+                                                                    $('#examMalDetails').bootstrapTable('refresh', {url: 'exam_mal_details.htm?rollno=' + $("#rollno").val()});
+                        
+                                                                }
+                                                            };
+                                                            function repeatStatus(value, row, index) {
+                                                                var View_Details = ' <span class="btn btn-link repeatevt" > ' + row.repeat + '</span>';
+                                                                var button_array = [];
+                                                                button_array[button_array.length] = View_Details;
+                                                                return button_array.join('');
+                                                            }
+                                                            window.repeatEvent = {
+                                                                'click .repeatevt': function(e, value, row, index) {
+                                                                    //alert(row.fac_mail_count);
+                                                                    $('#myModal5').modal('show');
+                                                                    $('#myModalLabel5').html('Repeat History of ' + $("#rollno").val());
+                                                                    //$('#mailDetails').attr('data-url','weak_student_mail_details.htm');
+                                                                    $('#repeatDetails').bootstrapTable('refresh', {url: 'repeat_details.htm?rollno=' + $("#rollno").val()});
+                        
+                                                                }
+                                                            };
+                                                            function weakStatus(value, row, index) {
+                                                                var View_Details = ' <span class="btn btn-link weakevt" > ' + row.weak + '</span>';
+                                                                var button_array = [];
+                                                                button_array[button_array.length] = View_Details;
+                                                                return button_array.join('');
+                                                            }
+                                                            window.weakEvent = {
+                                                                'click .weakevt': function(e, value, row, index) {
+                                                                    //alert(row.fac_mail_count);
+                                                                    $('#myModal6').modal('show');
+                                                                    $('#myModalLabel6').html('Weak Status History of ' + $("#rollno").val());
+                                                                    //$('#mailDetails').attr('data-url','weak_student_mail_details.htm');
+                                                                    $('#weakDetails').bootstrapTable('refresh', {url: 'weak_details.htm?rollno=' + $("#rollno").val()});
+                        
+                                                                }
+                                                            };
+                                                            function suppStatus(value, row, index) {
+                                                                var View_Details = ' <span class="btn btn-link suppevt" > ' + row.supplementary + '</span>';
+                                                                var button_array = [];
+                                                                button_array[button_array.length] = View_Details;
+                                                                return button_array.join('');
+                                                            }
+                                                            window.suppStatusEvent = {
+                                                                'click .suppevt': function(e, value, row, index) {
+                                                                    //alert(row.fac_mail_count);
+                                                                    $('#myModal2').modal('show');
+                                                                    $('#myModalLabel2').html('Supplementary Registration History of ' + $("#rollno").val());
+                                                                    //$('#mailDetails').attr('data-url','weak_student_mail_details.htm');
+                                                                    $('#supplementaryDetails').bootstrapTable('refresh', {url: 'supplementary_history_details.htm?rollno=' + $("#rollno").val()});
+                        
+                                                                }
+                                                            };
+                                                        </script>
+                                                    </div>
+                                                </li>           -->
+                        <li class="list-group-item lstitemdetails" id="perform_menu_1" style="min-height:100px;display: none;overflow: auto;">
+                            <h4 class="semheads">Curricula and Performance Details of Semester 1<div id="printDiv1" class="form-group btn btn-warning badge" onclick="print(&#39;1&#39;);"> <span class="glyphicon glyphicon-print "></span> print</div></h4><hr>
+                            <h4 class="semheadsAll">Curricula and Performance Details<div id="printDiv1" class="form-group btn btn-warning badge" onclick="print(&#39;0&#39;);"> <span class="glyphicon glyphicon-print "></span> print</div></h4><hr>
+                            <div id="performance1" style="display: none;">
+                                <div class="col-lg-12 well well-sm" id="curriculaDiv1">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="curricula1" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" data-visible="false" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-info">
+                                            <tr><th style=""><div class="th-inner ">Subjects Count (Semno - 1)</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth CORE</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth/Breadth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Breadth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">HSS-Breadth</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Project</div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="7">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div> 
+                                </div>
+                                <div class="col-lg-12 well well-sm" id="detailsDiv1">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="details1" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-danger">
+                                            <tr><th style=""><div class="th-inner ">Subno(sem-1)</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Subject Name</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Sub. Type</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">L-T-P</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Credit</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Reg. Sem.
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Registered semester No." data-trigger="hover" data-content="Registered semester No."></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Registered Session.
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="SP: SPRING, AU: AUTUMN, SP : SUPPLEMENTARY,  SP: SUMMER QUARTER, A : END SEM. EXAM. ABSENT, P : END SEM. EXAM. PRESENT, MW : MEDICAL WITHDRAWAL, Data Pattern : Semester-Session-(End Semeter Attendence). Example, AU-09-10(P) : AUTUMN,2009-2010 (Present) SP-12-13(P) : SPRING,2012-2013 (Present) SE-13-14(A) : SUPPLEMENTARY,2013-2014 (Absent),  SQ-13-14(A) : SUMMER QUARTER, 2013-2014 (Present)" data-trigger="hover" data-content="SP: SPRING, AU: AUTUMN, SP : SUPPLEMENTARY,  SP: SUMMER QUARTER, A : END SEM. EXAM. ABSENT, P : END SEM. EXAM. PRESENT, MW : MEDICAL WITHDRAWAL, Data Pattern : Semester-Session-(End Semeter Attendence). Example, AU-09-10(P) : AUTUMN,2009-2010 (Present) SP-12-13(P) : SPRING,2012-2013 (Present) SE-13-14(A) : SUPPLEMENTARY,2013-2014 (Absent),  SQ-13-14(A) : SUMMER QUARTER, 2013-2014 (Present)"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Grade</div><div class="fht-cell"></div></th><th class="hidden" style=""><div class="th-inner ">Reg. Status.</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Subject Status
+                                                    <span id="subject_status_1" data-toggle="popover" data-placement="left" title="" data-trigger="hover" data-content="&lt;span&gt;
+               
+&lt;span class=&#39;badge alert-warning&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ok&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Currently Registered&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-success&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ok&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Already Registered and Cleared&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-danger&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-remove&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Already Registered and failed&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-danger&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ban-circle&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Not Yet Registered&lt;br&gt;
+                &lt;span&gt;" data-original-title="Information"><span class="badge alert-info btn"><i class="glyphicon glyphicon-info-sign"></i></span></span></div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="10">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div> 
+                                    <script>
+                                        function subjectStatus(value, row, index) {
+                                            var View_Details = '';
+                                            if (row.reg_status.toString().trim() === "Y") {
+                                                //View_Details = ' <img id="sub_status" src="./images/Clear-Tick-icon.png"  style="width:20px;height:15px;" valign="middle" />';
+                                                View_Details = ' <span class="badge alert-warning"><i class="glyphicon glyphicon-ok"></i></span>';
+                                            } else if (row.reg_status.toString().trim() === "F") {
+                                                View_Details = ' <span class="badge alert-danger"><i class="glyphicon glyphicon-remove"></i></span>';
+                                            } else if (row.reg_status.toString().trim() === "P") {
+                                                View_Details = ' <span class="badge alert-success"><i class="glyphicon glyphicon-ok"></i></span>';
+                                            } else {
+                                                View_Details = ' <span class="badge alert-danger"><i class="glyphicon glyphicon-ban-circle"></i></span>';
+                                            }
+
+                                            var button_array = [];
+                                            button_array[button_array.length] = View_Details;
+                                            return button_array.join('');
+                                        }
+
+                                    </script>
+                                </div>
+
+                                <div class="col-lg-12 well well-sm" id="summeryDiv1">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="summery1" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-success">
+                                            <tr><th style=""><div class="th-inner ">Performance Summary</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">TCT - TCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Total Credit Taken - Total Credit Cleared" data-trigger="hover" data-content="Total Credit Taken - Total Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">SCT - SCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Semester Credit Taken - Semester Credit Cleared" data-trigger="hover" data-content="Semester Credit Taken - Semester Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">NCGPA - CGPA - SGPA
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Notional Cumulative Grade Point Average - Cumulative Grade Point Average - Semester Grade Point Average" data-trigger="hover" data-content="Notional Cumulative Grade Point Average - Cumulative Grade Point Average - Semester Grade Point Average"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ATCT - ATCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Total Credit Taken - Additional Total Credit Cleared" data-trigger="hover" data-content="Additional Total Credit Taken - Additional Total Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ASCT - ASCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Semester Credit Taken - Additional Semester Credit Cleared" data-trigger="hover" data-content="Additional Semester Credit Taken - Additional Semester Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ACGPA - ASGPA
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Cumulative Grade Point Average - Additional Semester Grade Point Average" data-trigger="hover" data-content="Additional Cumulative Grade Point Average - Additional Semester Grade Point Average"></span>
+                                                </div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="7">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </li>   
+                        <li class="list-group-item lstitemdetails" id="perform_menu_2" style="min-height:100px;display: none;overflow: auto;">
+                            <h4 class="semheads">Curricula and Performance Details of Semester 2<div class="form-group btn btn-warning badge" id="printDiv2" onclick="print(&#39;2&#39;);"> <span class="glyphicon glyphicon-print "></span> print</div></h4><hr>
+                            <div id="performance2" style="display: none;">
+                                <div class="col-lg-12 well well-sm" id="curriculaDiv2">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="curricula2" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" data-visible="false" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-info">
+                                            <tr><th style=""><div class="th-inner ">Subjects Count (Semno - 2)</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth CORE</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth/Breadth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Breadth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">HSS-Breadth</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Project</div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="7">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div> 
+                                </div>
+                                <div class="col-lg-12 well well-sm" id="detailsDiv2">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="details2" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" data-row-style="rowStyle" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-danger">
+                                            <tr><th style=""><div class="th-inner ">Subno(sem-2)</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Subject Name</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Sub. Type</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">L-T-P</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Credit</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Reg. Sem.
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Registered semester No." data-trigger="hover" data-content="Registered semester No."></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Registered Session.
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="SP: SPRING, AU: AUTUMN, SP : SUPPLEMENTARY,  SP: SUMMER QUARTER, A : END SEM. EXAM. ABSENT, P : END SEM. EXAM. PRESENT, MW : MEDICAL WITHDRAWAL, Data Pattern : Semester-Session-(End Semeter Attendence). Example, AU-09-10(P) : AUTUMN,2009-2010 (Present) SP-12-13(P) : SPRING,2012-2013 (Present) SE-13-14(A) : SUPPLEMENTARY,2013-2014 (Absent),  SQ-13-14(A) : SUMMER QUARTER, 2013-2014 (Present)" data-trigger="hover" data-content="SP: SPRING, AU: AUTUMN, SP : SUPPLEMENTARY,  SP: SUMMER QUARTER, A : END SEM. EXAM. ABSENT, P : END SEM. EXAM. PRESENT, MW : MEDICAL WITHDRAWAL, Data Pattern : Semester-Session-(End Semeter Attendence). Example, AU-09-10(P) : AUTUMN,2009-2010 (Present) SP-12-13(P) : SPRING,2012-2013 (Present) SE-13-14(A) : SUPPLEMENTARY,2013-2014 (Absent),  SQ-13-14(A) : SUMMER QUARTER, 2013-2014 (Present)"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Grade</div><div class="fht-cell"></div></th><th class="hidden" style=""><div class="th-inner ">Reg. Status.</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Subject Status
+                                                    <span id="subject_status_2" data-toggle="popover" data-placement="left" title="" data-trigger="hover" data-content="&lt;span&gt;
+               
+&lt;span class=&#39;badge alert-warning&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ok&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Currently Registered&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-success&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ok&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Already Registered and Cleared&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-danger&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-remove&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Already Registered and failed&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-danger&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ban-circle&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Not Yet Registered&lt;br&gt;
+                &lt;span&gt;" data-original-title="Information"><span class="badge alert-info btn"><i class="glyphicon glyphicon-info-sign"></i></span></span></div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="10">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div> 
+
+                                </div>
+
+                                <div class="col-lg-12 well well-sm" id="summeryDiv2">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="summery2" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-success">
+                                            <tr><th style=""><div class="th-inner ">Performance Summary</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">TCT - TCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Total Credit Taken - Total Credit Cleared" data-trigger="hover" data-content="Total Credit Taken - Total Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">SCT - SCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Semester Credit Taken - Semester Credit Cleared" data-trigger="hover" data-content="Semester Credit Taken - Semester Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">NCGPA - CGPA - SGPA
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Notional Cumulative Grade Point Average - Cumulative Grade Point Average - Semester Grade Point Average" data-trigger="hover" data-content="Notional Cumulative Grade Point Average - Cumulative Grade Point Average - Semester Grade Point Average"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ATCT - ATCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Total Credit Taken - Additional Total Credit Cleared" data-trigger="hover" data-content="Additional Total Credit Taken - Additional Total Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ASCT - ASCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Semester Credit Taken - Additional Semester Credit Cleared" data-trigger="hover" data-content="Additional Semester Credit Taken - Additional Semester Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ACGPA - ASGPA
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Cumulative Grade Point Average - Additional Semester Grade Point Average" data-trigger="hover" data-content="Additional Cumulative Grade Point Average - Additional Semester Grade Point Average"></span>
+                                                </div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="7">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item lstitemdetails" id="perform_menu_3" style="min-height:100px;display: none;overflow: auto;">
+                            <h4 class="semheads">Curricula and Performance Details of Semester 3<div class="form-group btn btn-warning badge" id="printDiv3" onclick="print(&#39;3&#39;);"> <span class="glyphicon glyphicon-print "></span> print</div></h4><hr>
+                            <div id="performance3" style="display: none;">
+                                <div class="col-lg-12 well well-sm" id="curriculaDiv3">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="curricula3" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" data-visible="false" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-info">
+                                            <tr><th style=""><div class="th-inner ">Subjects Count (Semno - 3)</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth CORE</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth/Breadth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Breadth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">HSS-Breadth</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Project</div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="7">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div> 
+                                </div>
+                                <div class="col-lg-12 well well-sm" id="detailsDiv3">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="details3" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" data-row-style="rowStyle" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-danger">
+                                            <tr><th style=""><div class="th-inner ">Subno(sem-3)</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Subject Name</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Sub. Type</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">L-T-P</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Credit</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Reg. Sem.
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Registered semester No." data-trigger="hover" data-content="Registered semester No."></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Registered Session
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="SP: SPRING, AU: AUTUMN, SP : SUPPLEMENTARY,  SP: SUMMER QUARTER, A : END SEM. EXAM. ABSENT, P : END SEM. EXAM. PRESENT, MW : MEDICAL WITHDRAWAL, Data Pattern : Semester-Session-(End Semeter Attendence). Example, AU-09-10(P) : AUTUMN,2009-2010 (Present) SP-12-13(P) : SPRING,2012-2013 (Present) SE-13-14(A) : SUPPLEMENTARY,2013-2014 (Absent),  SQ-13-14(A) : SUMMER QUARTER, 2013-2014 (Present)" data-trigger="hover" data-content="SP: SPRING, AU: AUTUMN, SP : SUPPLEMENTARY,  SP: SUMMER QUARTER, A : END SEM. EXAM. ABSENT, P : END SEM. EXAM. PRESENT, MW : MEDICAL WITHDRAWAL, Data Pattern : Semester-Session-(End Semeter Attendence). Example, AU-09-10(P) : AUTUMN,2009-2010 (Present) SP-12-13(P) : SPRING,2012-2013 (Present) SE-13-14(A) : SUPPLEMENTARY,2013-2014 (Absent),  SQ-13-14(A) : SUMMER QUARTER, 2013-2014 (Present)"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Grade</div><div class="fht-cell"></div></th><th class="hidden" style=""><div class="th-inner ">Reg. Status.</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Subject Status
+                                                    <span id="subject_status_3" data-toggle="popover" data-placement="left" title="" data-trigger="hover" data-content="&lt;span&gt;
+               
+&lt;span class=&#39;badge alert-warning&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ok&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Currently Registered&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-success&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ok&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Already Registered and Cleared&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-danger&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-remove&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Already Registered and failed&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-danger&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ban-circle&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Not Yet Registered&lt;br&gt;
+                &lt;span&gt;" data-original-title="Information"><span class="badge alert-info btn"><i class="glyphicon glyphicon-info-sign"></i></span></span></div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="10">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div> 
+
+                                </div>
+
+                                <div class="col-lg-12 well well-sm" id="summeryDiv3">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="summery3" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-success">
+                                            <tr><th style=""><div class="th-inner ">Performance Summary</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">TCT - TCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Total Credit Taken - Total Credit Cleared" data-trigger="hover" data-content="Total Credit Taken - Total Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">SCT - SCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Semester Credit Taken - Semester Credit Cleared" data-trigger="hover" data-content="Semester Credit Taken - Semester Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">NCGPA - CGPA - SGPA
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Notional Cumulative Grade Point Average - Cumulative Grade Point Average - Semester Grade Point Average" data-trigger="hover" data-content="Notional Cumulative Grade Point Average - Cumulative Grade Point Average - Semester Grade Point Average"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ATCT - ATCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Total Credit Taken - Additional Total Credit Cleared" data-trigger="hover" data-content="Additional Total Credit Taken - Additional Total Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ASCT - ASCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Semester Credit Taken - Additional Semester Credit Cleared" data-trigger="hover" data-content="Additional Semester Credit Taken - Additional Semester Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ACGPA - ASGPA
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Cumulative Grade Point Average - Additional Semester Grade Point Average" data-trigger="hover" data-content="Additional Cumulative Grade Point Average - Additional Semester Grade Point Average"></span>
+                                                </div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="7">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item lstitemdetails" id="perform_menu_4" style="min-height:100px;display: none;overflow: auto;">
+                            <h4 class="semheads">Curricula and Performance Details of Semester 4<div class="form-group btn btn-warning badge" id="printDiv4" onclick="print(&#39;4&#39;);"> <span class="glyphicon glyphicon-print "></span> print</div></h4><hr>
+                            <div id="performance4" style="display: none;">
+                                <div class="col-lg-12 well well-sm" id="curriculaDiv4">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="curricula4" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" data-visible="false" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-info">
+                                            <tr><th style=""><div class="th-inner ">Subjects Count (Semno - 4)</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth CORE</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth/Breadth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Breadth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">HSS-Breadth</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Project</div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="7">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div> 
+                                </div>
+                                <div class="col-lg-12 well well-sm" id="detailsDiv4">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="details4" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" data-row-style="rowStyle" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-danger">
+                                            <tr><th style=""><div class="th-inner ">Subno(sem-4)</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Subject Name</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Sub. Type</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">L-T-P</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Credit</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Reg. Sem.
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Registered semester No." data-trigger="hover" data-content="Registered semester No."></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Registered Session
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="SP: SPRING, AU: AUTUMN, SP : SUPPLEMENTARY,  SP: SUMMER QUARTER, A : END SEM. EXAM. ABSENT, P : END SEM. EXAM. PRESENT, MW : MEDICAL WITHDRAWAL, Data Pattern : Semester-Session-(End Semeter Attendence). Example, AU-09-10(P) : AUTUMN,2009-2010 (Present) SP-12-13(P) : SPRING,2012-2013 (Present) SE-13-14(A) : SUPPLEMENTARY,2013-2014 (Absent),  SQ-13-14(A) : SUMMER QUARTER, 2013-2014 (Present)" data-trigger="hover" data-content="SP: SPRING, AU: AUTUMN, SP : SUPPLEMENTARY,  SP: SUMMER QUARTER, A : END SEM. EXAM. ABSENT, P : END SEM. EXAM. PRESENT, MW : MEDICAL WITHDRAWAL, Data Pattern : Semester-Session-(End Semeter Attendence). Example, AU-09-10(P) : AUTUMN,2009-2010 (Present) SP-12-13(P) : SPRING,2012-2013 (Present) SE-13-14(A) : SUPPLEMENTARY,2013-2014 (Absent),  SQ-13-14(A) : SUMMER QUARTER, 2013-2014 (Present)"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Grade</div><div class="fht-cell"></div></th><th class="hidden" style=""><div class="th-inner ">Reg. Status.</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Subject Status
+                                                    <span id="subject_status_4" data-toggle="popover" data-placement="left" title="" data-trigger="hover" data-content="&lt;span&gt;
+               
+&lt;span class=&#39;badge alert-warning&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ok&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Currently Registered&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-success&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ok&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Already Registered and Cleared&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-danger&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-remove&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Already Registered and failed&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-danger&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ban-circle&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Not Yet Registered&lt;br&gt;
+                &lt;span&gt;" data-original-title="Information"><span class="badge alert-info btn"><i class="glyphicon glyphicon-info-sign"></i></span></span></div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="10">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div> 
+
+                                </div>
+
+                                <div class="col-lg-12 well well-sm" id="summeryDiv4">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="summery4" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-success">
+                                            <tr><th style=""><div class="th-inner ">Performance Summary</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">TCT - TCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Total Credit Taken - Total Credit Cleared" data-trigger="hover" data-content="Total Credit Taken - Total Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">SCT - SCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Semester Credit Taken - Semester Credit Cleared" data-trigger="hover" data-content="Semester Credit Taken - Semester Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">NCGPA - CGPA - SGPA
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Notional Cumulative Grade Point Average - Cumulative Grade Point Average - Semester Grade Point Average" data-trigger="hover" data-content="Notional Cumulative Grade Point Average - Cumulative Grade Point Average - Semester Grade Point Average"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ATCT - ATCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Total Credit Taken - Additional Total Credit Cleared" data-trigger="hover" data-content="Additional Total Credit Taken - Additional Total Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ASCT - ASCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Semester Credit Taken - Additional Semester Credit Cleared" data-trigger="hover" data-content="Additional Semester Credit Taken - Additional Semester Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ACGPA - ASGPA
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Cumulative Grade Point Average - Additional Semester Grade Point Average" data-trigger="hover" data-content="Additional Cumulative Grade Point Average - Additional Semester Grade Point Average"></span>
+                                                </div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="7">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item lstitemdetails" id="perform_menu_5" style="min-height:100px;display: none;overflow: auto;">
+                            <h4 class="semheads">Curricula and Performance Details of Semester 5<div class="form-group btn btn-warning badge" id="printDiv5" onclick="print(&#39;5&#39;);"> <span class="glyphicon glyphicon-print "></span> print</div></h4><hr>
+                            <div id="performance5" style="display: none;">
+                                <div class="col-lg-12 well well-sm" id="curriculaDiv5">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="curricula5" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" data-visible="false" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-info">
+                                            <tr><th style=""><div class="th-inner ">Subjects Count (Semno - 5)</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth CORE</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth/Breadth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Breadth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">HSS-Breadth</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Project</div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="7">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div> 
+                                </div>
+                                <div class="col-lg-12 well well-sm" id="detailsDiv5">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="details5" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" data-row-style="rowStyle" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-danger">
+                                            <tr><th style=""><div class="th-inner ">Subno(sem-5)</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Subject Name</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Sub. Type</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">L-T-P</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Credit</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Reg. Sem.
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Registered semester No." data-trigger="hover" data-content="Registered semester No."></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Registered Session
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="SP: SPRING, AU: AUTUMN, SP : SUPPLEMENTARY,  SP: SUMMER QUARTER, A : END SEM. EXAM. ABSENT, P : END SEM. EXAM. PRESENT, MW : MEDICAL WITHDRAWAL, Data Pattern : Semester-Session-(End Semeter Attendence). Example, AU-09-10(P) : AUTUMN,2009-2010 (Present) SP-12-13(P) : SPRING,2012-2013 (Present) SE-13-14(A) : SUPPLEMENTARY,2013-2014 (Absent),  SQ-13-14(A) : SUMMER QUARTER, 2013-2014 (Present)" data-trigger="hover" data-content="SP: SPRING, AU: AUTUMN, SP : SUPPLEMENTARY,  SP: SUMMER QUARTER, A : END SEM. EXAM. ABSENT, P : END SEM. EXAM. PRESENT, MW : MEDICAL WITHDRAWAL, Data Pattern : Semester-Session-(End Semeter Attendence). Example, AU-09-10(P) : AUTUMN,2009-2010 (Present) SP-12-13(P) : SPRING,2012-2013 (Present) SE-13-14(A) : SUPPLEMENTARY,2013-2014 (Absent),  SQ-13-14(A) : SUMMER QUARTER, 2013-2014 (Present)"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Grade</div><div class="fht-cell"></div></th><th class="hidden" style=""><div class="th-inner ">Reg. Status.</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Subject Status
+                                                    <span id="subject_status_5" data-toggle="popover" data-placement="left" title="" data-trigger="hover" data-content="&lt;span&gt;
+               
+&lt;span class=&#39;badge alert-warning&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ok&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Currently Registered&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-success&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ok&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Already Registered and Cleared&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-danger&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-remove&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Already Registered and failed&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-danger&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ban-circle&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Not Yet Registered&lt;br&gt;
+                &lt;span&gt;" data-original-title="Information"><span class="badge alert-info btn"><i class="glyphicon glyphicon-info-sign"></i></span></span></div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="10">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div> 
+
+                                </div>
+
+                                <div class="col-lg-12 well well-sm" id="summeryDiv5">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="summery5" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-success">
+                                            <tr><th style=""><div class="th-inner ">Performance Summary</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">TCT - TCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Total Credit Taken - Total Credit Cleared" data-trigger="hover" data-content="Total Credit Taken - Total Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">SCT - SCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Semester Credit Taken - Semester Credit Cleared" data-trigger="hover" data-content="Semester Credit Taken - Semester Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">NCGPA - CGPA - SGPA
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Notional Cumulative Grade Point Average - Cumulative Grade Point Average - Semester Grade Point Average" data-trigger="hover" data-content="Notional Cumulative Grade Point Average - Cumulative Grade Point Average - Semester Grade Point Average"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ATCT - ATCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Total Credit Taken - Additional Total Credit Cleared" data-trigger="hover" data-content="Additional Total Credit Taken - Additional Total Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ASCT - ASCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Semester Credit Taken - Additional Semester Credit Cleared" data-trigger="hover" data-content="Additional Semester Credit Taken - Additional Semester Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ACGPA - ASGPA
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Cumulative Grade Point Average - Additional Semester Grade Point Average" data-trigger="hover" data-content="Additional Cumulative Grade Point Average - Additional Semester Grade Point Average"></span>
+                                                </div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="7">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item lstitemdetails" id="perform_menu_6" style="min-height:100px;display: none;overflow: auto;">
+                            <h4 class="semheads">Curricula and Performance Details of Semester 6<div class="form-group btn btn-warning badge" id="printDiv6" onclick="print(&#39;6&#39;);"> <span class="glyphicon glyphicon-print "></span> print</div></h4><hr>
+                            <div id="performance6" style="display: none;">
+                                <div class="col-lg-12 well well-sm" id="curriculaDiv6">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="curricula6" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" data-visible="false" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-info">
+                                            <tr><th style=""><div class="th-inner ">Subjects Count (Semno - 6)</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth CORE</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth/Breadth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Breadth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">HSS-Breadth</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Project</div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="7">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div> 
+                                </div>
+                                <div class="col-lg-12 well well-sm" id="detailsDiv6">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="details6" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" data-row-style="rowStyle" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-danger">
+                                            <tr><th style=""><div class="th-inner ">Subno(sem-6)</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Subject Name</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Sub. Type</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">L-T-P</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Credit</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Reg. Sem.
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Registered semester No." data-trigger="hover" data-content="Registered semester No."></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Registered Session
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="SP: SPRING, AU: AUTUMN, SP : SUPPLEMENTARY,  SP: SUMMER QUARTER, A : END SEM. EXAM. ABSENT, P : END SEM. EXAM. PRESENT, MW : MEDICAL WITHDRAWAL, Data Pattern : Semester-Session-(End Semeter Attendence). Example, AU-09-10(P) : AUTUMN,2009-2010 (Present) SP-12-13(P) : SPRING,2012-2013 (Present) SE-13-14(A) : SUPPLEMENTARY,2013-2014 (Absent),  SQ-13-14(A) : SUMMER QUARTER, 2013-2014 (Present)" data-trigger="hover" data-content="SP: SPRING, AU: AUTUMN, SP : SUPPLEMENTARY,  SP: SUMMER QUARTER, A : END SEM. EXAM. ABSENT, P : END SEM. EXAM. PRESENT, MW : MEDICAL WITHDRAWAL, Data Pattern : Semester-Session-(End Semeter Attendence). Example, AU-09-10(P) : AUTUMN,2009-2010 (Present) SP-12-13(P) : SPRING,2012-2013 (Present) SE-13-14(A) : SUPPLEMENTARY,2013-2014 (Absent),  SQ-13-14(A) : SUMMER QUARTER, 2013-2014 (Present)"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Grade</div><div class="fht-cell"></div></th><th class="hidden" style=""><div class="th-inner ">Reg. Status.</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Subject Status
+                                                    <span id="subject_status_6" data-toggle="popover" data-placement="left" title="" data-trigger="hover" data-content="&lt;span&gt;
+               
+&lt;span class=&#39;badge alert-warning&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ok&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Currently Registered&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-success&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ok&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Already Registered and Cleared&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-danger&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-remove&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Already Registered and failed&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-danger&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ban-circle&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Not Yet Registered&lt;br&gt;
+                &lt;span&gt;" data-original-title="Information"><span class="badge alert-info btn"><i class="glyphicon glyphicon-info-sign"></i></span></span></div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="10">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div> 
+
+                                </div>
+
+                                <div class="col-lg-12 well well-sm" id="summeryDiv6">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="summery6" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-success">
+                                            <tr><th style=""><div class="th-inner ">Performance Summary</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">TCT - TCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Total Credit Taken - Total Credit Cleared" data-trigger="hover" data-content="Total Credit Taken - Total Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">SCT - SCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Semester Credit Taken - Semester Credit Cleared" data-trigger="hover" data-content="Semester Credit Taken - Semester Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">NCGPA - CGPA - SGPA
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Notional Cumulative Grade Point Average - Cumulative Grade Point Average - Semester Grade Point Average" data-trigger="hover" data-content="Notional Cumulative Grade Point Average - Cumulative Grade Point Average - Semester Grade Point Average"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ATCT - ATCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Total Credit Taken - Additional Total Credit Cleared" data-trigger="hover" data-content="Additional Total Credit Taken - Additional Total Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ASCT - ASCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Semester Credit Taken - Additional Semester Credit Cleared" data-trigger="hover" data-content="Additional Semester Credit Taken - Additional Semester Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ACGPA - ASGPA
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Cumulative Grade Point Average - Additional Semester Grade Point Average" data-trigger="hover" data-content="Additional Cumulative Grade Point Average - Additional Semester Grade Point Average"></span>
+                                                </div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="7">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item lstitemdetails" id="perform_menu_7" style="min-height:100px;display: none;overflow: auto;">
+                            <h4 class="semheads">Curricula and Performance Details of Semester 7<div class="form-group btn btn-warning badge" id="printDiv7" onclick="print(&#39;7&#39;);"> <span class="glyphicon glyphicon-print "></span> print</div></h4><hr>
+                            <div id="performance7" style="display: none;">
+                                <div class="col-lg-12 well well-sm" id="curriculaDiv7">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="curricula7" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" data-visible="false" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-info">
+                                        <tr><th style=""><div class="th-inner ">Subjects Count (Semno - 7)</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth CORE</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth/Breadth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Breadth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">HSS-Breadth</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Project</div><div class="fht-cell"></div></th></tr></thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="7">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div> 
+                                </div>
+                                -
+                                <div class="col-lg-12 well well-sm" id="detailsDiv7">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="details7" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" data-row-style="rowStyle" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-danger">
+                                            <tr><th style=""><div class="th-inner ">Subno(sem-7)</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Subject Name</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Sub. Type</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">L-T-P</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Credit</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Reg. Sem.
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Registered semester No." data-trigger="hover" data-content="Registered semester No."></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Registered Session
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="SP: SPRING, AU: AUTUMN, SP : SUPPLEMENTARY,  SP: SUMMER QUARTER, A : END SEM. EXAM. ABSENT, P : END SEM. EXAM. PRESENT, MW : MEDICAL WITHDRAWAL, Data Pattern : Semester-Session-(End Semeter Attendence). Example, AU-09-10(P) : AUTUMN,2009-2010 (Present) SP-12-13(P) : SPRING,2012-2013 (Present) SE-13-14(A) : SUPPLEMENTARY,2013-2014 (Absent),  SQ-13-14(A) : SUMMER QUARTER, 2013-2014 (Present)" data-trigger="hover" data-content="SP: SPRING, AU: AUTUMN, SP : SUPPLEMENTARY,  SP: SUMMER QUARTER, A : END SEM. EXAM. ABSENT, P : END SEM. EXAM. PRESENT, MW : MEDICAL WITHDRAWAL, Data Pattern : Semester-Session-(End Semeter Attendence). Example, AU-09-10(P) : AUTUMN,2009-2010 (Present) SP-12-13(P) : SPRING,2012-2013 (Present) SE-13-14(A) : SUPPLEMENTARY,2013-2014 (Absent),  SQ-13-14(A) : SUMMER QUARTER, 2013-2014 (Present)"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Grade</div><div class="fht-cell"></div></th><th class="hidden" style=""><div class="th-inner ">Reg. Status.</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Subject Status
+                                                    <span id="subject_status_7" data-toggle="popover" data-placement="left" title="" data-trigger="hover" data-content="&lt;span&gt;
+               
+&lt;span class=&#39;badge alert-warning&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ok&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Currently Registered&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-success&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ok&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Already Registered and Cleared&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-danger&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-remove&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Already Registered and failed&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-danger&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ban-circle&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Not Yet Registered&lt;br&gt;
+                &lt;span&gt;" data-original-title="Information"><span class="badge alert-info btn"><i class="glyphicon glyphicon-info-sign"></i></span></span></div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="10">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div> 
+
+                                </div>
+                                -
+                                <div class="col-lg-12 well well-sm" id="summeryDiv7">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="summery7" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-success">
+                                            <tr><th style=""><div class="th-inner ">Performance Summary</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">TCT - TCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Total Credit Taken - Total Credit Cleared" data-trigger="hover" data-content="Total Credit Taken - Total Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">SCT - SCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Semester Credit Taken - Semester Credit Cleared" data-trigger="hover" data-content="Semester Credit Taken - Semester Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">NCGPA - CGPA - SGPA
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Notional Cumulative Grade Point Average - Cumulative Grade Point Average - Semester Grade Point Average" data-trigger="hover" data-content="Notional Cumulative Grade Point Average - Cumulative Grade Point Average - Semester Grade Point Average"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ATCT - ATCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Total Credit Taken - Additional Total Credit Cleared" data-trigger="hover" data-content="Additional Total Credit Taken - Additional Total Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ASCT - ASCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Semester Credit Taken - Additional Semester Credit Cleared" data-trigger="hover" data-content="Additional Semester Credit Taken - Additional Semester Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ACGPA - ASGPA
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Cumulative Grade Point Average - Additional Semester Grade Point Average" data-trigger="hover" data-content="Additional Cumulative Grade Point Average - Additional Semester Grade Point Average"></span>
+                                                </div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="7">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item lstitemdetails" id="perform_menu_8" style="min-height:100px;display: none;overflow: auto;">
+                            <h4 class="semheads">Curricula and Performance Details of Semester 8<div class="form-group btn btn-warning badge" id="printDiv8" onclick="print(&#39;8&#39;);"> <span class="glyphicon glyphicon-print "></span> print</div></h4><hr>
+                            <div id="performance8" style="display: none;">
+                                <div class="col-lg-12 well well-sm" id="curriculaDiv8">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="curricula8" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" data-visible="false" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-info">
+                                            <tr><th style=""><div class="th-inner ">Subjects Count (Semno - 8)</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth CORE</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth/Breadth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Breadth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">HSS-Breadth</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Project</div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="7">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div> 
+                                </div>
+
+                                <div class="col-lg-12 well well-sm" id="detailsDiv8">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="details8" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" data-row-style="rowStyle" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-danger">
+                                            <tr><th style=""><div class="th-inner ">Subno(sem-8)</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Subject Name</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Sub. Type</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">L-T-P</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Credit</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Reg. Sem.
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Registered semester No." data-trigger="hover" data-content="Registered semester No."></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Registered Session
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="SP: SPRING, AU: AUTUMN, SP : SUPPLEMENTARY,  SP: SUMMER QUARTER, A : END SEM. EXAM. ABSENT, P : END SEM. EXAM. PRESENT, MW : MEDICAL WITHDRAWAL, Data Pattern : Semester-Session-(End Semeter Attendence). Example, AU-09-10(P) : AUTUMN,2009-2010 (Present) SP-12-13(P) : SPRING,2012-2013 (Present) SE-13-14(A) : SUPPLEMENTARY,2013-2014 (Absent),  SQ-13-14(A) : SUMMER QUARTER, 2013-2014 (Present)" data-trigger="hover" data-content="SP: SPRING, AU: AUTUMN, SP : SUPPLEMENTARY,  SP: SUMMER QUARTER, A : END SEM. EXAM. ABSENT, P : END SEM. EXAM. PRESENT, MW : MEDICAL WITHDRAWAL, Data Pattern : Semester-Session-(End Semeter Attendence). Example, AU-09-10(P) : AUTUMN,2009-2010 (Present) SP-12-13(P) : SPRING,2012-2013 (Present) SE-13-14(A) : SUPPLEMENTARY,2013-2014 (Absent),  SQ-13-14(A) : SUMMER QUARTER, 2013-2014 (Present)"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Grade</div><div class="fht-cell"></div></th><th class="hidden" style=""><div class="th-inner ">Reg. Status.</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Subject Status
+                                                    <span id="subject_status_8" data-toggle="popover" data-placement="left" title="" data-trigger="hover" data-content="&lt;span&gt;
+               
+&lt;span class=&#39;badge alert-warning&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ok&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Currently Registered&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-success&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ok&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Already Registered and Cleared&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-danger&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-remove&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Already Registered and failed&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-danger&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ban-circle&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Not Yet Registered&lt;br&gt;
+                &lt;span&gt;" data-original-title="Information"><span class="badge alert-info btn"><i class="glyphicon glyphicon-info-sign"></i></span></span></div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="10">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div> 
+
+                                </div>
+                                <div class="col-lg-12 well well-sm" id="summeryDiv8">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="summery8" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-success">
+                                            <tr><th style=""><div class="th-inner ">Performance Summary</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">TCT - TCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Total Credit Taken - Total Credit Cleared" data-trigger="hover" data-content="Total Credit Taken - Total Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">SCT - SCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Semester Credit Taken - Semester Credit Cleared" data-trigger="hover" data-content="Semester Credit Taken - Semester Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">NCGPA - CGPA - SGPA
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Notional Cumulative Grade Point Average - Cumulative Grade Point Average - Semester Grade Point Average" data-trigger="hover" data-content="Notional Cumulative Grade Point Average - Cumulative Grade Point Average - Semester Grade Point Average"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ATCT - ATCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Total Credit Taken - Additional Total Credit Cleared" data-trigger="hover" data-content="Additional Total Credit Taken - Additional Total Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ASCT - ASCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Semester Credit Taken - Additional Semester Credit Cleared" data-trigger="hover" data-content="Additional Semester Credit Taken - Additional Semester Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ACGPA - ASGPA
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Cumulative Grade Point Average - Additional Semester Grade Point Average" data-trigger="hover" data-content="Additional Cumulative Grade Point Average - Additional Semester Grade Point Average"></span>
+                                                </div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="7">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item lstitemdetails" id="perform_menu_9" style="min-height:100px;display: none;overflow: auto;">
+                            <h4 class="semheads">Curricula and Performance Details of Semester 9<div class="form-group btn btn-warning badge" id="printDiv9" onclick="print(&#39;9&#39;);"> <span class="glyphicon glyphicon-print "></span> print</div></h4><hr>
+                            <div id="performance9" style="display: none;">
+                                <div class="col-lg-12 well well-sm" id="curriculaDiv9">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="curricula9" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" data-visible="false" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-info">
+                                            <tr><th style=""><div class="th-inner ">Subjects Count (Semno - 9)</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth CORE</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth/Breadth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Breadth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">HSS-Breadth</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Project</div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="7">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div> 
+                                </div>
+                                <div class="col-lg-12 well well-sm" id="detailsDiv9">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="details9" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" data-row-style="rowStyle" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-danger">
+                                            <tr><th style=""><div class="th-inner ">Subno(sem-9)</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Subject Name</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Sub. Type</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">L-T-P</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Credit</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Reg. Sem.
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Registered semester No." data-trigger="hover" data-content="Registered semester No."></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Registered Session
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="SP: SPRING, AU: AUTUMN, SP : SUPPLEMENTARY,  SP: SUMMER QUARTER, A : END SEM. EXAM. ABSENT, P : END SEM. EXAM. PRESENT, MW : MEDICAL WITHDRAWAL, Data Pattern : Semester-Session-(End Semeter Attendence). Example, AU-09-10(P) : AUTUMN,2009-2010 (Present) SP-12-13(P) : SPRING,2012-2013 (Present) SE-13-14(A) : SUPPLEMENTARY,2013-2014 (Absent),  SQ-13-14(A) : SUMMER QUARTER, 2013-2014 (Present)" data-trigger="hover" data-content="SP: SPRING, AU: AUTUMN, SP : SUPPLEMENTARY,  SP: SUMMER QUARTER, A : END SEM. EXAM. ABSENT, P : END SEM. EXAM. PRESENT, MW : MEDICAL WITHDRAWAL, Data Pattern : Semester-Session-(End Semeter Attendence). Example, AU-09-10(P) : AUTUMN,2009-2010 (Present) SP-12-13(P) : SPRING,2012-2013 (Present) SE-13-14(A) : SUPPLEMENTARY,2013-2014 (Absent),  SQ-13-14(A) : SUMMER QUARTER, 2013-2014 (Present)"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Grade</div><div class="fht-cell"></div></th><th class="hidden" style=""><div class="th-inner ">Reg. Status.</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Subject Status
+                                                    <span id="subject_status_9" data-toggle="popover" data-placement="left" title="" data-trigger="hover" data-content="&lt;span&gt;
+               
+&lt;span class=&#39;badge alert-warning&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ok&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Currently Registered&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-success&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ok&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Already Registered and Cleared&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-danger&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-remove&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Already Registered and failed&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-danger&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ban-circle&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Not Yet Registered&lt;br&gt;
+                &lt;span&gt;" data-original-title="Information"><span class="badge alert-info btn"><i class="glyphicon glyphicon-info-sign"></i></span></span></div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="10">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div> 
+
+                                </div>
+
+                                <div class="col-lg-12 well well-sm" id="summeryDiv9">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="summery9" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-success">
+                                            <tr><th style=""><div class="th-inner ">Performance Summary</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">TCT - TCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Total Credit Taken - Total Credit Cleared" data-trigger="hover" data-content="Total Credit Taken - Total Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">SCT - SCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Semester Credit Taken - Semester Credit Cleared" data-trigger="hover" data-content="Semester Credit Taken - Semester Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">NCGPA - CGPA - SGPA
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Notional Cumulative Grade Point Average - Cumulative Grade Point Average - Semester Grade Point Average" data-trigger="hover" data-content="Notional Cumulative Grade Point Average - Cumulative Grade Point Average - Semester Grade Point Average"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ATCT - ATCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Total Credit Taken - Additional Total Credit Cleared" data-trigger="hover" data-content="Additional Total Credit Taken - Additional Total Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ASCT - ASCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Semester Credit Taken - Additional Semester Credit Cleared" data-trigger="hover" data-content="Additional Semester Credit Taken - Additional Semester Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ACGPA - ASGPA
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Cumulative Grade Point Average - Additional Semester Grade Point Average" data-trigger="hover" data-content="Additional Cumulative Grade Point Average - Additional Semester Grade Point Average"></span>
+                                                </div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="7">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item lstitemdetails" id="perform_menu_10" style="min-height:100px;display: none;overflow: auto;">
+                            <h4 class="semheads">Curricula and Performance Details of Semester 10<div class="form-group btn btn-warning badge" id="printDiv10" onclick="print(&#39;10&#39;);"> <span class="glyphicon glyphicon-print "></span> print</div></h4><hr>
+                            <div id="performance10" style="display: none;">
+                                <div class="col-lg-12 well well-sm" id="curriculaDiv10">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="curricula10" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" data-visible="false" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-info">
+                                            <tr><th style=""><div class="th-inner ">Subjects Count (Semno - 10)</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth CORE</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth/Breadth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Breadth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">HSS-Breadth</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Project</div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="7">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div> 
+                                </div>
+
+                                <div class="col-lg-12 well well-sm" id="detailsDiv10">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="details10" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" data-row-style="rowStyle" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-danger">
+                                            <tr><th style=""><div class="th-inner ">Subno(sem-10)</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Subject Name</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Sub. Type</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">L-T-P</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Credit</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Reg. Sem.
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Registered semester No." data-trigger="hover" data-content="Registered semester No."></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Registered Session
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="SP: SPRING, AU: AUTUMN, SP : SUPPLEMENTARY,  SP: SUMMER QUARTER, A : END SEM. EXAM. ABSENT, P : END SEM. EXAM. PRESENT, MW : MEDICAL WITHDRAWAL, Data Pattern : Semester-Session-(End Semeter Attendence). Example, AU-09-10(P) : AUTUMN,2009-2010 (Present) SP-12-13(P) : SPRING,2012-2013 (Present) SE-13-14(A) : SUPPLEMENTARY,2013-2014 (Absent),  SQ-13-14(A) : SUMMER QUARTER, 2013-2014 (Present)" data-trigger="hover" data-content="SP: SPRING, AU: AUTUMN, SP : SUPPLEMENTARY,  SP: SUMMER QUARTER, A : END SEM. EXAM. ABSENT, P : END SEM. EXAM. PRESENT, MW : MEDICAL WITHDRAWAL, Data Pattern : Semester-Session-(End Semeter Attendence). Example, AU-09-10(P) : AUTUMN,2009-2010 (Present) SP-12-13(P) : SPRING,2012-2013 (Present) SE-13-14(A) : SUPPLEMENTARY,2013-2014 (Absent),  SQ-13-14(A) : SUMMER QUARTER, 2013-2014 (Present)"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Grade</div><div class="fht-cell"></div></th><th class="hidden" style=""><div class="th-inner ">Reg. Status.</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Subject Status
+                                                    <span id="subject_status_10" data-toggle="popover" data-placement="left" title="" data-trigger="hover" data-content="&lt;span&gt;
+               
+&lt;span class=&#39;badge alert-warning&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ok&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Currently Registered&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-success&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ok&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Already Registered and Cleared&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-danger&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-remove&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Already Registered and failed&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-danger&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ban-circle&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Not Yet Registered&lt;br&gt;
+                &lt;span&gt;" data-original-title="Information"><span class="badge alert-info btn"><i class="glyphicon glyphicon-info-sign"></i></span></span></div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="10">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div> 
+
+                                </div>
+
+                                <div class="col-lg-12 well well-sm" id="summeryDiv10">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="summery10" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-success">
+                                            <tr><th style=""><div class="th-inner ">Performance Summary</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">TCT - TCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Total Credit Taken - Total Credit Cleared" data-trigger="hover" data-content="Total Credit Taken - Total Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">SCT - SCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Semester Credit Taken - Semester Credit Cleared" data-trigger="hover" data-content="Semester Credit Taken - Semester Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">NCGPA - CGPA - SGPA
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Notional Cumulative Grade Point Average - Cumulative Grade Point Average - Semester Grade Point Average" data-trigger="hover" data-content="Notional Cumulative Grade Point Average - Cumulative Grade Point Average - Semester Grade Point Average"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ATCT - ATCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Total Credit Taken - Additional Total Credit Cleared" data-trigger="hover" data-content="Additional Total Credit Taken - Additional Total Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ASCT - ASCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Semester Credit Taken - Additional Semester Credit Cleared" data-trigger="hover" data-content="Additional Semester Credit Taken - Additional Semester Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ACGPA - ASGPA
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Cumulative Grade Point Average - Additional Semester Grade Point Average" data-trigger="hover" data-content="Additional Cumulative Grade Point Average - Additional Semester Grade Point Average"></span>
+                                                </div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="7">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item lstitemdetails" id="perform_menu_11" style="min-height:100px;display: none;overflow: auto;">
+                            <h4 class="semheads">Curricula and Performance Details of Semester 11<div class="form-group btn btn-warning badge" id="printDiv11" onclick="print(&#39;11&#39;);"> <span class="glyphicon glyphicon-print "></span> print</div></h4><hr>
+                            <div id="performance11" style="display: none;">
+                                <div class="col-lg-12 well well-sm" id="curriculaDiv11">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="curricula11" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" data-visible="false" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-info">
+                                            <tr><th style=""><div class="th-inner ">Subjects Count (Semno - 11)</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth CORE</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth/Breadth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Breadth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">HSS-Breadth</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Project</div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="7">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div> 
+                                </div>
+
+                                <div class="col-lg-12 well well-sm" id="detailsDiv11">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="details11" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" data-row-style="rowStyle" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-danger">
+                                            <tr><th style=""><div class="th-inner ">Subno(sem-11)</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Subject Name</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Sub. Type</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">L-T-P</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Credit</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Reg. Sem.
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Registered semester No." data-trigger="hover" data-content="Registered semester No."></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Registered Session
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="SP: SPRING, AU: AUTUMN, SP : SUPPLEMENTARY,  SP: SUMMER QUARTER, A : END SEM. EXAM. ABSENT, P : END SEM. EXAM. PRESENT, MW : MEDICAL WITHDRAWAL, Data Pattern : Semester-Session-(End Semeter Attendence). Example, AU-09-10(P) : AUTUMN,2009-2010 (Present) SP-12-13(P) : SPRING,2012-2013 (Present) SE-13-14(A) : SUPPLEMENTARY,2013-2014 (Absent),  SQ-13-14(A) : SUMMER QUARTER, 2013-2014 (Present)" data-trigger="hover" data-content="SP: SPRING, AU: AUTUMN, SP : SUPPLEMENTARY,  SP: SUMMER QUARTER, A : END SEM. EXAM. ABSENT, P : END SEM. EXAM. PRESENT, MW : MEDICAL WITHDRAWAL, Data Pattern : Semester-Session-(End Semeter Attendence). Example, AU-09-10(P) : AUTUMN,2009-2010 (Present) SP-12-13(P) : SPRING,2012-2013 (Present) SE-13-14(A) : SUPPLEMENTARY,2013-2014 (Absent),  SQ-13-14(A) : SUMMER QUARTER, 2013-2014 (Present)"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Grade</div><div class="fht-cell"></div></th><th class="hidden" style=""><div class="th-inner ">Reg. Status.</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Subject Status
+                                                    <span id="subject_status_11" data-toggle="popover" data-placement="left" title="" data-trigger="hover" data-content="&lt;span&gt;
+               
+&lt;span class=&#39;badge alert-warning&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ok&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Currently Registered&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-success&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ok&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Already Registered and Cleared&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-danger&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-remove&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Already Registered and failed&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-danger&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ban-circle&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Not Yet Registered&lt;br&gt;
+                &lt;span&gt;" data-original-title="Information"><span class="badge alert-info btn"><i class="glyphicon glyphicon-info-sign"></i></span></span></div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="10">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div> 
+
+                                </div>
+
+                                <div class="col-lg-12 well well-sm" id="summeryDiv11">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="summery11" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-success">
+                                            <tr><th style=""><div class="th-inner ">Performance Summary</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">TCT - TCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Total Credit Taken - Total Credit Cleared" data-trigger="hover" data-content="Total Credit Taken - Total Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">SCT - SCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Semester Credit Taken - Semester Credit Cleared" data-trigger="hover" data-content="Semester Credit Taken - Semester Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">NCGPA - CGPA - SGPA
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Notional Cumulative Grade Point Average - Cumulative Grade Point Average - Semester Grade Point Average" data-trigger="hover" data-content="Notional Cumulative Grade Point Average - Cumulative Grade Point Average - Semester Grade Point Average"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ATCT - ATCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Total Credit Taken - Additional Total Credit Cleared" data-trigger="hover" data-content="Additional Total Credit Taken - Additional Total Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ASCT - ASCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Semester Credit Taken - Additional Semester Credit Cleared" data-trigger="hover" data-content="Additional Semester Credit Taken - Additional Semester Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ACGPA - ASGPA
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Cumulative Grade Point Average - Additional Semester Grade Point Average" data-trigger="hover" data-content="Additional Cumulative Grade Point Average - Additional Semester Grade Point Average"></span>
+                                                </div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="7">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item lstitemdetails" id="perform_menu_12" style="min-height:100px;display: none;overflow: auto;">
+                            <h4 class="semheads">Curricula and Performance Details of Semester 12<div class="form-group btn btn-warning badge" id="printDiv10" onclick="print(&#39;12&#39;);"> <span class="glyphicon glyphicon-print "></span> print</div></h4><hr>
+                            <div id="performance12" style="display: none;">
+                                <div class="col-lg-12 well well-sm" id="curriculaDiv10">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="curricula12" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" data-visible="false" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-info">
+                                            <tr><th style=""><div class="th-inner ">Subjects Count (Semno - 12)</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth CORE</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth/Breadth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Breadth Elective</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">HSS-Breadth</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Project</div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="7">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div> 
+                                </div>
+
+                                <div class="col-lg-12 well well-sm" id="detailsDiv12">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="details12" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" data-row-style="rowStyle" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-danger">
+                                            <tr><th style=""><div class="th-inner ">Subno(sem-12)</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Subject Name</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Sub. Type</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">L-T-P</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Credit</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Reg. Sem.
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Registered semester No." data-trigger="hover" data-content="Registered semester No."></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Registered Session
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="SP: SPRING, AU: AUTUMN, SP : SUPPLEMENTARY,  SP: SUMMER QUARTER, A : END SEM. EXAM. ABSENT, P : END SEM. EXAM. PRESENT, MW : MEDICAL WITHDRAWAL, Data Pattern : Semester-Session-(End Semeter Attendence). Example, AU-09-10(P) : AUTUMN,2009-2010 (Present) SP-12-13(P) : SPRING,2012-2013 (Present) SE-13-14(A) : SUPPLEMENTARY,2013-2014 (Absent),  SQ-13-14(A) : SUMMER QUARTER, 2013-2014 (Present)" data-trigger="hover" data-content="SP: SPRING, AU: AUTUMN, SP : SUPPLEMENTARY,  SP: SUMMER QUARTER, A : END SEM. EXAM. ABSENT, P : END SEM. EXAM. PRESENT, MW : MEDICAL WITHDRAWAL, Data Pattern : Semester-Session-(End Semeter Attendence). Example, AU-09-10(P) : AUTUMN,2009-2010 (Present) SP-12-13(P) : SPRING,2012-2013 (Present) SE-13-14(A) : SUPPLEMENTARY,2013-2014 (Absent),  SQ-13-14(A) : SUMMER QUARTER, 2013-2014 (Present)"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Grade</div><div class="fht-cell"></div></th><th class="hidden" style=""><div class="th-inner ">Reg. Status.</div><div class="fht-cell"></div></th><th style="text-align: center; "><div class="th-inner ">Subject Status
+                                                    <span id="subject_status_12" data-toggle="popover" data-placement="left" title="" data-trigger="hover" data-content="&lt;span&gt;
+               
+&lt;span class=&#39;badge alert-warning&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ok&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Currently Registered&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-success&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ok&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Already Registered and Cleared&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-danger&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-remove&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Already Registered and failed&lt;br&gt;
+               
+&lt;span class=&#39;badge alert-danger&#39;&gt;&lt;i class=&#39;glyphicon glyphicon-ban-circle&#39;&gt;&lt;/i&gt;&lt;/span&gt; :Not Yet Registered&lt;br&gt;
+                &lt;span&gt;" data-original-title="Information"><span class="badge alert-info btn"><i class="glyphicon glyphicon-info-sign"></i></span></span></div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="10">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div> 
+
+                                </div>
+
+                                <div class="col-lg-12 well well-sm" id="summeryDiv12">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="summery12" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-success">
+                                            <tr><th style=""><div class="th-inner ">Performance Summary</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">TCT - TCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Total Credit Taken - Total Credit Cleared" data-trigger="hover" data-content="Total Credit Taken - Total Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">SCT - SCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Semester Credit Taken - Semester Credit Cleared" data-trigger="hover" data-content="Semester Credit Taken - Semester Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">NCGPA - CGPA - SGPA
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Notional Cumulative Grade Point Average - Cumulative Grade Point Average - Semester Grade Point Average" data-trigger="hover" data-content="Notional Cumulative Grade Point Average - Cumulative Grade Point Average - Semester Grade Point Average"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ATCT - ATCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Total Credit Taken - Additional Total Credit Cleared" data-trigger="hover" data-content="Additional Total Credit Taken - Additional Total Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ASCT - ASCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Semester Credit Taken - Additional Semester Credit Cleared" data-trigger="hover" data-content="Additional Semester Credit Taken - Additional Semester Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ACGPA - ASGPA
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Cumulative Grade Point Average - Additional Semester Grade Point Average" data-trigger="hover" data-content="Additional Cumulative Grade Point Average - Additional Semester Grade Point Average"></span>
+                                                </div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="7">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item lstitemdetails" id="perform_summ_all" style="min-height:100px;display: none;overflow: auto;">
+                            <h4 class="semheads">Performance Summary</h4><hr>
+                            <div id="performanceAll">
+                                <div class="col-lg-12 well well-sm" id="summeryDivAll">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="summeryAll" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-success">
+                                            <tr><th style=""><div class="th-inner ">Performance Summary</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">TCT - TCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Total Credit Taken - Total Credit Cleared" data-trigger="hover" data-content="Total Credit Taken - Total Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">SCT - SCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Semester Credit Taken - Semester Credit Cleared" data-trigger="hover" data-content="Semester Credit Taken - Semester Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">NCGPA - CGPA - SGPA
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Notional Cumulative Grade Point Average - Cumulative Grade Point Average - Semester Grade Point Average" data-trigger="hover" data-content="Notional Cumulative Grade Point Average - Cumulative Grade Point Average - Semester Grade Point Average"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ATCT - ATCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Total Credit Taken - Additional Total Credit Cleared" data-trigger="hover" data-content="Additional Total Credit Taken - Additional Total Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ASCT - ASCC
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Semester Credit Taken - Additional Semester Credit Cleared" data-trigger="hover" data-content="Additional Semester Credit Taken - Additional Semester Credit Cleared"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">ACGPA - ASGPA
+                                                    <span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="Additional Cumulative Grade Point Average - Additional Semester Grade Point Average" data-trigger="hover" data-content="Additional Cumulative Grade Point Average - Additional Semester Grade Point Average"></span>
+                                                </div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="7">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item lstitemdetails" id="curr_curr_all" style="min-height:100px;display: none;overflow: auto;">
+                            <h4 class="semheads">Curricula Summary</h4><hr>
+                            <div id="curriculaAll">
+                                <div class="col-lg-12 well well-sm" id="curriculaDivAll">
+                                    <div class="bootstrap-table"><div class="fixed-table-toolbar"></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="curriculaAll" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" data-visible="false" class="table table-bordered table-responsive table-condensed table-hover">
+                                        <thead class="bg-info">
+                                            <tr><th style=""><div class="th-inner ">Subjects Count</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Depth</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Elective<span class="glyphicon glyphicon-info-sign infos" data-toggle="popover" data-placement="bottom" title="D - Dual/PG Electives, O - Open/Flexi Elective" data-trigger="hover" data-content="D - Dual/PG Electives, O - Open/Flexi Elective"></span></div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Breadth</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">HSS</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">IEM</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Cumulative Total</div><div class="fht-cell"></div></th></tr>
+                                        </thead>                            
+                                    <tbody><tr class="no-records-found"><td colspan="7">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div> 
+                                </div>
+                            </div>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" style="width: 90%;height: 90%;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="myModalLabel1"></h4>
+                    </div>
+                    <div class="modal-body" id="myModalBody1">    
+                        <div class="bootstrap-table"><div class="fixed-table-toolbar"><div class="pull-left search"><input class="form-control" type="text" placeholder="Search"></div></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="backlogDetails" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" data-search="true" data-search-align="left" class="table table-bordered table-condensed table-hover">
+                            <thead class="bg-info">
+                                <tr><th style=""><div class="th-inner ">Session</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Semester</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Semno</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Subject No</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Subject Name</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Subject L-T-P</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Subject Credit</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Subject Type</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Cleared Status</div><div class="fht-cell"></div></th></tr>
+                            </thead>
+                        <tbody><tr class="no-records-found"><td colspan="9">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div> 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" style="width: 90%;height: 90%;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="myModalLabel2"></h4>
+                    </div>
+                    <div class="modal-body" id="myModalBody2">    
+                        <div class="bootstrap-table"><div class="fixed-table-toolbar"><div class="pull-left search"><input class="form-control" type="text" placeholder="Search"></div></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="supplementaryDetails" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" data-search="true" data-search-align="left" class="table table-bordered table-condensed table-hover">
+                            <thead class="bg-info">
+                                <tr><th style=""><div class="th-inner ">Session</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Suppl./SQ</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Subject No</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Subject Name</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Subject L-T-P</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Subject Credit</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Subject Type</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Grade Obtained</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">On Medical Ground(Y/N)</div><div class="fht-cell"></div></th></tr>
+                            </thead>
+                        <tbody><tr class="no-records-found"><td colspan="9">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div> 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" style="width: 90%;height: 90%;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="myModalLabel3"></h4>
+                    </div>
+                    <div class="modal-body" id="myModalBody3">    
+                        <div class="bootstrap-table"><div class="fixed-table-toolbar"><div class="pull-left search"><input class="form-control" type="text" placeholder="Search"></div></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="deregistrationDetails" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" data-search="true" data-search-align="left" class="table table-bordered table-condensed table-hover">
+                            <thead class="bg-info">
+                                <tr><th style=""><div class="th-inner ">Session</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Semester</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Subject No</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Subject Name</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Subject L-T-P</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Subject Credit</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">remarks</div><div class="fht-cell"></div></th></tr>
+                            </thead>
+                        <tbody><tr class="no-records-found"><td colspan="7">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div> 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="myModal4" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" style="width: 90%;height: 90%;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="myModalLabel4"></h4>
+                    </div>
+                    <div class="modal-body" id="myModalBody4">    
+                        <div class="bootstrap-table"><div class="fixed-table-toolbar"><div class="pull-left search"><input class="form-control" type="text" placeholder="Search"></div></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="examMalDetails" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" data-search="true" data-search-align="left" class="table table-bordered table-condensed table-hover">
+                            <thead class="bg-info">
+                                <tr><th style=""><div class="th-inner ">Session</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Semester</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Subject No</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Subject Name</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Subject L-T-P</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Subject Credit</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">remarks</div><div class="fht-cell"></div></th></tr>
+                            </thead>
+                        <tbody><tr class="no-records-found"><td colspan="7">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div> 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="myModal5" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" style="width: 90%;height: 90%;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="myModalLabel5"></h4>
+                    </div>
+                    <div class="modal-body" id="myModalBody5">    
+                        <div class="bootstrap-table"><div class="fixed-table-toolbar"><div class="pull-left search"><input class="form-control" type="text" placeholder="Search"></div></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="repeatDetails" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" data-search="true" data-search-align="left" class="table table-bordered table-condensed table-hover">
+                            <thead class="bg-info">
+                                <tr><th style=""><div class="th-inner ">Session</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Repeat Year</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Reason</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Subject Name</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Repeat Count</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Promotion Status</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Promotion Reason</div><div class="fht-cell"></div></th></tr>
+                            </thead>
+                        <tbody><tr class="no-records-found"><td colspan="7">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div> 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="myModal6" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" style="width: 90%;height: 90%;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="myModalLabel6"></h4>
+                    </div>
+                    <div class="modal-body" id="myModalBody6">    
+                        <div class="bootstrap-table"><div class="fixed-table-toolbar"><div class="pull-left search"><input class="form-control" type="text" placeholder="Search"></div></div><div class="fixed-table-container"><div class="fixed-table-header"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px;">Loading, please wait...</div><table id="weakDetails" data-toggle="table" data-method="post" data-cache="false" data-sort-order="asc" data-search="true" data-search-align="left" class="table table-bordered table-condensed table-hover">
+                            <thead class="bg-info">
+                                <tr><th style=""><div class="th-inner ">Session</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Repeat Year</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Weak Category</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Notional CGPA</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Backlog Count</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Backlog Details</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Unregister Count</div><div class="fht-cell"></div></th><th style=""><div class="th-inner ">Unregister Details</div><div class="fht-cell"></div></th></tr>
+                            </thead>
+                        <tbody><tr class="no-records-found"><td colspan="8">No matching records found</td></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"></div></div></div><div class="clearfix"></div> 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <script>
+            function getPerformance() {
+                var rollno = $("#rollno").val();
+                var alias = $("#alias").val();
+                var pass_p = $("#passphrase").val();
+                var ssoToken = $("#ssoToken").val();
+                var hostUrl = $("#hostUrl").val();
+                //if(alias!=null && pass_p!=null) {
+                if (alias != '' && pass_p != '' && alias != 'undefined' && pass_p != 'undefined') {
+                    var conff = confirm('Are you sure, you want to get performance cards?');
+                    if (conff) {
+                        if (alias != '' && pass_p != '' && alias != 'undefined' && pass_p != 'undefined') {
+                            var msg = "";
+                            request = $.ajax({
+                                url: hostUrl + "/ERPAdmin/validateAliasPassphrase.htm?ssoToken=" + ssoToken,
+                                //url: "http://localhost:8084/ERPAdmin/validateAliasPassphrase.htm?ssoToken=" + ssoToken,
+                                type: "POST",
+                                cache: false,
+                                data: "alias=" + encodeURIComponent(alias) + "&passphrase=" + encodeURIComponent(pass_p),
+                                dataType: "json",
+                                success: function (json)
+                                {
+                                    var a = json.isSuccess;
+                                    if (a == 'Y') {
+                                        request = $.ajax({
+                                            url: "setSessionAttribute.htm",
+                                            type: "POST",
+                                            cache: false,
+                                            data: "sessionKey=aliasPassPhrasePerformance&sessionVal=Y",
+                                            dataType: "json",
+                                            success: function (json)
+                                            {
+                                                window.location.href = 'studentPerformenceUG.htm?rollno=' + rollno;
+                                            }
+                                        });
+                                    } else {
+                                        $(".invalpass").show();
+                                    }
+
+                                },
+                                error: function () {
+                                    $(".invalpass").show();
+                                }
+                            });
+                        } else {
+                            $("#alias").focus();
+                            $(".invalpass").show();
+                            alert('Please give correct alias and passphrase to get the performance card.');
+                        }
+                    }
+                } else {
+                    $(".invalpass").show();
+                    alert('Please give correct alias and passphrase to get the performance card.');
+                    return false;
+                }
+            }
+        </script>
+        <div class="modal fade in " id="myModalAlias" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog" style="width: 50%;height: 40%;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabelAlias"></h4>
+                    </div>
+                    <div class="modal-body" id="myModalBodyAlias"> 
+                        <fieldset>
+                            <div class="form-group col-md-12 col-lg-12 well">
+
+                                <legend><h4>Please give the Alias and Passphrase to get performance card.</h4></legend>
+                                <div class="col-md-4 " style="margin: 0px" id="aliasDiv"><b>Alias</b>&nbsp;&nbsp;&nbsp;&nbsp;<input type="password" class="form-control" name="alias" id="alias"></div>
+                                <div class="col-md-4 " style="margin: 0px" id="passphraseDiv"><b>Passphrase</b>&nbsp;&nbsp;&nbsp;&nbsp;<input type="password" class="form-control" name="passphrase" id="passphrase"></div>
+                                <div class="col-md-4 " style="margin: 0px"><span class="badge alert-danger invalpass" style="display: none;"><i class="glyphicon glyphicon-remove"></i></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-default" onclick="getPerformance();">Validate</button></div>
+
+                            </div> 
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="pdfview" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" style="width: 90%;height: 90%;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="pdfviewLabel"></h4>
+                    </div>
+                    <div class="modal-body" id="pdfviewBody">    
+                        <iframe src="./studentPerformenceUG(1).html" id="ifrm" scrolling="yes" frameborder="0" style="height: 0px; width: 100%;">
+                        </iframe>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            $('#pdfview').on('show.bs.modal', function () {
+                $('.modal-content').css('height', $(window).height() * 0.9);
+            });
+            $('#ifrm').css('height', $(window).height() * 2.77);
+        </script>
+
+    
+
+</body></html>
